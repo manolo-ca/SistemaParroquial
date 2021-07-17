@@ -1,0 +1,146 @@
+<div class="card">
+    <h1>Agregar Tipos de Documentos</h1>
+    <div class="p-grid" style="margin: 5px; background-color: whitesmoke;">
+        <div class="p-col">
+            <p-button icon="pi pi-plus" (click)="showDialog()" label="Agregar" styleClass="ui-button-success">
+            </p-button>
+        </div>
+    </div>
+    <p-table  #dt1
+    [value]="tipodocumento"  
+    dataKey="tipdNombre" 
+    [rows]="10" 
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10,25,50]" 
+    [loading]="loading" 
+    styleClass="p-datatable-customers p-datatable-gridlines"
+    [paginator]="true" 
+    currentPageReportTemplate="Lista de documentos"
+    [globalFilterFields]="['tipdNombre','tipdDescripcion','tipdFkServicio.servNombre']">
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex">
+                <p>Documentos</p>
+                <span class="p-input-icon-left p-ml-auto">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')"
+                        placeholder="Buscar" />
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Nombre de documento</th>
+                <th>Descripción</th>
+                <th>Valor</th>
+                <th>Servicio</th>
+                <th style="width: 90px;">
+                    Acciones
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-documento>
+            <tr>
+                <td>{{documento.tipdNombre}}</td>
+                <td>{{documento.tipdDescripcion}}</td>
+                <td>{{documento.tipdValor}}</td>
+                <td>{{documento.tipdFkServicio.servNombre}}</td>
+                <td style="width: 90px; padding: 5px;text-align: center;">
+                    <p-button icon="pi pi-pencil" styleClass="ui-button-warning"
+                        (click)="cargarTiposDocumentos(documento)"></p-button>
+                    <p-button icon="pi pi-trash" styleClass="ui-button-danger" (click)='delete(documento)'></p-button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <p-dialog header="Creación de Documentos" [(visible)]="dis" [modal]="true" [style]="{width: '40vw'}"
+        [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+        <form>
+            <div class="ui-g ui-fluid">
+                <div class="ui-g form-group ">
+                    <div class="ui-g-12 ui-md-4">
+                        <label for="input">Tipo de Servicios:</label><br>
+                    </div>
+                    <div class="ui-g-12 ui-md-8">
+                        <div class="ui-inputgroup">
+                            <span class="ui-inputgroup-addon"><i class="pi pi-check"></i></span>
+                            <select [compareWith]="CompararServicio" class="form-control" id="tipe_sel" name="tipe_sel" required
+                                [(ngModel)]="tipodocumento2.tipdFkServicio" #tipdFkServicio="ngModel">
+                                <option [ngValue]="undefined">Seleccionar</option>
+                                <option *ngFor="let serve of servicios" [ngValue]="serve">
+                                    {{serve.servNombre}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="alert alert-danger"
+                            *ngIf="tipdFkServicio.invalid && (tipdFkServicio.dirty || tipdFkServicio.touched)">
+                            <div *ngIf="tipdFkServicio.errors.required">
+                                Campo requerido
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <label for="input">Nombre del Documento:</label><br>
+                    </div>
+                    <div class="ui-g-12 ui-md-8">
+                        <div class="ui-inputgroup">
+                            <span class="ui-inputgroup-addon"><i class="pi pi-align-justify"></i></span>
+                            <input id="tipe_nomdoc" name="tipe_nomdoc" type="text" pInputText placeholder="Nombre"
+                                [(ngModel)]="tipodocumento2.tipdNombre" #tipdNombre="ngModel" required>
+                        </div>
+                        <div class="alert alert-danger"
+                            *ngIf="tipdNombre.invalid && (tipdNombre.dirty || tipdNombre.touched)">
+                            <div *ngIf="tipdNombre.errors.required">
+                                Campo requerido
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <label for="input">Descripción:</label><br>
+                    </div>
+                    <div class="ui-g-12 ui-md-8">
+                        <div class="ui-inputgroup">
+                            <span class="ui-inputgroup-addon"><i class="pi pi-pencil"></i></span>
+                            <textarea id="tipe_descripcion" name="tipe_descripcion" type="text" rows="4" pInputTextarea
+                                placeholder="Descripcion" [(ngModel)]="tipodocumento2.tipdDescripcion"
+                                #tipdDescripcion="ngModel" required></textarea>
+                        </div>
+                        <div class="alert alert-danger"
+                            *ngIf="tipdDescripcion.invalid && (tipdDescripcion.dirty || tipdDescripcion.touched)">
+                            <div *ngIf="tipdDescripcion.errors.required">
+                                Campo requerido
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <label for="input">Valor:</label><br>
+                    </div>
+                    <div class="ui-g-12 ui-md-8">
+                        <div class="ui-inputgroup">
+                            <span class="ui-inputgroup-addon"><i class="pi pi-dollar"></i></span>
+                            <input id="tipe_valor" name="tipe_valor" type="number" pInputText placeholder="Valor"
+                                [(ngModel)]="tipodocumento2.tipdValor" #tipdValor="ngModel" required>
+                        </div>
+                        <div class="alert alert-danger"
+                            *ngIf="tipdValor.invalid && (tipdValor.dirty || tipdValor.touched)">
+                            <div *ngIf="tipdValor.errors.required">
+                                Campo requerido
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-g-12">
+                        <p-button icon="pi pi-save" stileClass="ui-button-info" label="Guardar" (click)='create()'
+                            *ngIf="!tipodocumento2.tipdId else elseBlock"></p-button>
+                        <ng-template #elseBlock>
+                            <button class="btn btn-primary" role="button" (click)='update()'>Editar</button>
+                        </ng-template>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+        <p-footer>
+            <p-button icon="pi pi-times" (click)="dis=false" label="Cancelar" styleClass="ui-button-secondary">
+            </p-button>
+        </p-footer>
+    </p-dialog>
+</div>

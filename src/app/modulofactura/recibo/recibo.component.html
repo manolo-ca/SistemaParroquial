@@ -1,0 +1,151 @@
+<div class="card card-w-title">
+  <h1>Recibos</h1>
+  <div class="p-grid" style="margin: 5px; background-color: whitesmoke;">
+      <div class="p-col">
+          <button icon="pi pi-plus" pButton type="button" label="Agregar Recibo" class="ui-button-success" [routerLink]="['/facturacion/recibo/registrar']"></button>
+      </div>
+      
+  </div>
+  
+  <p-table #dt [value]="recibos" [paginator]="true" [columns]="cols" [rows]="5" [showCurrentPageReport]="true"
+      [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-customers p-datatable-gridlines"
+      [paginator]="true" currentPageReportTemplate="Lista de Recibos "
+      [globalFilterFields]="['rcbnumDocumento','rcbCliente','rcbFechaemision','rcbConcepto','rcbValor']">
+
+      <ng-template pTemplate="caption">
+          <div class="p-grid">
+              <div class="p-col" style="text-align: left;">
+                  <h3>Lista de Recibos</h3>
+              </div>
+              <div class="p-col" style="text-align: right">
+                  <i class="pi pi-search" style="margin:4px 4px 0 0"></i>
+                  <input type="text" pInputText size="50" placeholder="Buscar Recibo"
+                      (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+              </div>
+          </div>
+      </ng-template>
+      <ng-template pTemplate="header" let-columns>
+          <tr>
+              <th>Nro Documento</th>
+              <th>Cliente</th>
+              <th>Fecha Emision</th>
+              <th>Concepto</th>
+              <th>Total</th>
+              <th>Acciones</th>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-recibos>
+          <tr>
+              <td style="width: 70px;">{{recibos.rcbnumDocumento}}</td>
+              <td>{{recibos.rcbCliente}}</td>
+              <td>{{recibos.rcbFechaemision}}</td>
+              <td>{{recibos.rcbConcepto}}</td>
+              <td>${{recibos.rcbValor}}</td>
+              <td  style="width: 70px; padding: 5px;text-align: center;">
+                  <p-button icon="pi pi-file" (click)="getRecibo(recibos)" styleClass="ui-button-success"></p-button>
+                  <p-button icon="pi pi-trash"(click)="eliminarRecibo(recibos)" styleClass="ui-button-danger"></p-button>
+                </td>
+    
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7">No existen registros de Recibos</td>
+          </tr>
+      </ng-template>
+  </p-table>
+
+  <div>
+    <br>
+
+    <p-dialog header="Vista Previa Del Recibo" [(visible)]="displayMaximizable" [modal]="true"
+      [style]="{width: '50vw'}" [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+      <kendo-pdf-export #pdf paperSize="A4" margin="5mm"
+        style="font-family: 'DejaVu Sans', 'Arial', sans-serif;font-size: 13px;">
+    
+      
+              <!-- Left Side -->
+           
+                <form #reciboform="ngForm">
+                <h1 >Recibo de Pago</h1>
+                  <div class="ui-g form-group">
+                    <div class="ui-g-12 ui-lg-4">
+                      <div  class="ui-g-12 ui-md-12">
+                        <h4>San Joaquín</h4>
+                        <h6>ejemplo@sanjoaquin</h6>
+                        <h6>0102365478</h6>
+                      </div>
+                  </div>
+                  <div class="ui-g-12 ui-lg-6 text-right">
+                    <img src="assets/layout/images/sanjoaquin.jpg" alt="" width="70" height="85"/>
+                  </div>
+          
+                  
+          
+                            <div  class="ui-g-12 ui-md-6">
+                              <div  class="ui-g-12 ui-md-6">
+                                <label for="input"><b>N.:</b> {{recibo.rcbnumDocumento}}</label>
+                                </div>
+            
+                            </div>
+                            <div class="ui-g-12 ui-md-6"> 
+                              <div  class="ui-g-12 ui-md-6">
+                                <label for="input"><b>Fecha:</b> {{recibo.rcbFechaemision}}</label>
+                              </div>
+                             
+                            </div>
+                            <div class="p-grid" style="margin: 5px; background-color: whitesmoke;">
+                              <div class="p-col ">
+                                  
+                                  <div  class="ui-g-12 ui-md-10">
+                                    <div  class="ui-g-12 ui-md-10">
+                                      <label for="input"><b>Recibo de: </b> {{recibo.rcbCliente}}</label>
+                                    </div>
+                                   
+                                  </div>
+                                  <div class="ui-g-12 ui-md-6"> 
+                                    <div  class="ui-g-12 ui-md-6">
+                                      <label for="input"><b>Por: $</b> {{recibo.rcbValor}}</label>
+                                    </div>
+                                   
+                                  </div>
+                                  <div class="ui-g-12 ui-md-12"> 
+                                    <div  class="ui-g-12 ui-md-12">
+                                      <label for="input"><b>La catidad de:</b> {{recibo.rcbdescripcionCantidad}}</label>
+                                    </div>
+                               
+                                    </div>
+                                <div class="ui-g-12 ui-md-12"> 
+                                  <div  class="ui-g-12 ui-md-12">
+                                  <label for="inputEmail4"><b>Por concepto de:</b> {{recibo.rcbConcepto}}</label>
+                                  </div>
+                             
+                                </div>
+                              </div>
+                            </div>
+                 
+                            <div  class="ui-g-12 ui-md-12 text-center">
+                                <p>_____________________________________</p> <br>
+                              <label for="inputEmail4"><b>Firma Autorizada</b></label>
+                               </div>
+
+                </div>
+              </form>
+     
+       
+                       
+      </kendo-pdf-export>
+      <p-footer>
+        <div class="p-grid">
+          <div class="p-col text-left">
+            <p-button label="Descargar" (onClick)="pdf.saveAs('Reporte.pdf')" icon="pi pi-cloud-download"
+              styleClass="ui-button-info"></p-button>
+          </div>
+          <div class="p-col text-right">
+            <p-button icon="pi pi-times" (click)="dis2=false" label="Cerrar" styleClass="ui-button-secondary">
+            </p-button>
+          </div>
+        </div>
+      </p-footer>
+    </p-dialog>
+  </div>

@@ -1,0 +1,197 @@
+<div class="ui-g ui-fluid ">
+  <div class="ui-g-12 ui-md-2"></div>
+  <div class="ui-g-12 ui-lg-8">
+    <div class="card" style="width: 800px; background-color: whitesmoke;">
+      <form #reciboform="ngForm">
+        <div class="card">
+          <div  class="ui-g-12 ui-md-12">
+            <div class="ui-g-12 ui-md-8"></div>
+            <div class="ui-g-12 ui-md-2" style="font-weight: bold; font-size: larger;">
+              <label for="input">RECIBO </label>
+            </div>
+            <div class="ui-g-12 ui-md-2">
+              <div class="ui-inputgroup">
+                <span class="ui-inputgroup-addon"><i class="pi pi-file"></i></span>
+                <input disabled type="text" [(ngModel)]="recibo.rcbnumDocumento" name="rcbnumDocumento"    placeholder="0000" required #rcbnumDocumento="ngModel" pInputText>
+              </div> 
+              <div *ngIf="rcbnumDocumento.invalid && rcbnumDocumento.touched">
+                <div *ngIf="rcbnumDocumento.errors.required">
+                  <div class="alert alert-danger" role="alert">
+                    ¡Ingrese el numero de documento!
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-g-12 ui-md-12"> 
+            <div  class="ui-g-12 ui-md-8">
+              <div  class="ui-g-12 ui-md-3">
+                <div class="ui-inputgroup">
+                  <span class="ui-inputgroup-addon"><i class="pi pi-dollar"></i></span>
+                  <input type="text" [(ngModel)]="recibo.rcbValor"  name="rcbValor"  placeholder="$10.00" #rcbValor="ngModel" required pInputText >
+                </div>
+                <div *ngIf="rcbValor.invalid && rcbValor.touched">
+                  <div *ngIf="rcbValor.errors.required">
+                    <div class="alert alert-danger" role="alert">
+                      ¡Ingrese el valor del recibo!
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="ui-g-12 ui-md-4"> 
+              <p-calendar [(ngModel)]="date"  name="rcbFechaemision"   [locale]="es"  #rcbFechaemision="ngModel" [showIcon]="true" dateFormat="yy-mm-dd" placeholder="aaaa-mm-dd" ></p-calendar>
+              <div *ngIf="rcbFechaemision.invalid && rcbFechaemision.touched">
+                <div *ngIf="rcbFechaemision.errors.required">
+                  <div class="alert alert-danger" role="alert">
+                    ¡Ingrese la fecha de Emision del Recibo!
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="font-weight: bold;">
+          <div  class="ui-g-12 ui-md-12">
+            <div  class="ui-g-12 ui-md-2">
+              <label for="input">RECIBÍ de: </label>
+            </div>
+            <div class="ui-g-12 ui-md-10"> 
+              <input type="text" [(ngModel)]="recibo.rcbCliente"  name="rcbCliente"  placeholder="NOMBRES Y APELLIDOS COMPLETOS DE LA PERSONA" #rcbCliente="ngModel"  required pInputText>
+              <div *ngIf="rcbCliente.invalid && rcbCliente.touched">
+                <div *ngIf="rcbCliente.errors.required">
+                  <div class="alert alert-danger" role="alert">
+                    ¡Ingrese datos del cliente!
+                  </div>
+                </div>
+                </div>
+            </div>
+          </div>
+          <div class="ui-g-12 ui-md-12"> 
+            <div  class="ui-g-12 ui-md-4">
+              <label for="input">La CANTIDAD en DOLARES: </label>
+            </div>
+            <div class="ui-g-12 ui-md-8">
+              <input type="text" [(ngModel)]="recibo.rcbdescripcionCantidad"  name="rcbdescripcionCantidad"  #rcbnumDescripcion="ngModel" required placeholder="INGRESE LA CANTIDAD EN LETRAS"  pInputText>
+              <div *ngIf="rcbnumDescripcion.invalid && rcbnumDescripcion.touched">
+                <div *ngIf="rcbnumDescripcion.errors.required">
+                  <div class="alert alert-danger" role="alert">
+                    ¡Ingrese la descripcion de la cantidad!
+                  </div>
+                </div>
+              </div>  
+            </div>
+          </div>
+          <div class="ui-g-12 ui-md-12"> 
+            <div  class="ui-g-12 ui-md-6">
+              <label for="inputEmail4">Por CONCEPTO de:</label>
+            </div>
+            <div class="ui-g-12 ui-md-12"> 
+              <input type="text" [(ngModel)]="recibo.rcbConcepto"  name="rcbConcepto"  placeholder="EJEMPLO: Abono para la eucaristía que se realizara el día sabado." #rcbConcepto="ngModel"  required pInputText>
+              <div *ngIf="rcbConcepto.invalid && rcbConcepto.touched">
+                <div *ngIf="rcbConcepto.errors.required">
+                  <div class="alert alert-danger" role="alert">
+                    ¡Ingrese el concepto!
+                  </div>
+                </div>
+              </div>  
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-md-12 text-center"> 
+          <p-button label="Registrar" (click)="crearRecibo(reciboform)" icon = "pi pi-save" styleClass="ui-button-info"></p-button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="ui-g-12 ui-md-2"></div>
+</div>            
+             
+<div>
+  <br>
+  <p-dialog header="Vista Previa Del Recibo" [(visible)]="displayMaximizable" [showHeader]="false" [modal]="true"
+    [style]="{width: '50vw'}" [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+    <p-scrollPanel [style]="{width: '100%', height: '500px'}">
+      <kendo-pdf-export #pdf paperSize="A4" margin="5mm" style="font-family: 'DejaVu Sans', 'Arial', sans-serif;font-size: 13px;">
+        
+        <div class="ui-g ui-fluid ">
+          <div class="ui-g-12 ui-lg-6">
+            <div  class="ui-g-12 ui-md-12">
+              <h5>San Joaquín</h5>
+              <p>ejemplo@sanjoaquin</p>
+              <p>0102365478</p>
+            </div>
+          </div>
+          <div class="ui-g-12 ui-lg-6 text-right">
+            <img src="assets/layout/images/sanjoaquin.jpg" alt="" width="60" height="75"/>
+          </div>
+          <div class="ui-g-12 ui-lg-12">
+            <div class="card" style="background-color: whitesmoke;">
+              <form #reciboform="ngForm">
+                <div class="card">
+                  <div  class="ui-g-12 ui-md-12">
+                    <div class="ui-g-12 ui-md-8"></div>
+                    <div class="ui-g-12 ui-md-2" style="font-weight: bold; font-size: larger;">
+                      <label for="input">RECIBO </label>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                      <div class="ui-inputgroup">
+                        <span class="ui-inputgroup-addon"><i class="pi pi-file"></i></span>
+                        <label for="input" pInputText>{{recibo.rcbnumDocumento}}</label>
+                      </div> 
+                    </div>
+                  </div>
+                  <div class="ui-g-12 ui-md-12"> 
+                    <div  class="ui-g-12 ui-md-8">
+                      <div  class="ui-g-12 ui-md-3">
+                        <div class="ui-inputgroup">
+                          <span class="ui-inputgroup-addon"><i class="pi pi-dollar"></i></span>
+                          <label for="input" pInputText>{{recibo.rcbValor}}</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-4"> 
+                      <p-calendar [(ngModel)]="date"  name="rcbFechaemision"   [locale]="es"  #rcbFechaemision="ngModel" dateFormat="yy-mm-dd" placeholder="aaaa-mm-dd" ></p-calendar>
+                      
+                    </div>
+                  </div>
+                </div>
+                <div class="card" style="font-weight: bold;">
+                  <div  class="ui-g-12 ui-md-12">
+                    <label for="input">RECIBI de: {{recibo.rcbCliente}}</label>
+                  </div>
+                  <div class="ui-g-12 ui-md-12"> 
+                    <label for="input">La CANTIDAD en DOLARES: {{recibo.rcbdescripcionCantidad}}</label>
+                  </div>
+                  <div class="ui-g-12 ui-md-12"> 
+                    <div class="ui-g-12 ui-md-8">
+                      <label for="inputEmail4">Por CONCEPTO de: {{recibo.rcbConcepto}}</label>
+                    </div>
+                    <div  class="ui-g-12 ui-md-4 text-center" style="background-color: whitesmoke;">
+                      <label for="input">FIRMA Y SELLO: </label>
+                      <br><br><br><br>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        
+      </kendo-pdf-export>
+    </p-scrollPanel>
+    <p-footer>
+      <div class="p-grid">
+        <div class="p-col text-left">
+          <p-button label="Descargar" (onClick)="pdf.saveAs('ReciboGenerado.pdf')" icon="pi pi-cloud-download"
+            styleClass="ui-button-info"></p-button>
+        </div>
+        <div class="p-col text-right">
+          <p-button icon="pi pi-times" (click)="cerrarReporte()" label="Cerrar" styleClass="ui-button-secondary">
+          </p-button>
+        </div>
+      </div>
+    </p-footer>
+  </p-dialog>
+</div>             
+            

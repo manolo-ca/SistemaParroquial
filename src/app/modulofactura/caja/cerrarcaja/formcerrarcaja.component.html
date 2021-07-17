@@ -1,0 +1,99 @@
+<div class="ui-g ui-fluid">
+  <div class="ui-g-12 ui-md-2">
+  </div>
+  <div class="ui-g-12 ui-lg-8">
+    <!-- Left Side -->
+    <div class="card card-w-title " style="width: 650px;">
+      <h1>Cierre De Caja</h1>
+      <p-messages></p-messages>
+      <div class="ui-g form-group">
+        <div class="ui-g-12 ui-md-3">
+          <label for="input">Seleccione caja: </label>
+        </div>
+        <div class="ui-g-12 ui-md-9">
+          <p-dropdown [options]="opcionesdrop" [(ngModel)]="selectedCaja" (onChange)="OnChange($event)" placeholder="Seleccionar Caja" optionLabel="name" [showClear]="false"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g form-group">
+        <div class="ui-g-12 ui-md-6">
+          <div class="ui-g-12 ui-md-4">
+            <label for="input">Monto de Apertura: </label>
+          </div>
+          <div class="ui-g-12 ui-md-8">
+            <div class="ui-inputgroup">
+              <span class="ui-inputgroup-addon"><i class=" pi pi-dollar"></i></span>
+              <input [(ngModel)]="montoapertura" type="text" id="montoapertura" placeholder="0.00" pInputText disabled>
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-md-6">
+          <div class="ui-g-12 ui-md-4">
+            <label for="input">Monto de Cierre: </label>
+          </div>
+          <div class="ui-g-12 ui-md-8">
+            <div class="ui-inputgroup">
+              <span class="ui-inputgroup-addon"><i class=" pi pi-dollar"></i></span>
+              <input [(ngModel)]="montocierre" type="text" id="montocierre" placeholder="0.00" pInputText disabled>
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-md-6">
+          <div class="ui-g-12 ui-md-4">
+            <label for="input">Monto en Ventas: </label>
+          </div>
+          <div class="ui-g-12 ui-md-8">
+            <div class="ui-inputgroup">
+              <span class="ui-inputgroup-addon"><i class=" pi pi-dollar"></i></span>
+              <input [(ngModel)]="montoventas" type="text" id="montoventas" placeholder="0.00" pInputText disabled>
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-md-6">
+          <div class="ui-g-12 ui-md-4">
+            <label for="input">Monto en Compras: </label>
+          </div>
+          <div class="ui-g-12 ui-md-8">
+            <div class="ui-inputgroup">
+              <span class="ui-inputgroup-addon"><i class=" pi pi-dollar"></i></span>
+              <input [(ngModel)]="montocompras" type="text" id="montocompras" placeholder="0.00" pInputText disabled>
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-md-12">
+          <div class="ui-g-12 ui-md-2">
+            <label for="input">Fecha de Cierre: </label>
+          </div>
+          <div class="ui-g-12 ui-md-10">
+            <div class="ui-inputgroup">
+              <span class="ui-inputgroup-addon"><i class=" pi pi-calendar-plus"></i></span>
+              <input [(ngModel)]="fechacierre" type="date" id="fechacierre" pInputText disabled>
+
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-md-6">
+          <div class="ui-g-12 ui-md-4">
+            <label for="input">Hora de Cierre: </label>
+          </div>
+          <div class="ui-g-12 ui-md-8">
+            <div class="ui-inputgroup">
+              <span class="ui-inputgroup-addon"><i class=" pi pi-globe"></i></span>
+              <input [(ngModel)]="horacierre" type="time" id="ruccliente" placeholder="00:00:00" pInputText disabled>
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-md-12">
+          <label for="inputEmail4">Observacion</label>
+          <textarea [(ngModel)]="observacion" class="form-control border-secondary" id="observacion"
+            placeholder="Ingrese una observacion"></textarea>
+        </div>
+        <div class="ui-g-12 ui-md-12 text-center">
+          <p-button [disabled]="estadocaja" (click)="updateCaja()" label="Cerrar Caja" icon="pi pi-save"
+            styleClass="ui-button-info"></p-button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui-g-12 ui-md-2">
+  </div>
+</div>

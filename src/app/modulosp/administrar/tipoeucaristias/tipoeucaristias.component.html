@@ -1,0 +1,102 @@
+<div class="card card-w-title">
+    <h1>Tipo de Eucaristías</h1>
+    <div class="p-grid" style="margin: 5px; background-color: whitesmoke;">
+        <div class="p-col">
+                <button icon="pi pi-plus" pButton type="button" (click)="showDialog()" label="Agregar" class="ui-button-success" ></button>
+        </div>
+        
+    </div>
+
+    <p-table #dt 
+    [value]="teucaristias" 
+    dataKey="tipeId"
+    [rows]="10" 
+    [showCurrentPageReport]="true" 
+    [rowsPerPageOptions]="[10,25,50]" 
+    styleClass="p-datatable-customers p-datatable-gridlines"
+    [paginator]="true"
+    currentPageReportTemplate="Lista de Tipos de Eucaristía"
+    [globalFilterFields]="['tipeId','tipeNombre','tipeTipo','tipeFkServicio.servDescripcion','tipeFkServicio.servNombre']">
+
+        <ng-template pTemplate="caption">
+            <div style="text-align: right">        
+                <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+                <input type="text" pInputText size="50" placeholder="Ingresa el parámetro a buscar" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th>Nombre</th>
+                <th>Tipo de Eucaristía</th>
+                <th>Descripción del Servicio</th>
+                <th style="width: 100px;">
+                    Acciones
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData>
+            <tr class="alt" [pSelectableRow]="rowData" style="font-size: smaller;">
+                <td style=" font-weight: bold;">{{rowData.tipeNombre}}</td>
+                <td>{{rowData.tipeTipo}}</td>
+                <td>Nombre:{{rowData.tipeFkServicio.servNombre}}   Descripción:{{rowData.tipeFkServicio.servDescripcion}}</td>
+                <td style="width: 100px; padding: 5px;text-align: center;"> 
+                    <p-button icon="pi pi-pencil" styleClass="ui-button-warning" (click)="cargarTiposEucarista(rowData)">  </p-button>
+                    <p-button icon="pi pi-trash"  styleClass="ui-button-danger" (click)="EliminarTipo(rowData)"></p-button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <p-dialog header="Gestionar Tipo de Eucarístia" [(visible)]="dis" [modal]="true" [style]="{width: '30vw'}"
+        [maximizable]="false" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+        <form [formGroup]="addForm1">
+
+            <div class="ui-g ui-fluid">
+                <div class="ui-g form-group ">
+                    <div class="ui-g-12 ui-md-4">
+                        <label for="input">Tipo de Servicio:</label><br>
+                    </div>
+                    <div class="ui-g-12 ui-md-8">
+                        <p-dropdown id="tipeFkServicio" placeholder="Seleccione el Tipo de Servicio" [options]="servicioLista" [(ngModel)]="teucaristias2.tipeFkServicio" [filter]="true" name="tipeFkServicio" formControlName="tipeFkServicio" optionLabel="servNombre"></p-dropdown>
+                        <div *ngIf="tipeFkServicio.invalid && (tipeFkServicio.dirty || tipeFkServicio.touched)">
+                            <p-message severity="error" text="Campo Requerido"></p-message>  
+                        </div>
+                    </div>
+                    
+                    <div class="ui-g-12 ui-md-4">
+                        <label for="input">Nombre de la eucaristia:</label><br>
+                    </div>
+                    <div class="ui-g-12 ui-md-8">
+                        <input pInputText  type="text" formControlName="tipeNombre" name="tipeNombre" id="tipeNombre" placeholder="Ingrese el nombre" [(ngModel)]="teucaristias2.tipeNombre">
+                        <div *ngIf="tipeNombre.invalid && (tipeNombre.dirty || tipeNombre.touched)">
+                            <p-message severity="error" text="Campo Requerido"></p-message>  
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <label for="input">Tipo de Eucaristía:</label><br>
+                    </div>
+                    <div class="ui-g-12 ui-md-8"> 
+                        <p-dropdown id="reseTiposeucaristias" name="reseTiposeucaristias" formControlName="reseTiposeucaristias"  [options]="TipoEucaristiaPrivacidad" [(ngModel)]="TipoEucaristiaPrivacidadSelect" [filter]="true" optionLabel="name" placeholder="Seleccione el Tipo de Eucaristía"></p-dropdown>
+                        <div *ngIf="reseTiposeucaristias.invalid && (reseTiposeucaristias.dirty || reseTiposeucaristias.touched)">
+                            <p-message severity="error" text="Campo Requerido"></p-message>  
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <label for="input">Valor:</label><br>
+                    </div>
+                    <div class="ui-g-12 ui-md-8">
+                        <input pInputText  type="number" formControlName="tipeValor" name="tipeValor" id="tipeValor" placeholder="Valor Misas privadas" [(ngModel)]="teucaristias2.tipeValor">
+                        
+                    </div>
+                    <div class="ui-g-12 text-center">
+                        <p-button *ngIf="this.botonDis == false" icon="pi pi-save" stileClass="ui-button-info" label="Guardar" (click)="onSubmit()"></p-button>
+                        <p-button *ngIf="this.botonDis == true" icon="pi pi-save" stileClass="ui-button-info" label="Actualizar" (click)="ActualizarDatos()"></p-button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <p-footer>
+            <p-button  icon="pi pi-times" (click)="disable()" label="Cancelar"
+            styleClass="ui-button-danger"></p-button>
+        </p-footer>
+    </p-dialog>
+</div>

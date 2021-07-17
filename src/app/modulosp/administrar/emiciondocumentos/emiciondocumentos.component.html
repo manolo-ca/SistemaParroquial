@@ -1,0 +1,707 @@
+<div class="card">
+    <h2>Administracion solicitud de documentos </h2>
+    <div class="p-grid" style="margin: 5px; background-color: whitesmoke;">
+        <div class="p-col text-right">
+            <p-button (click)="showModalDialog()" icon="pi pi-print" label="Reporte"></p-button>
+        </div>
+    </div>
+
+
+    <p-table #dt1 [value]="emiciondocumentos" 
+    dataKey="emidId" 
+     [rows]="10" 
+     [showCurrentPageReport]="true"
+     [rowsPerPageOptions]="[10,25,50]" 
+     [loading]="loading" 
+     styleClass="p-datatable-customers p-datatable-gridlines"
+     [paginator]="true" 
+     currentPageReportTemplate="Lista de emision de documentos"
+     [globalFilterFields]="['emidReferencias','emidDescripcion','emidFechasolicitud','emidEstado']">
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex">
+                <p>Servicios</p>
+                <span class="p-input-icon-left p-ml-auto">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')"
+                        placeholder="Buscar" />
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr class="text-center">
+                <th>Cedula</th>
+                <th>Nombre de la persona</th>
+                <th>Referencia </th>
+                <th>Descripción</th>
+                <th>Fecha solicitud </th>
+                <th>Tipo Documento</th>
+
+                <th>Estado</th>
+                <th style="width: 100px;">Acciones</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-documentosp>
+            <tr>
+                <td>
+                    {{documentosp.emidFkPersona.persCedula}}
+                </td>
+                <td>
+                    {{documentosp.emidFkPersona.persNombre}}
+                </td>
+                <td>
+                    {{documentosp.emidReferencias}}
+                </td>
+                <td>
+                    {{documentosp.emidDescripcion}}
+                </td>
+                <td>
+                    {{documentosp.emidFechasolicitud}}
+                </td>
+                <td>
+                    {{documentosp.emidFkTipodocumento.tipdNombre}}
+                </td>
+
+                <td class="text-center" *ngIf="documentosp.emidEstado == 'Aprobado'">
+                    <p-message severity="success" text="Aprobado"></p-message>
+
+                </td>
+                <td class="text-center" *ngIf="documentosp.emidEstado == 'Pendiente'">
+                    <p-message severity="error" text="Pendiente"></p-message>
+
+                </td>
+                <td class="text-center" *ngIf="documentosp.emidEstado == 'Cancelado'">
+                    <p-message severity="warn" text="Cancelado"></p-message>
+
+                </td>
+
+                <td style="width: 100px;" class="text-center">
+                    <p-button icon="pi pi-pencil" (click)="cargarSolicitudDocumentos(documentosp)" styleClass="ui-button-warning"></p-button>
+                    <p-button icon="pi pi-trash" styleClass="ui-button-danger" (click)='delete(documentosp)'></p-button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="7">No hay registros</td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+    <p-dialog header="Aprovacion de documentos" [(visible)]="displayBasic" [modal]="true" [style]="{width: '75vw'}"
+        [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+        <form>
+
+            <div class="ui-g ui-fluid">
+                <div class="ui-g form-group">
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="input">Nombres:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <div class="ui-inputgroup">
+                            <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
+                            <input type="text" id="tipe_nom" name="tipe_nom" pInputText [(ngModel)]="persona.persNombre"
+                                disabled>
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="input">Apellidos:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <div class="ui-inputgroup">
+                            <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
+                            <input type="text" id="tipe_ape" name="tipe_ape" pInputText
+                                [(ngModel)]="persona.persApellido" disabled>
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="input">Tipo de Documento:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <div class="ui-inputgroup">
+                            <span class="ui-inputgroup-addon"><i class="pi pi-check"></i></span>
+                            <input type="text" id="tipe_doc" name="tipe_doc" pInputText
+                                [(ngModel)]="tipodocumento.tipdNombre" disabled>
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="input">Referencias:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <div class="ui-inputgroup">
+                            <span class="ui-inputgroup-addon"><i class="pi pi-check-circle"></i></span>
+                            <input type="text" id="tipe_ref" name="tipe_ref" pInputText
+                                [(ngModel)]="emiciondocumentos2.emidReferencias">
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="input">Fecha Solicitud:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <div class="ui-inputgroup">
+                            <span class="ui-inputgroup-addon"><i class="pi pi-calendar-times"></i></span>
+                            <input type="date" id="tipe_fech" name="tipe_fech" pInputText
+                                [(ngModel)]="emiciondocumentos2.emidFechasolicitud" disabled>
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="input">Estado</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <div class="ui-inputgroup">
+                            <span class="ui-inputgroup-addon"><i class="pi pi-ellipsis-v"></i></span>
+                            <select [compareWith]="CompararEstado" id="tipe_estado" name="tipe_estado"
+                                [(ngModel)]="emiciondocumentos2.emidEstado" class="form-control" required>
+                                <option [ngValue]="undefined">Seleccione una</option>
+                                <option *ngFor="let estad of estado" [value]="estad.code">
+                                    {{estad.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                   
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="input">Descripcion</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <div class="ui-inputgroup">
+                            <span class="ui-inputgroup-addon"><i class="pi pi-pencil"></i></span>
+                            <textarea name="ee" id="eee" [(ngModel)]="emiciondocumentos2.emidDescripcion"
+                                disabled></textarea>
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="input">Certificados</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <div class="ui-inputgroup">
+                            <span class="ui-inputgroup-addon"><i class="pi pi-ellipsis-v"></i></span>
+                            <select [compareWith]="Comparartipo" id="tipe_certi" name="tipe_certi"
+                                [(ngModel)]="listaDocumentodos.id" class="form-control" required>
+                                <option [ngValue]="undefined">Seleccione una</option>
+                                <option *ngFor="let docu of listaDocumento" [value]="docu.docuFkTipodocumento.tipdId">
+                                    {{docu.docuFkTipodocumento.tipdNombre}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+             
+                    <div class="ui-g-12 ui-md-4">    
+                     <p-button (click)='cargardatosDocumento()' icon="pi pi-print" styleClass="ui-button-success"
+                        label="C. Bautismo">
+                     </p-button>
+                    </div>
+            
+                    <div class="ui-g-12 ui-md-4">
+                    <p-button (click)='cargardatosDocumento1()' icon="pi pi-print"
+                    styleClass="ui-button-success" label="C. Matrimonio">
+                    </p-button>
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                    <p-button (click)='cargardatosDocumento2()' icon="pi pi-print" styleClass="ui-button-success"
+                    label="C. Solteria">
+                    </p-button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <p-footer>
+            
+               
+            
+            <p-button icon="pi pi-times" (click)="displayBasic=false" label="Cancelar" styleClass="ui-button-secondary">
+            </p-button>
+        </p-footer>
+    </p-dialog>
+
+
+
+</div>
+<div class="card">
+    <p-dialog header="Reporte" [(visible)]="displayModal" [modal]="true" [style]="{width: '60vw'}" [maximizable]="true"
+        [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+        <form>
+
+            <div class="ui-g ui-fluid">
+                <div class="ui-g form-group">
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="input">Fecha inicio</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+
+                        <input type="date" id="tipe_fecha_i" name="tipe_fecha_i" [(ngModel)]="fechaBusqueda.fechaInicio"
+                            class="form-control" placeholder="AAAA/MM/DD">
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="input">Fecha final</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+
+
+
+                        <input type="date" id="tipe_fecha_f" name="tipe_fecha_f" [(ngModel)]="fechaBusqueda.fechaFin"
+                            class="form-control" placeholder="AAAA-MM-DD">
+
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="input">Tipo de Documento</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <select [compareWith]="CompararDocumento" name="emi_documento"
+                            [(ngModel)]="fechaBusqueda.idDocumentos" class="form-control" required #documento="ngModel">
+                            <option [ngValue]="undefined">Todos</option>
+                            <option *ngFor="let tiposdoc of tipodocumento2" [ngValue]="tiposdoc.tipdId">
+                                {{tiposdoc.tipdNombre}}
+                            </option>
+                        </select>
+                    </div>
+
+
+
+
+
+                    <div class="ui-g-12 ui-md-6">
+                        <p-button label="Previsualizar" (click)="listarFecha()" icon="pi pi-cloud-download"
+                            styleClass="ui-button-info">
+                        </p-button>
+                    </div>
+                    <div class="ui-g-12 ui-md-12">
+                        <div class="card">
+                            <p-scrollPanel [style]="{width: '100%', height: '320px'}">
+                                <div class="container" id="contentToConvert">
+                                    <div class="p-grid" style="font-weight: bold;">
+                                        <div class="p-col text-left">
+                                            <h6> PARROQUIA SAN JOAQUIN </h6>
+                                            <p>Reporte de Emision de Documentos</p><br>
+                                        </div>
+                                        <div class="p-col text-right">
+                                            <img src="../../../assets/layout/images/sanjoaquin.jpg" width="90px"
+                                                height="100px">
+                                        </div>
+                                    </div>
+                                    <p-table  [value]="emiciondocumentosFecha">
+                                        <ng-template pTemplate="header">
+                                            <tr class="text-center">
+                                                <th>Cedula</th>
+                                                <th>Nombre de la persona</th>
+                                                <th>Referencia </th>
+                                                <th>Descripción</th>
+                                                <th>Fecha solicitud </th>
+                                                <th>Tipo Documento</th>
+                                                <th>Estado</th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-documentosp>
+                                            <tr>
+                                                <td>
+                                                    {{documentosp.emidFkPersona.persCedula}}
+                                                </td>
+                                                <td>
+                                                    {{documentosp.emidFkPersona.persNombre}}
+                                                </td>
+                                                <td>
+                                                    {{documentosp.emidReferencias}}
+                                                </td>
+                                                <td>
+                                                    {{documentosp.emidDescripcion}}
+                                                </td>
+                                                <td>
+                                                    {{documentosp.emidFechasolicitud}}
+                                                </td>
+                                                <td>
+                                                    {{documentosp.emidFkTipodocumento.tipdNombre}}
+                                                </td>
+                                                <td>
+                                                    {{documentosp.emidEstado}}
+                                                </td>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="emptymessage">
+                                            <tr>
+                                                <td colspan="7">No hay registros</td>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </div>
+                            </p-scrollPanel>
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <p-button label="Descargar" (click)="generatePdf()" icon="pi pi-cloud-download"
+                            styleClass="ui-button-info">
+                        </p-button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <p-footer>
+            <p-button icon="pi pi-times" (click)="displayModal=false" label="Cancelar" styleClass="ui-button-secondary">
+            </p-button>
+        </p-footer>
+    </p-dialog>
+</div>
+
+<p-dialog header="Certificado de Bautizo" [(visible)]="displayModalbautizmo" [modal]="true" [style]="{width: '70%'}"
+        [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+    <div class="container">
+        <p-scrollPanel [style]="{width: '100%', height: '300px'}">
+            <kendo-pdf-export #pdf paperSize="A4" margin="5mm"
+            style="font-family: 'DejaVu Sans', 'Arial', sans-serif;font-size: 12px;">
+          <div class="container">
+                 <div class="p-grid" style="font-weight: bold;">
+                        <div class="p-col text-left">
+                            <h5> ARQUIDIÓCESIS DE CUENCA </h5>
+                            <h6> PARROQUIA SAN JOAQUIN </h6>
+                            <h6>TELEFONO 4177350 APARTADO 1354</h6>
+                            <h6>CUENCA - ECUADOR</h6>
+                            <hr>
+                        </div>
+                        <div class="p-col text-right">
+                            <img src="../../../assets/layout/images/sanjoaquin.jpg" width="110px" height="120px">
+                        </div>
+                        <div>
+                            <h5 class="text-center">CERTIFICADO DE BAUTISMO</h5>
+                            <form>
+                                <div class="card card-w-title">
+                                    <div class="ui-g form-group">
+                                        <div class="ui-g-12 ui-md-4">
+                                            <label for="textarea">PARROQUIA DE SAN JOAQUIN</label>
+                                        </div>
+                                        <div class="ui-g-12 ui-md-8">
+                                            <input type="date" style="border: 0;">
+                                        </div>
+                                        <div class="ui-g-12 ui-md-12">
+                                            <label for="textarea">Cetifica que en el tomo: </label><input type="text" size=5 disabled id="tomo" name="tomo" [(ngModel)]="documento2.docuTomo" style="border: 0; width:50px">
+                                            <label for="textarea">Pagina: </label><input type="text" type="text" size=5 disabled id="pagina" name="pagina"[(ngModel)]="documento2.docuPagina" style="border: 0; width:50px">
+                                            <label for="textarea">ACTA: </label><input type="text" type="text" size=5 disabled id="acta" name="acta"[(ngModel)]="documento2.docuActa" style="border: 0; width:50px">
+                                        </div>
+                                        <div class="ui-g-12 ui-md-12">
+                                            <label for="text">del registro de bautismos se alla inscrito el buatismo de:</label>
+                                        </div>
+                                        
+                                        <div class="ui-g-12 ui-md-12">
+                                            <label for="textarea">NOMBRES:</label><input type="text" size=5 disabled id="nombre" name="nombre"[(ngModel)]="persona.persNombre" style="border: 0; width:125px"><input type="text" size=5 disabled id="apellido" name="apellido"[(ngModel)]="persona.persApellido" style="border: 0; width:125px">
+                                        </div>
+                                    
+                                        <div class="ui-g-12 ui-md-12">
+                                            <label for="textarea">HIJO(A) DE:</label><input type="text" size=5 disabled id="esposo" name="esposo"[(ngModel)]="documento2.docuContrayenteEsposo" style="border: 0; width:200px">
+                                            <label for="text"style="border:0; width:35px">Y DE: </label><input type="text" size=5 disabled id="esposa" name="esposa"[(ngModel)]="documento2.docuContrayenteEsposa" style="border:0; width:225px">
+                                        </div>
+                                       
+                                      
+                                        
+                                        <div class="ui-g-12 ui-md-12">
+                                            <label for="textarea">NACIDO(A) EN: </label> <input type="text" size=5 disabled id="nacido" name="nacido"[(ngModel)]="documento2.docuLugarNacimiento" style=" border:0; width:225px">
+                                            <label for="textarea">Fecha: </label> <input type="date" disabled id="fecha" name="fecha"[(ngModel)]="persona.persfechanacimiento"size=5 style="border:0; width:125px">
+                                        </div>
+
+                                        <div class="ui-g-12 ui-md-12">
+                                            <label for="textarea">BAUTIZADO(A) El : </label><input type="date"disabled id="bautizo" name="bautizo"[(ngModel)]="persona.persfechabautismo" size=5 style="border:0; width:125px">
+                                        </div>
+                               
+                                        <div class="ui-g-12 ui-md-12">
+                                            <label for="textarea">POR EL PADRE: </label><input type="text"  size=5 disabled id="padre" name="padre"[(ngModel)]="documento2.docuSacerdote" style="border:0; width:225px">
+                                        </div>
+                                       
+
+                                        <div class="ui-g-12 ui-md-12">
+                                            <label for="textarea">FUERON SUS PADRINOS: </label> <input type="text" size=5 disabled id="padrino" name="padrino"[(ngModel)]="documento2.docuPadrino" style="border:0; width:225px"><input type="text" size=5 disabled id="madrina" name="madrina"[(ngModel)]="documento2.docuMadrina" style="border: 0; width:225px">
+                                        </div>
+                                       
+
+                                        <div class="ui-g-12 ui-md-12">
+                                            <label for="textarea">LO CERTIFICA EL PARROCO </label><br>
+                                            <label for="textarea"style="border: 0; width:125px">Registro Civil Año: </label><input type="date" size=5 style="border:0; width:125px">
+                                            <label for="textarea"style="border: 0; width:75px">Pagina :</label> <input type="text" size=5 placeholder="Pagina" style="border: 0; width:50px">
+                                        </div>
+                                       
+                            
+
+                                        <div class="ui-g-12 ui-md-12">
+                                            <label for="textarea">SE EMITE PARA DOCUMENTACION </label><br>
+                                            <label for="textarea">NOTA MARGINAL </label><br>
+                                            <label for="textarea"style="border: 0; width:225px">Fecha de certificación San Joaquin,</label><input type="date" size=5 style="border:0; width:125px">
+                                        </div>
+                                        
+                                       
+                                      
+                                        <div class="ui-g-12 ui-md-12">
+                                            <label for="textarea"> </label>
+                                        </div>
+                                        <div class="ui-g-12 ui-md-12">
+                                            <label for="textarea">SRTA.</label> <input type="text" size=5 placeholder="Secretaria" value="MAYRA DUCHI" style="border:0; width:200px">
+                                        </div>
+                                        
+                                        <div class="ui-g-12 ui-md-12">
+                                            <label for="textarea">SECRETARIA </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                
+            </div>
+            </kendo-pdf-export>
+        </p-scrollPanel>
+        
+    </div>    
+        <p-footer>
+            <div class="p-grid">
+                <div class="p-col text-left">
+                    <p-button label="Descargar"   (onClick)="pdf.saveAs('docbautizmo.pdf')"
+                        icon="pi pi-cloud-download" styleClass="ui-button-info"></p-button>
+                </div>
+                <div class="p-col text-right">
+                    <p-button icon="pi pi-times" (click)="displayModalbautizmo=false" label="Cerrar"
+                        styleClass="ui-button-secondary"></p-button>
+                </div>
+            </div>
+        </p-footer>
+ </p-dialog>
+
+
+
+<p-dialog header="Certificado de Matrimonio" [(visible)]="displayModalmatrimonio" [modal]="true"
+        [style]="{width: '70%'}" [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+    <div class="container"> 
+        <p-scrollPanel [style]="{width: '100%', height: '300px'}"> 
+            <kendo-pdf-export #pdf1 paperSize="A4" margin="5mm"
+                style="font-family: 'DejaVu Sans', 'Arial', sans-serif;font-size: 12px;">
+                <div class="container">
+                        <div class="p-grid" style="font-weight: bold;">
+                            <div class="p-col text-left">
+                                <h5> ARQUIDIÓCESIS DE CUENCA </h5>
+                                <h6> PARROQUIA SAN JOAQUIN </h6>
+                                <h6>TELEFONO 4177350 APARTADO 1354</h6>
+                                <h6>CUENCA - ECUADOR</h6>
+                                <hr>
+                            </div>
+                            <div class="p-col text-right">
+                                <img src="../../../assets/layout/images/sanjoaquin.jpg" width="110px" height="120px">
+                            </div>
+
+                            
+                               
+                                <form>
+                                    <h5 class="text-center">CERTIFICADO DE MATRIMONIO</h5>
+                                    <div class="card card-w-title">
+                                        <div class="ui-g form-group">
+                                            <div class="ui-g-12 ui-md-12">
+                                                <label for="text">EN EL LIBRO N°: </label><input type="text" size=5 disabled id="libro" name="libro"[(ngModel)]="documento2.docuLibronombre" style="border:0; width:39px">  <label for="text">DE MATRIMONIOS</label>
+                                            </div>
+                                            <div class="ui-g-12 ui-md-12">
+                                                <label for="textarea">DE LA PARROQUIA DE SAN JOAQUIN SE ENCUENTRA
+                                                INSCRITA</label>
+                                                <label for="textarea">LA SIGUIENTE PARTIDA MATRIMONIAL CON LOS SIGUIENTES
+                                                DATOS:</label>
+                                            </div>
+
+                                            <div class="ui-g-12 ui-md-12">
+                                                <label for="textarea">CONTRAYENTES :</label>
+                                                <input type="text" size=5 disabled id="esposou" name="esposou"[(ngModel)]="documento2.docuContrayenteEsposo" style="border:0; width:225px"><label for="text" style="border:0; width:25px"> y </label> <input type="text" size=5 disabled id="esposau" name="esposau"[(ngModel)]="documento2.docuContrayenteEsposa" style="left:25px; border:0; width:250px">
+                                            </div>
+                                        
+                                            <div class="ui-g-12 ui-md-12">
+                                                <label for="textarea">SACERDOTE OFICIANTE :</label><input type="text"size=5 disabled id="sacerdote" name="sacerdote"[(ngModel)]="documento2.docuSacerdote" style=" border:0; width:250px">
+                                            </div>
+                                        
+
+                                            <div class="ui-g-12 ui-md-12">
+                                                <label for="textarea">LUGAR :</label> <input type="text" size=5 disabled id="lugars" name="lugars"[(ngModel)]="documento2.docuLugarMatrimonio" style="border:0; width:250px">
+                                                <label for="textarea">Fecha :</label> <input type="date" size=5 disabled id="fechas" name="fechas"[(ngModel)]="documento2.docu_fecha_matrimonio" style="border:0; width:250px">
+                                            </div>
+                                            
+                                            <div class="ui-g-12 ui-md-12">
+                                                <label for="textarea">TESTIGOS : </label><input type="text" size=5 disabled id="test" name="test"[(ngModel)]="documento2.docuTestigoUno" style="border:0; width:225px"><label for="text" style="border:0; width:25px"> y </label><input type="text" size=5 disabled id="testd" name="testd"[(ngModel)]="documento2.docuTestigoDos" style="border:0; width:250px">
+                                            </div>
+                                        
+
+                                            <div class="ui-g-12 ui-md-12">
+                                                <label for="textarea">PADRINOS : </label> <input type="text" size=5 disabled id="padri" name="padri"[(ngModel)]="documento2.docuPadrino" style="border:0; width:225px"><label for="text" style="border:0; width:25px"> y </label><input type="text" size=5 disabled id="madri" name="madri"[(ngModel)]="documento2.docuMadrina" style="border:0; width:250px">
+                                            </div>
+                                        
+                                            <div class="ui-g-12 ui-md-12">
+                                                <label for="textarea">REFERENCIA : Tomo </label><input type="text" size=5 disabled id="tom" name="tom"[(ngModel)]="documento2.docuTomo" style="border:0; width:25px"> <label for="textarea">FOLIO</label>
+                                                <input type="text" size=5 disabled id="foli" name="foli"[(ngModel)]="documento2.docuFolio" style="border:0; width:25px"><label for="textarea">PAGINA</label><input type="text" size=5 disabled id="pagi" name="pagi"[(ngModel)]="documento2.docuPagina" style="border:0; width:30px">
+                                            </div>
+                                        
+
+
+                                            <div class="ui-g-12 ui-md-12">
+                                                <label for="textarea">LO CERTIFICA  </label><br>
+                                                <label for="textarea">SE EMITE PARA SACRAMENTO  </label><br>
+                                                <label for="textarea">SON DATOS TOMADOS DEL ORIGINAL QUE REPOSA EN EL DESPACHO </label><label for="textarea">PARROQUIAN DE SAN JOAQUIN </label>
+                                            </div>
+                                    
+
+                                            <div class="ui-g-12 ui-md-2">
+                                                <label for="textarea">FECHA DE CERTIFICACION :</label>
+                                                <input type="date" size=5 style="border:0; width:250px">
+                                            </div>
+                                            
+                                            <div class="ui-g-12 ui-md-12">
+                                                <label for="textarea"></label>
+                                            </div>
+                                            <div class="ui-g-12 ui-md-12 text-center">
+                                                <label for="text">P.</label> <input type="text" size=5 placeholder="Parroco" style="border:0; width:250px">
+                                            </div>
+                                            <div class="ui-g-12 ui-md-12 text-center">
+                                                <label for="text">PARROCO</label>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </form>
+                            
+                        </div>
+                    
+                </div>
+            </kendo-pdf-export>
+        </p-scrollPanel>
+    </div>
+        <p-footer>
+            <div class="p-grid">
+                <div class="p-col text-left">
+                    <p-button label="Descargar"(onClick)="pdf1.saveAs('DocumentoMatrimonio.pdf')" 
+                        icon="pi pi-cloud-download" styleClass="ui-button-info"></p-button>
+                </div>
+                <div class="p-col text-right">
+                    <p-button icon="pi pi-times" (click)="displayModalmatrimonio=false" label="Cerrar"
+                        styleClass="ui-button-secondary"></p-button>
+                </div>
+            </div>
+        </p-footer>
+     
+</p-dialog>
+
+
+
+<p-dialog header="CERTIFICADO DE SOLTERIA" [(visible)]="displayModalCersolteria" [modal]="true"
+        [style]="{width: '80%'}" [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+        <p-scrollPanel [style]="{width: '100%', height: '300px'}">
+            <kendo-pdf-export #pdf3 paperSize="A4" margin="3mm"
+                style="font-size: 12px;">
+                <div class="container">
+                    
+                        <div class="p-grid" style="font-weight: bold;">
+                            <div class="p-col text-left">
+                                <h5> PARROQUIA SAN JOAQUIN </h5>
+                                <p> CERTIFICADO DE SOLTERIA </p>
+                                <p>TELEFONO 4177350 APARTADO 1354</p>
+                                <p>CUENCA - ECUADOR<p>
+                                <hr>
+                            </div>
+                            <div class="p-col text-right">
+                                <img src="../../../assets/layout/images/sanjoaquin.jpg" width="110px" height="120px">
+                            </div>
+                            <div class="container">
+                                <form action="">
+                                    <div class="card card-w-title">
+                                        <div class="ui-g form-group">
+                                            <div class="ui-g-12 ui-md-9 text-right">
+                                                <label for="textarea">San Joaquín </label>
+                                            </div>
+                                            <div class="ui-g-12 ui-md-3 text-right">
+                                                <input type="date" size=5 style="border: 0ch; width:200px">
+                                            </div>
+                                            <div class="ui-g-12 ui-md-12">
+                                                <label for="textarea">En el despacho parroquial de:San Joaquín</label>
+                                            </div>
+                                            
+                                            <div class="ui-g-12 ui-md-12">
+                                                <label for="textarea">Se presentaron los testigos:</label>
+                                                <input type="text" size=5 id="tes1" name="tes1" disabled [(ngModel)]="documento2.docuTestigoUno" style="border: 0ch; width:170px">
+                                                <label for="textarea">con C.I.</label>
+                                                <input type="text" size=5 id="cedu1" name="cedu1" disabled [(ngModel)]="documento2.docuCeduTestigouno" style="border: 0ch; width:170px">
+                                                <label for="textarea"> y </label>
+                                                <input type="text" size=5 id="tes2" name="tes2"disabled [(ngModel)]="documento2.docuTestigoDos"style="border: 0ch; width:170px">
+                                                <label for="textarea">con C.I.</label>
+                                                <input type="text" size=5 id="cedu2" name="cedu2" disabled [(ngModel)]="documento2.docuCeduTestigodos"style="border: 0ch; width:170px">
+                                            </div>
+
+                                            <div class="ui-g-12 ui-md-12">
+                                                <label for="textarea">Y declararon que conocen a </label>
+                                                <input type="text" size=5 disabled id="nom" name="nom"[(ngModel)]="persona.persNombre" style="border: 0ch; width:175px">  <input type="text" size=5 disabled id="ape" name="ape"[(ngModel)]="persona.persApellido" style="border: 0ch; width:175px">
+                                                <label for="textarea">con Cedula de identidad numero: </label>
+                                                <input type="text" size=5 disabled id="cedu" name="cedu"[(ngModel)]="persona.persCedula" style="border: 0ch; width:180px">
+                                            </div>
+                                            <div class="ui-g-12 ui-md-12">
+                                                <label for="textarea">Nacido en:</label>  <input type="text"disabled id="nacimi" name="nacimi"[(ngModel)]="documento.docuLugarNacimiento" size=5 style="border: 0ch; width:150px">
+                                                <label for="textarea">Domicilio en:</label><input type="text"disabled id="nacimi" name="nacimi"[(ngModel)]="persona.persDireccion" size=5 style="border: 0ch; width:150px">
+                                            </div>
+                                            
+                                            <div class="ui-g-12 ui-md-12">
+                                                <label for="textarea">Tambien afirman:</label>
+                                                <label for="textarea">Que es soltero y libre para contraer matrimonio, que
+                                                    es católico y libre
+                                                    de todo otro compromiso y de manera libre pretender contraer matrimonio
+                                                    eclesiástico con </label><input type="text" size=5 placeholder="Nombre" style="border: 0ch; width:250px">
+                                                <label for="textarea">con quien no tiene parentesco ni otro impedimento
+                                                    matrimonial. </label>
+
+                                            </div>
+
+                                            <div class="ui-g-12 ui-md-12">
+                                                <label for="textarea">los testigos se ratifican en sus declaraciones y
+                                                    firman con el parroco que da fe y certifica </label>
+                                            </div>
+
+                                            <div class="ui-g-12 ui-md-12 text-center">
+                                                <label for="text"></label>
+                                            </div>
+                                            <div class="ui-g-12 ui-md-12 text-center">
+                                                <label for="text"></label>
+                                            </div>
+
+                                            <div class="ui-g-12 ui-md-12 text-center">
+                                                <label for="text">P.</label> <input type="text" placeholder="PARROCO" size=5 style="border: 0ch; width:250px">
+                                            </div>
+                                            
+                                            <div class="ui-g-12 ui-md-12 text-center">
+                                                <label for="text">PARROCO DE SAN JOAQUIN</label>
+                                            </div>
+
+                                            <div class="ui-g-12 ui-md-9 ">
+                                                <label for="text">Primer Testigo </label>
+                                            </div>
+                                            <div class="ui-g-12 ui-md-3 ">
+                                                <label for="text">Segundo Testigo </label>
+                                            </div>
+                                            <div class="ui-g-12 ui-md-9">
+                                                <input type="text" id="tes11" name="tes11" disabled [(ngModel)]="documento2.docuTestigoUno"size=5 style="border: 0ch; width:250px">
+                                            </div>
+                                            <div class="ui-g-12 ui-md-3 ">
+                                                <input type="text" id="tes22" name="tes22"disabled [(ngModel)]="documento2.docuTestigoDos" size=5 style="border: 0ch; width:250px">
+                                            </div>
+
+                                            <div class="ui-g-12 ui-md-9 ">
+                                                <input type="text" id="cedu11" name="cedu11" disabled [(ngModel)]="documento2.docuCeduTestigouno" size=5 style="border: 0ch; width:180px">
+                                            </div>
+                                            <div class="ui-g-12 ui-md-3 ">
+                                                <input type="text"id="cedu22" name="cedu22" disabled [(ngModel)]="documento2.docuCeduTestigodos" size=5 style="border: 0ch; width:180px">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                
+                </div>
+            </kendo-pdf-export>
+        </p-scrollPanel>    
+        <p-footer>
+            <div class="p-grid">
+                <div class="p-col text-left">
+                    <p-button label="Descargar" (onClick)="pdf3.saveAs('certificadodesolteria.pdf')"
+                        icon="pi pi-cloud-download" styleClass="ui-button-info"></p-button>
+                </div>
+                <div class="p-col text-right">
+                    <p-button icon="pi pi-times" (click)="displayModalCersolteria=false" label="Cerrar"
+                        styleClass="ui-button-secondary"></p-button>
+                </div>
+            </div>
+        </p-footer>
+</p-dialog>

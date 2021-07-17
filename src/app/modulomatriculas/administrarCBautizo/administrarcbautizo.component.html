@@ -1,0 +1,243 @@
+<div class="card">
+    <h1>Administracion cursillos Pre-bautismal</h1>
+    <div class="p-grid" style="margin: 5px; background-color: whitesmoke;">
+        <div class="p-col">
+                <button icon="pi pi-plus" pButton type="button" (click)="crearNuevo()" label="Agregar" class="ui-button-success" ></button>
+        </div>
+        <div class="p-col text-right">
+            <p-button (click)="showModalDialog()" icon = "pi pi-print"  label="Reporte"></p-button>
+        </div>
+    </div>
+    <p-table #dt 
+    [value]="cursillosbautizo" 
+    dataKey="cursbId"
+    [rows]="10" 
+    [showCurrentPageReport]="true" 
+    [rowsPerPageOptions]="[10,25,50]" 
+    styleClass="p-datatable-customers p-datatable-gridlines"
+    [paginator]="true"
+    currentPageReportTemplate="Lista de Cursillos Pre-bautismales"
+    [globalFilterFields]="['cursbId','cursbNombreb','cursbNpadre','cursbNmadre','cursbLugar','cursbHora','cursbFecha','cursbEstado']">
+    
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex">
+                <p>Cursillos Pre-bautismales registrados</p>   
+                <span class="p-input-icon-left p-ml-auto">
+                    <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+                <input type="text" pInputText size="50" placeholder="Ingresa el parámetro a buscar" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto"/>
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th style="width: 70px;">ID</th>
+                <th>Nombre Bautizo</th>
+                <th>Nombre Madre</th>
+                <th>Nombre Padre</th>
+                <th>Lugar</th>
+                <th>Hora</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>
+                    Acciones
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData >
+            <tr class="alt"  style="font-size: smaller;">
+                <td style="width: 70px;">{{rowData.cursbId}}</td>
+                <td style=" font-weight: bold;">{{rowData.cursbNombreb}}</td>
+                <td>{{rowData.cursbNmadre}}</td>
+                <td>{{rowData.cursbNpadre}}</td>
+                <td>{{rowData.cursbLugar}}</td>
+                <td>{{rowData.cursbHora}}</td>
+                <td>{{rowData.cursbFecha}}</td>
+                <td class="text-center" *ngIf="rowData.cursbEstado == false">
+                    <p-message severity="error" text="REPROBADO"></p-message>
+                </td>
+                <td  class="text-center" *ngIf="rowData.cursbEstado == true">
+                    <p-message severity="success" text="APROBADO"></p-message>
+                </td>
+                <td style=" padding: 5px;text-align: center;"> 
+                    <p-button icon="pi pi-pencil" styleClass="ui-button-warning" (click)="cargarCursillo(rowData)">  </p-button>
+                    <p-button icon="pi pi-trash"  styleClass="ui-button-danger" (click)="EliminarTipo(rowData)"></p-button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+<div class="ui-g ui-fluid">
+    <p-dialog header="Gestionar Cursillo" [(visible)]="dis" [modal]="true" [style]="{width: '80vw'}"
+    [maximizable]="false" [baseZIndex]="10000" [draggable]="false" [resizable]="false"> 
+        <form [formGroup]="addForm" >
+            <div class="card card-w-title">
+                <div class="ui-g form-group">
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="input">Nombre Bautizo:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-2" >
+                        <input  formControlName="nombreBautizo" name="nombreBautizo" id="nombreBautizo" type="text" pInputText disabled>
+        
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="input">Nombre de Madre:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <input disabled formControlName="nombreMadre"  name="nombreMadre" id="nombreMadre" type="text" pInputText>
+                        
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="input">Nombre de Padre:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <input disabled formControlName="nombrePadre"  name="nombrePadre" id="nombrePadre" type="text" pInputText>                      
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="textarea">Lugar:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <input disabled [(ngModel)]="cursillob2.cursbLugar" formControlName="lugarCursillo"name="lugarCursillo" id="lugarCursillo" type="text" pInputText>   
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="input">Hora:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <input [(ngModel)]="cursillob2.cursbHora" formControlName="horaCursillo"name="horaCursillo" id="horaCursillo" type="text" pInputText>
+                        <div *ngIf="horaCursillo.invalid && (horaCursillo.dirty || horaCursillo.touched)">
+                            <p-message severity="error" text="Campo requerido"></p-message>
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="input">Fecha:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <p-calendar  formControlName="fechaCursillo" name="fechaCursillo" id="fechaCursillo" [(ngModel)]="date"  [showIcon]="true"></p-calendar>
+                        <div *ngIf="fechaCursillo.invalid && (fechaCursillo.dirty || fechaCursillo.touched)">
+                            <p-message severity="error" text="Campo requerido"></p-message>
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-4"></div>
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="input">Estado de Cursillo:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-1">
+                        <p-inputSwitch (onChange)="handleChange($event)" ></p-inputSwitch>
+                    </div>
+                    <div class="ui-g-12 ui-md-2 text-center" *ngIf="checked1==false">
+                        <p-message severity="error" text="REPROBADO"></p-message>
+                    </div>
+                    <div class="ui-g-12 ui-md-2 text-center" *ngIf="checked1==true">
+                        <p-message severity="success" text="APROBADO"></p-message>
+                    </div>
+                    <div class="ui-g-12 ui-md-3"></div>
+                    <br>             
+                    <div class="ui-g-12 text-center">
+                        <p-button label="Actualizar" icon = "pi pi-save" styleClass="ui-button-info" (click)="ActualizarDatos()"></p-button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </p-dialog>
+</div>
+
+<div class="card">
+    <p-dialog header="Reporte de Reservaciones de Eucaristias" [(visible)]="displayModal" [modal]="true" [style]="{width: '30vw'}" [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+        <form [formGroup]="addForm1">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g form-group">
+                    <div  class="ui-g-12 ui-md-4">
+                        <label for="input">Fecha inicio:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-8"> 
+                        <p-calendar id="tipe_fecha_i" name="tipe_fecha_i" formControlName="tipe_fecha_i" [(ngModel)]="fecInicio" [showIcon]="true" placeholder="AAAA/MM/DD" dateFormat="yy/mm/dd"></p-calendar>                
+                    </div>
+                    <div  class="ui-g-12 ui-md-4">
+                        <label for="input">Fecha final:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-8"> 
+                        <p-calendar id="tipe_fecha_f" name="tipe_fecha_f" formControlName="tipe_fecha_f"  [(ngModel)]="fecFin" [showIcon]="true" placeholder="AAAA/MM/DD" dateFormat="yy/mm/dd"></p-calendar>
+                    </div>
+                    <div class="ui-g-12 ui-md-12 text-center">
+                        <p-button label="Generar" (click)="cargarDatosReporte()" icon = "pi pi-cloud-download" styleClass="ui-button-info"></p-button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <p-footer>
+            <p-button  icon="pi pi-times" (click)="displayModal=false" label="Cancelar"
+            styleClass="ui-button-secondary"></p-button>
+        </p-footer>
+    </p-dialog>
+</div>
+
+<p-dialog header="Vista previa del Reporte" [(visible)]="dis2" [modal]="true" [style]="{width: '60vw', height: '90vw'}"
+    [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+    
+    <kendo-pdf-export #pdf  paperSize="A4" margin="5mm" style="font-family: 'DejaVu Sans', 'Arial', sans-serif;font-size: 12px;">
+        <div class="container">
+            <div class="p-grid" style="font-weight: bold;" >
+                <div class="p-col text-left">
+                    <h6> PARROQUIA SAN JOAQUIN </h6>
+                    <h6>Cursillos Pre-Bautizales</h6>
+                    <p>Reporte de cursillos<br>
+                        Fecha de Inicio:  {{fecInicio.getFullYear()}}/{{fecInicio.getMonth()+1}}/{{fecInicio.getDate()}} <br>
+                        Fecha de Fin:  {{fecFin.getFullYear()}}/{{fecFin.getMonth()+1}}/{{fecFin.getDate()}} </p>
+                </div>
+                
+                <div class="p-col text-right">
+                    <img src="../../../assets/layout/images/sanjoaquin.jpg" width="110px" height="120px">
+                </div>
+            </div>
+            <br>
+            <p-table #dt2 
+            [value]="ListaReporteCursillos" 
+            dataKey="cursbId"
+            styleClass="p-datatable-customers p-datatable-gridlines"
+            currentPageReportTemplate="Lista de cursillos"
+            [responsive]="true"
+            >
+
+                <ng-template pTemplate="header">
+                    <tr style="font-size: 9px">
+                        <th style="width: 50px;">ID</th>
+                        <th style="width: 100px;">Nombre Bautizo</th>
+                        <th style="width: 100px;">Nombre Madre</th>
+                        <th style="width: 80px;">Nombre Padre</th>
+                        <th style="width: 50px;">Lugar</th>
+                        <th style="width: 50px;">Hora</th>
+                        <th style="width: 50px;">Fecha</th>
+                        <th style="width: 70px;">Estado</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData >
+                    <tr class="alt"  style="font-size: 7px;">
+                        <td style="width: 50px;">{{rowData.cursbId}}</td>
+                        <td style="width: 100px;">{{rowData.cursbNombreb}}</td>
+                        <td style="width: 80px;">{{rowData.cursbNmadre}}</td>
+                        <td style="width: 100px;">{{rowData.cursbNpadre}}</td>
+                        <td style="width: 50px;">{{rowData.cursbLugar}}</td>
+                        <td style="width: 50px;">{{rowData.cursbHora}}</td>
+                        <td style="width: 50px;">{{rowData.cursbFecha}}</td>
+                        <td style="width: 70px;" class="text-center" *ngIf="rowData.cursbEstado == false">
+                            <p>Reprobado</p>
+                        </td>
+                        <td style="width: 70px;" class="text-center" *ngIf="rowData.cursbEstado == true">
+                            <p>Aprobado</p>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </kendo-pdf-export>
+    <p-footer>
+        <div class="p-grid">
+            <div class="p-col text-left">
+                <p-button label="Descargar" (onClick)="pdf.saveAs('Reporte_CursillosPreBautismales.pdf')" icon = "pi pi-cloud-download" styleClass="ui-button-info"></p-button>
+            </div>
+            <div class="p-col text-right">
+                <p-button icon="pi pi-times" (click)="dis2=false" label="Cerrar" styleClass="ui-button-secondary"></p-button>
+            </div>
+        </div>
+    </p-footer>
+</p-dialog>
+ 

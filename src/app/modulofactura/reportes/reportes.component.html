@@ -1,0 +1,475 @@
+<div class="card">
+  <h1>Facturacion-Reportes</h1>
+  <div class="p-grid" style="margin: 5px; background-color: whitesmoke;">
+    <div class="p-col text-left">
+      <p-dropdown [options]="drop" [(ngModel)]="dropselect" optionValue="Ventas" placeholder="Seleccione una opción"
+        optionLabel="name" [showClear]="true" (onChange)="OnChange($event)"></p-dropdown>
+    </div>
+    <div class="p-col text-center">
+      <p-calendar [(ngModel)]="dateInicio" [showIcon]="true" placeholder="Fecha Inicio"></p-calendar>
+    </div>
+    <div class="p-col text-center">
+      <p-calendar [(ngModel)]="dateFin" [showIcon]="true" placeholder="Fecha Fin"></p-calendar>
+    </div>
+    <div class="p-col text-right">
+      <p-button icon="pi pi-search" (click)="filtradofecha()" label="Buscar" styleClass="ui-button-success"></p-button>
+    </div>
+  </div>
+  <p-messages></p-messages>
+  <p-table id='tabla' #dt [value]="cajamovimiento" [paginator]="true" [columns]="cols" [rows]="10" [rows]="10"
+    [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading"
+    styleClass="p-datatable-customers p-datatable-gridlines" [paginator]="true"
+    currentPageReportTemplate="lista de personas con documentos" [globalFilterFields]="['cajmNumDoc']">
+    <ng-template pTemplate="caption">
+      <div class="p-d-flex">
+        <span class="p-input-icon-left p-ml-auto">
+          <i class="pi pi-search"></i>
+          <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+            placeholder="Buscar Numero De Documento" />
+        </span>
+        <p-button icon="pi pi-print" label="Reporte" (click)="exportPdf()"></p-button>
+      </div>
+      <div class="p-grid" style="margin: 5px; background-color: whitesmoke;">
+        <div class="p-col text-left">
+          <p>Contenido de Reporte</p>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th>
+          <div class="p-d-flex p-jc-between p-ai-center">
+            Numero De Documento
+          </div>
+        </th>
+        <th>Fecha</th>
+        <th>Descripcion</th>
+        <th>Tipo</th>
+        <th>Valor</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-movimiento>
+      <tr>
+        <td>{{movimiento.cajmNumDoc}}</td>
+        <td>{{movimiento.cajmFecha}}</td>
+        <td>{{movimiento.cajmObservaciones}}</td>
+        <td>{{movimiento.cajmTipo}}</td>
+        <td>{{movimiento.cajmMonto}}</td>
+        <td>{{movimiento.cajmEstado}}</td>
+        <td style="width: 70px; padding: 5px;text-align: center;">
+          <p-button icon="pi pi-file" (click)="visualizarDoc(movimiento)" styleClass="ui-button-success"></p-button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <div>
+    <p-dialog header="Vista Previa Del Reporte" [(visible)]="displayMaximizable" [modal]="true"
+      [style]="{width: '50vw'}" [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="true">
+      <kendo-pdf-export #pdf paperSize="A4" margin="5mm"
+        style="font-family: 'DejaVu Sans', 'Arial', sans-serif;font-size: 12px;">
+        <div class="container">
+          <div class="p-grid" style="font-weight: bold;">
+            <div class="p-col text-left">
+              <h6> PARROQUIA SAN JOAQUIN </h6>
+              <h6>Reporte del {{ffinicio}} al {{fffinal}}</h6>
+            </div>
+            <div class="p-col text-right">
+              <img src="../../../assets/layout/images/sanjoaquin.jpg" width="110px" height="120px">
+            </div>
+          </div>
+          <br>
+          <p-table #dt2 [value]="reportlist" dataKey="reseId" styleClass="p-datatable-customers p-datatable-gridlines"
+            currentPageReportTemplate="Lista de Reservaciones" [responsive]="true">
+
+            <ng-template pTemplate="header">
+              <tr style="font-size: 9px">
+                <th style="width: 70px;">Numero De Documento</th>
+                <th style="width: 50px;">Fecha</th>
+                <th style="width: 100px;">Descripción</th>
+                <th style="width: 80px;">Tipo</th>
+                <th style="width: 50px;">Valor Fijo</th>
+                <th style="width: 70px;">Estado</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-data>
+              <tr>
+                <td>{{data.cajmNumDoc}}</td>
+                <td>{{data.cajmFecha}}</td>
+                <td>{{data.cajmObservaciones}}</td>
+                <td>{{data.cajmTipo}}</td>
+                <td>{{data.cajmMonto}}</td>
+                <td>{{data.cajmEstado}}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </kendo-pdf-export>
+      <p-footer>
+        <div class="p-grid">
+          <div class="p-col text-left">
+            <p-button label="Descargar" (onClick)="pdf.saveAs('Reporte.pdf')" icon="pi pi-cloud-download"
+              styleClass="ui-button-info"></p-button>
+          </div>
+          <div class="p-col text-right">
+            <p-button icon="pi pi-times" (click)="dis2=false" label="Cerrar" styleClass="ui-button-secondary">
+            </p-button>
+          </div>
+          <div class="p-col">
+            <div class="p-grid text-center" style="margin: 5px; background-color: whitesmoke;">
+              <div class="p-col">
+                <a icon="pi pi-file" pButton type="button" class="ui-button-info" label="Libro Diario"
+                  href="https://drive.google.com/file/d/1tyeuYbHR4ciAxoSjYV0ItvuLhgMTljd9/view?usp=sharing"
+                  target="_blank"></a>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </p-footer>
+    </p-dialog>
+
+    <!-- PDialog Previsualizacion de documentos de compra -->
+    <p-dialog header="Vista Previa de Compras" [(visible)]="compra" [modal]="true" [style]="{width: '50vw'}"
+      [maximizable]="true" [baseZIndex]="10000" [draggable]="true" [resizable]="true">
+      <form>
+        <div class="ui-g ui-fluid" style="background-color: whitesmoke;">
+          <form #facturaform="ngForm">
+            <br><br>
+            <div>
+              <div class="ui-g-12 ui-lg-10">
+                <div class="ui-g-12 ui-md-12 text-center">
+                  <h5><b>PARROQUIA SAN JOAQUIN DE BARABON</b></h5>
+                  <h6>Direccion: MONSEÑOR LEONIDAS PROAÑO S/N Y CARLOS ARIZAGA VEGA</h6>
+                  <h6>Telefono:074177350</h6>
+                  <h6>Cuenca - Ecuador</h6>
+                </div>
+              </div>
+              <div class="ui-g-12 ui-lg-1 mt-3 text-right">
+                <img src="assets/layout/images/sanjoaquin.jpg" alt="" width="70" height="85" />
+              </div>
+              <div class="ui-g-12 ui-lg-12">
+                <div class="ui-g-12 ui-md-6">
+                  <label for="input"><b>R.U.C: 019047598001</b></label>
+                </div>
+
+                <div class="ui-g-12 ui-md-6">
+                  <label for="input"><b>Nro. Doc: </b> {{" "+this.compraFac.compNumdocumento}}</label>
+                </div>
+                <div class="ui-g-12 ui-lg-12 text-center">
+                  <label for="input"><b>DOCUMENTO CATEGORIZADO: NO OBLIGADO A LLEVAR
+                      CONTABILIDAD</b></label>
+                </div>
+
+
+
+                <div class="ui-g-12 ui-lg-12">
+                  <div class="ui-g-12 ui-md-6">
+                    <label for="input"><b>Fecha:</b> {{" "+this.compraFac.compFechaemision}}</label>
+                  </div>
+
+                  <div class="ui-g-12 ui-md-6">
+                    <label for="input"><b>Autorización SRI: </b>{{" "+this.compraFac.compNumautorizacion}}</label>
+                  </div>
+
+                </div>
+                <div class="card  text-left">
+                  <div class="ui-g-12 ui-lg-12">
+                    <div class="ui-g-12 ui-md-6">
+                      <ul style="list-style: none;padding: 0%;">
+                        <li> <label for="input"><b>Proovedor:</b> {{" "+this.persona.persApellido+" "}}{{this.persona.persNombre}}</label>
+                        <li><label for="input"><b>CI:</b> {{" "+this.persona.persCedula+" "}} </label></li>
+                        <li> <label for="input"><b>Telf:</b> {{" "+this.persona.persTelefono}}</label></li>
+                      </ul>
+                    </div>
+                    <div class="ui-g-12 ui-md-6">
+                      <ul style="list-style: none;padding: 0%;">
+                        <li><label for="input"><b>Email:</b> {{" "+this.persona.persEmail}}</label></li>
+                        <li><label for="input"><b>Direccion:</b>{{" "+this.persona.persDireccion}} </label>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card ">
+              <div class="ui-g form-group">
+                <div class="ui-g-12 ui-lg-12">
+                  <label for="input"><b>Detalle</b></label>
+                  <div class="table-responsive">
+                    <table class="table table-striped my-3">
+                      <thead>
+                        <tr style="text-align:center;">
+                          <th scope="col">Codigo</th>
+                          <th scope="col">Descripcion</th>
+                          <th scope="col">Cantidad</th>
+                          <th scope="col">Prec Unt</th>
+                          <th scope="col">% Desc</th>
+                          <th scope="col">Prec Total</th>
+                        </tr>
+                      </thead>
+                      <tbody *ngFor="let item of compraFac.detalleCompraCollection" style="text-align:center;">
+                        <td>{{item.dectFkArticulos.prodId}}</td>
+                        <td>{{item.dectFkArticulos.prodNombre}}</td>
+                        <td>{{item.detcCantidad}}</td>
+                        <td>{{item.dectFkArticulos.prodPrecio}}</td>
+                        <td>% {{"0"}}</td>
+                        <td>{{item.detcSubtotal-item.detcDescuento | number:'1.0-2'}}</td>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="float-right">
+                    <table class="table" style="font-weight: bold; font-size: 13px;">
+                      <tr>
+                        <td class="text-right">Subtotal IVA 12%:</td>
+                        <td class="ml-4">${{subtotaliva | number:'1.0-2'}}</td>
+                      </tr>
+                      <tr>
+                        <td class="text-right">Subtotal IVA 0%:</td>
+                        <td class="ml-4">${{subtotalcero | number:'1.0-2'}}</td>
+                      </tr>
+
+                      <tr>
+                        <td class="text-right">Descuento:</td>
+                        <td class="ml-4">${{totalivadescuento | number:'1.0-2'}}</td>
+                      </tr>
+                      <tr>
+                        <td class="text-right">IVA:</td>
+                        <td class="ml-4">${{totaliva | number:'1.0-2'}}</td>
+                      </tr>
+                      <tr>
+                        <td class="text-right">Total:</td>
+                        <td class="ml-4" style="color: red; font-size: 16px;">
+                          ${{compraFac.compTotal |
+                            number:'1.0-2'}}</td>
+                      </tr>
+                    </table>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </form>
+
+    </p-dialog>
+
+    <!-- Pdialog de previsualizacion de documento factura -->
+    <p-dialog header="Vista Previa De La Factura" [(visible)]="factura" [modal]="true" [style]="{width: '50vw'}"
+      [maximizable]="true" [baseZIndex]="10000" [draggable]="true" [resizable]="true">
+      <form>
+        <div class="ui-g ui-fluid" style="background-color: whitesmoke;">
+          <form #facturaform="ngForm">
+            <br><br>
+            <div>
+              <div class="ui-g-12 ui-lg-10">
+                <div class="ui-g-12 ui-md-12 text-center">
+                  <h5><b>PARROQUIA SAN JOAQUIN DE BARABON</b></h5>
+                  <h6>Direccion: MONSEÑOR LEONIDAS PROAÑO S/N Y CARLOS ARIZAGA VEGA</h6>
+                  <h6>Telefono:074177350</h6>
+                  <h6>Cuenca - Ecuador</h6>
+                </div>
+              </div>
+              <div class="ui-g-12 ui-lg-1 mt-3 text-right">
+                <img src="assets/layout/images/sanjoaquin.jpg" alt="" width="70" height="85" />
+              </div>
+              <div class="ui-g-12 ui-lg-12">
+                <div class="ui-g-12 ui-md-6">
+                  <label for="input"><b>R.U.C: 019047598001</b></label>
+                </div>
+
+                <div class="ui-g-12 ui-md-6">
+                  <label for="input"><b>Nro. Doc: </b> {{this.facturaDoc.factNumdocumento}}</label>
+                </div>
+                <div class="ui-g-12 ui-lg-12 text-center">
+                  <label for="input"><b>DOCUMENTO CATEGORIZADO: NO OBLIGADO A LLEVAR
+                      CONTABILIDAD</b></label>
+                </div>
+
+
+
+                <div class="ui-g-12 ui-lg-12">
+                  <div class="ui-g-12 ui-md-6">
+                    <label for="input"><b>Fecha:</b> {{this.facturaDoc.factFechaemision}}</label>
+                  </div>
+
+                  <div class="ui-g-12 ui-md-6">
+                    <label for="input"><b>Autorización SRI: </b>{{this.facturaDoc.factNumautorizacion}}</label>
+                  </div>
+
+                </div>
+                <div class="card  text-left">
+                  <div class="ui-g-12 ui-lg-12">
+                    <div class="ui-g-12 ui-md-6">
+                      <ul style="list-style: none;padding: 0%;">
+                        <li> <label for="input"><b>Cliente:</b>{{" "+persona.persNombre+"
+                            "}}{{persona.persApellido}}</label>
+                        <li><label for="input"><b>CI:</b> {{persona.persCedula}} </label></li>
+                        <li> <label for="input"><b>Telf:</b> {{persona.persTelefono}}</label></li>
+                      </ul>
+                    </div>
+                    <div class="ui-g-12 ui-md-6">
+                      <ul style="list-style: none;padding: 0%;">
+                        <li><label for="input"><b>Email:</b> {{persona.persEmail}}</label></li>
+                        <li><label for="input"><b>Direccion:</b> {{persona.persDireccion}}</label>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card ">
+              <div class="ui-g form-group">
+                <div class="ui-g-12 ui-lg-12">
+                  <label for="input"><b>Detalle</b></label>
+                  <div class="table-responsive">
+                    <table class="table table-striped my-3">
+                      <thead>
+                        <tr style="text-align:center;">
+                          <th scope="col">Codigo</th>
+                          <th scope="col">Descripcion</th>
+                          <th scope="col">Cantidad</th>
+                          <th scope="col">Prec Unt</th>
+                          <th scope="col">% Desc</th>
+                          <th scope="col">Prec Total</th>
+                        </tr>
+                      </thead>
+                      <tbody *ngFor="let item of facturaDoc.detalleFacturaCollection" style="text-align:center;">
+                        <td>{{item.detfFkProductos.prodId}}</td>
+                        <td>{{item.detfFkProductos.prodNombre}}</td>
+                        <td>{{item.detfCantidad}}</td>
+                        <td>{{item.detfFkProductos.prodPrecio}}</td>
+                        <td>% {{item.detfPdescuento}} </td>
+                        <td>{{item.detfSubtotal-item.detfDescuento | number:'1.0-2'}}</td>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="float-right">
+                    <table class="table" style="font-weight: bold; font-size: 13px;">
+                      <tr>
+                        <td class="text-right">Subtotal IVA 12%:</td>
+                        <td class="ml-4">${{subtotaliva | number:'1.0-2'}}</td>
+                      </tr>
+                      <tr>
+                        <td class="text-right">Subtotal IVA 0%:</td>
+                        <td class="ml-4">${{subtotalcero | number:'1.0-2'}}</td>
+                      </tr>
+
+                      <tr>
+                        <td class="text-right">SubTotal con Descuento IVA 12%:</td>
+                        <td class="ml-4">${{totalivadescuento | number:'1.0-2'}}</td>
+                      </tr>
+
+                      <tr>
+                        <td class="text-right">SubTotal con Descuento IVA 0%:</td>
+                        <td class="ml-4">${{totalcerodescuento | number:'1.0-2'}}</td>
+                      </tr>
+
+                      <tr>
+                        <td class="text-right">Total Descuento:</td>
+                        <td class="ml-4">${{totaldescuento | number:'1.0-2'}}</td>
+                      </tr>
+                      <tr>
+                        <td class="text-right">IVA:</td>
+                        <td class="ml-4">${{totaliva | number:'1.0-2'}}</td>
+                      </tr>
+                      <tr>
+                        <td class="text-right">Total:</td>
+                        <td class="ml-4" style="color: red; font-size: 16px;">
+                          ${{facturaDoc.factTotal | number:'1.0-2'}}</td>
+                      </tr>
+                    </table>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </form>
+    </p-dialog>
+
+    <!-- Pdialog de previsualizacion de documento Gastos -->
+    <p-dialog header="Vista Previa De Los Gastos" [(visible)]="gastos" [modal]="true" [style]="{width: '50vw'}"
+      [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+
+
+      <!-- Left Side -->
+
+      <form>
+        <h1>Gastos</h1>
+        <div class="ui-g form-group">
+          <div class="ui-g-12 ui-lg-4">
+            <div class="ui-g-12 ui-md-12">
+              <h4>San Joaquín</h4>
+              <h6>ejemplo@sanjoaquin</h6>
+              <h6>0102365478</h6>
+            </div>
+          </div>
+          <div class="ui-g-12 ui-lg-6 text-right">
+            <img src="assets/layout/images/sanjoaquin.jpg" alt="" width="70" height="85" />
+          </div>
+
+
+
+          <div class="ui-g-12 ui-md-6">
+            <div class="ui-g-12 ui-md-6">
+              <label for="input"><b>N.:</b> </label>
+            </div>
+
+          </div>
+          <div class="ui-g-12 ui-md-6">
+            <div class="ui-g-12 ui-md-6">
+              <label for="input"><b>Fecha:</b> </label>
+            </div>
+
+          </div>
+          <div class="p-grid" style="margin: 5px; background-color: whitesmoke;">
+            <div class="p-col ">
+
+              <div class="ui-g-12 ui-md-10">
+                <div class="ui-g-12 ui-md-10">
+                  <label for="input"><b>Recibo de: </b> </label>
+                </div>
+
+              </div>
+              <div class="ui-g-12 ui-md-6">
+                <div class="ui-g-12 ui-md-6">
+                  <label for="input"><b>Por: $</b> </label>
+                </div>
+
+              </div>
+              <div class="ui-g-12 ui-md-12">
+                <div class="ui-g-12 ui-md-12">
+                  <label for="input"><b>La catidad de:</b></label>
+                </div>
+
+              </div>
+              <div class="ui-g-12 ui-md-12">
+                <div class="ui-g-12 ui-md-12">
+                  <label for="inputEmail4"><b>Por concepto de:</b></label>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="ui-g-12 ui-md-12 text-center">
+            <p>_____________________________________</p> <br>
+            <label for="inputEmail4"><b>Firma Autorizada</b></label>
+          </div>
+
+        </div>
+      </form>
+    </p-dialog>
+  </div>
+</div>

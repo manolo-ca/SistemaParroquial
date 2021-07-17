@@ -1,0 +1,290 @@
+
+<div class="card">
+    <h1>Administracion Reservación de Eucaristías </h1>
+    <div class="p-grid" style="margin: 5px; background-color: whitesmoke;">
+        <div class="p-col">
+                <button icon="pi pi-plus" pButton type="button" (click)="crearNuevo()" label="Agregar" class="ui-button-success" ></button>
+        </div>
+        <div class="p-col text-right">
+            <p-button (click)="showModalDialog()" icon = "pi pi-print"  label="Reporte"></p-button>
+        </div>
+    </div>
+    <p-table #dt 
+    [value]="reucaristias" 
+    dataKey="reseId"
+    [rows]="10" 
+    [showCurrentPageReport]="true" 
+    [rowsPerPageOptions]="[10,25,50]" 
+    styleClass="p-datatable-customers p-datatable-gridlines"
+    [paginator]="true"
+    currentPageReportTemplate="Lista de Reservaciones"
+    [globalFilterFields]="['reseId','reseFkPersona.persNombre','reseFkPersona.persApellido','reseFkTiposeucaristias.tipeNombre','reseFkCalendario.caleFecha','reseFechareservacion']">
+    
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex">
+                <p>Eucaristías Registradas</p>   
+                <span class="p-input-icon-left p-ml-auto">
+                    <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+                <input type="text" pInputText size="50" placeholder="Ingresa el parámetro a buscar" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto"/>
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th style="width: 70px;">Código</th>
+                <th>Nombre de Persona</th>
+                <th>Otros Participantes</th>
+                <th>Descripción</th>
+                <th>Tipo de Eucaristía</th>
+                <th>Fecha de Misa</th>
+                <th>Fecha de Registro</th>
+                <th>Valor Fijo</th>
+                <th>Estado</th>
+
+                <th>
+                    Acciones
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData >
+            <tr class="alt"  style="font-size: smaller;">
+                <td style="width: 70px;">{{rowData.reseId}}</td>
+                <td style=" font-weight: bold;">{{rowData.reseFkPersona.persNombre}} {{rowData.reseFkPersona.persApellido}}</td>
+                <td>{{rowData.reseOtros}}</td>
+                <td>{{rowData.reseDescripcion}}</td>
+                <td>{{rowData.reseFkTiposeucaristias.tipeNombre}}</td>
+                <td>{{rowData.reseFkCalendario.caleFecha}}</td>
+                <td>{{rowData.reseFechareservacion}}</td>
+                <td>{{rowData.reseValorfijo}}</td>
+                <td class="text-center" *ngIf="rowData.reseEstado == false">
+                    <p-message severity="error" text="INACTIVO"></p-message>
+                </td>
+                <td  class="text-center" *ngIf="rowData.reseEstado == true">
+                    <p-message severity="success" text="ACTIVO"></p-message>
+                </td>
+                <td style=" padding: 5px;text-align: center;"> 
+                    <p-button icon="pi pi-pencil" styleClass="ui-button-warning" (click)="cargarTiposEucarista(rowData)">  </p-button>
+                    <p-button icon="pi pi-trash"  styleClass="ui-button-danger" (click)="EliminarTipo(rowData)"></p-button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+<div class="ui-g ui-fluid">
+    <p-dialog header="Gestionar Tipo de Eucarístia" [(visible)]="dis" [modal]="true" [style]="{width: '80vw'}"
+    [maximizable]="false" [baseZIndex]="10000" [draggable]="false" [resizable]="false"> 
+        <form [formGroup]="addForm" >
+            <div class="card card-w-title">
+                <div class="ui-g form-group">
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="input">Numero de Cédula:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-2" >
+                        <input  formControlName="reseCedula" name="reseCedula" id="reseCedula" type="text" pInputText disabled>
+        
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="input">Fecha de Resgistro:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <input disabled formControlName="reseFechareservacion" [(ngModel)]="reucaristia2.reseFechareservacion" name="reseFechareservacion" id="reseFechareservacion" type="text" pInputText>
+                        
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="input">Fecha de Misa:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <input disabled formControlName="reseHora"  name="reseHora" id="reseHora" type="text" pInputText>
+                        
+                    </div>    
+                    
+
+    
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="textarea">Persona Solicitante:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <input disabled formControlName="resePersona"name="resePersona" id="resePersona" type="text" pInputText>
+                        
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="input">Tipo de Eucaristía:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <p-dropdown id="reseTiposeucaristias" name="reseTiposeucaristias" formControlName="reseTiposeucaristias"  [options]="tiposEucaristias" [(ngModel)]="reucaristia2.reseFkTiposeucaristias" [filter]="true" optionLabel="tipeNombre" placeholder="Seleccione el Tipo de Eucaristía"></p-dropdown>
+                        <div *ngIf="reseTiposeucaristias.invalid && (reseTiposeucaristias.dirty || reseTiposeucaristias.touched)">
+                            <p-message severity="error" text="Campo Requerido"></p-message>  
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="input">Valor de Eucaristía:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <input maxlength="250" formControlName="reseValorfijo" [(ngModel)]="reucaristia2.reseValorfijo" name="reseValorfijo" id="reseValorfijo" type="text" pInputText placeholder="Costo de la Eucaristía" class="form-control" disabled>
+                        <div *ngIf="reseValorfijo.invalid && (reseValorfijo.dirty || reseValorfijo.touched)">
+                            <p-message severity="error" text="Campo Requerido"></p-message>  
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                    <label for="input">Personas Asistentes:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <input maxlength="250" formControlName="reseOtros" [(ngModel)]="reucaristia2.reseOtros" name="reseOtros" id="reseOtros" type="text" pInputText placeholder="" class="form-control">
+                        <div *ngIf="reseOtros.invalid && (reseOtros.dirty || reseOtros.touched)">
+                            <p-message severity="error" text="Campo Requerido"></p-message>  
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="input">Estado de Eucaristia:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <p-inputSwitch (onChange)="handleChange($event)" ></p-inputSwitch>
+                    </div>
+                    <div class="ui-g-12 ui-md-2 text-center" *ngIf="checked1==false">
+                        <p-message severity="error" text="INACTIVO"></p-message>
+                    </div>
+                    <div class="ui-g-12 ui-md-2 text-center" *ngIf="checked1==true">
+                        <p-message severity="success" text="ACTIVO"></p-message>
+                    </div>
+                   <!-- <div class="ui-g-12 ui-md-2">
+                        <label for="input">Hora:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <input maxlength="250" formControlName="reseHora" [(ngModel)]="reucaristia.reseOtros" name="reseHora" id="reseHora" type="text" pInputText placeholder="Hora de la Eucaristía" class="form-control" disabled>
+                        <div *ngIf="reseHora.invalid && (reseHora.dirty || reseHora.touched)">
+                            <p-message severity="error" text="Campo Requerido"></p-message>  
+                        </div>
+                    </div>-->
+                    
+                    <br>
+                    <div class="ui-g-12">
+                        <label for="input">Descripción de la Eucaristía:</label>
+                        <br><br>
+                        <textarea maxlength="5000" formControlName="reseDescripcion" [(ngModel)]="reucaristia2.reseDescripcion" name="reseDescripcion" id="reseDescripcion" [rows]="4" [cols]="100" placeholder="Descripción sobre el registro de la Eucaristía." pInputTextarea autoResize="autoResize" class="form-control"></textarea>
+                        <div *ngIf="reseDescripcion.invalid && (reseDescripcion.dirty || reseDescripcion.touched)">
+                            <p-message severity="error" text="Campo Requerido"></p-message>  
+                        </div>
+                    </div>
+                    <br>
+                    <br>             
+                    <div class="ui-g-12 text-center">
+                        <p-button label="Actualizar" icon = "pi pi-save" styleClass="ui-button-info" (click)="ActualizarDatos()"></p-button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </p-dialog>
+</div>
+
+<div class="card">
+    <p-dialog header="Reporte de Reservaciones de Eucaristias" [(visible)]="displayModal" [modal]="true" [style]="{width: '30vw'}" [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+        <form [formGroup]="addForm1">
+            
+            <div class="ui-g ui-fluid">
+                <div class="ui-g form-group">
+                    <div  class="ui-g-12 ui-md-4">
+                        <label for="input">Fecha inicio:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-8"> 
+                        <p-calendar id="tipe_fecha_i" name="tipe_fecha_i" formControlName="tipe_fecha_i" [(ngModel)]="fecInicio" [showIcon]="true" placeholder="AAAA/MM/DD" dateFormat="yy/mm/dd"></p-calendar>                
+                    </div>
+                    <div  class="ui-g-12 ui-md-4">
+                        <label for="input">Fecha final:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-8"> 
+                        <p-calendar id="tipe_fecha_f" name="tipe_fecha_f" formControlName="tipe_fecha_f"  [(ngModel)]="fecFin" [showIcon]="true" placeholder="AAAA/MM/DD" dateFormat="yy/mm/dd"></p-calendar>
+                    </div>
+                    <div  class="ui-g-12 ui-md-4">
+                        <label for="input">Tipo Eucaristía:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-8"> 
+                        <p-dropdown id="reseTiposeucaristias" name="reseTiposeucaristias" formControlName="reseTiposeucaristias"  [options]="tiposEucaristias" [(ngModel)]="tipoEucaristiaSelect" [filter]="true" optionLabel="tipeNombre" placeholder="Seleccione el Tipo de Eucaristía"></p-dropdown>
+                    </div>
+                    <div class="ui-g-12 ui-md-12 text-center">
+                        <p-button label="Generar" (click)="cargarDatosReporte()" icon = "pi pi-cloud-download" styleClass="ui-button-info"></p-button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <p-footer>
+            <p-button  icon="pi pi-times" (click)="displayModal=false" label="Cancelar"
+            styleClass="ui-button-secondary"></p-button>
+        </p-footer>
+    </p-dialog>
+</div>
+
+<p-dialog header="Vista previa del Reporte" [(visible)]="dis2" [modal]="true" [style]="{width: '60vw', height: '90vw'}"
+    [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+    
+    <kendo-pdf-export #pdf  paperSize="A4" margin="5mm" style="font-family: 'DejaVu Sans', 'Arial', sans-serif;font-size: 12px;">
+        <div class="container">
+            <div class="p-grid" style="font-weight: bold;" >
+                <div class="p-col text-left">
+                    <h6> PARROQUIA SAN JOAQUIN </h6>
+                    <h6>Reservación de Eucaristías</h6>
+                    <p>Reporte de reservas de Eucaristías<br>
+                        Fecha de Inicio:  {{fecInicio.getFullYear()}}/{{fecInicio.getMonth()+1}}/{{fecInicio.getDate()}} <br>
+                        Fecha de Fin:  {{fecFin.getFullYear()}}/{{fecFin.getMonth()+1}}/{{fecFin.getDate()}} <br>
+                        Tipo de Eucaristia: {{seleccionEucaristiaRe}}
+                    </p>
+                </div>
+                
+                <div class="p-col text-right">
+                    <img src="../../../assets/layout/images/sanjoaquin.jpg" width="110px" height="120px">
+                </div>
+            </div>
+            <br>
+            <p-table #dt2 
+            [value]="ListaReporteEuca" 
+            dataKey="reseId"
+            styleClass="p-datatable-customers p-datatable-gridlines"
+            currentPageReportTemplate="Lista de Reservaciones"
+            [responsive]="true">
+
+                <ng-template pTemplate="header">
+                    <tr style="font-size: 9px">
+                        <th style="width: 100px;">Nombre de Persona</th>
+                        <th style="width: 100px;">Descripción</th>
+                        <th style="width: 80px;">Tipo de Eucaristía</th>
+                        <th style="width: 50px;">Fecha de Misa</th>
+                        <th style="width: 50px;">Fecha de Registro</th>
+                        <th style="width: 50px;">Valor Fijo</th>
+                        <th style="width: 70px;">Estado</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData >
+                    <tr class="alt"  style="font-size: 7px;">
+                        <td style="width: 100px;">{{rowData.reseFkPersona.persNombre}} {{rowData.reseFkPersona.persApellido}}</td>
+                        <td style="width: 100px;">{{rowData.reseDescripcion}}</td>
+                        <td style="width: 80px;">{{rowData.reseFkTiposeucaristias.tipeNombre}}</td>
+                        <td style="width: 50px;">{{rowData.reseFkCalendario.caleFecha}}</td>
+                        <td style="width: 50px;">{{rowData.reseFechareservacion}}</td>
+                        <td style="width: 50px;">{{rowData.reseValorfijo}}</td>
+                        <td style="width: 70px;" class="text-center" *ngIf="rowData.reseEstado == false">
+                            <p>Inactivo</p>
+                        </td>
+                        <td style="width: 70px;" class="text-center" *ngIf="rowData.reseEstado == true">
+                            <p>Activo</p>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr style="width: 620px;" class="text-center">
+                        <td >No existen registros.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </kendo-pdf-export>
+    <p-footer>
+        <div class="p-grid">
+            <div class="p-col text-left">
+                <p-button label="Descargar" (onClick)="pdf.saveAs('Reporte_ReservacionEucaristia.pdf')" icon = "pi pi-cloud-download" styleClass="ui-button-info"></p-button>
+            </div>
+            <div class="p-col text-right">
+                <p-button icon="pi pi-times" (click)="dis2=false" label="Cerrar" styleClass="ui-button-secondary"></p-button>
+            </div>
+        </div>
+    </p-footer>
+</p-dialog>
+ 

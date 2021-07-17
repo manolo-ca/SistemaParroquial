@@ -1,0 +1,237 @@
+<div class="ui-g ui-fluid ">
+    <div class="ui-g-12 ui-md-2">
+    </div>
+    <div class="ui-g-12 ui-lg-8">
+      <!-- Left Side -->
+      <div class="card card-w-title " style="width: 650px;">
+        <form #reciboform="ngForm">
+        <h1 >Recibo de Pago</h1>
+          <div class="ui-g form-group">
+            <div class="ui-g-12 ui-lg-4">
+              <div  class="ui-g-12 ui-md-12">
+                <h4>San Joaquín</h4>
+                <h6>ejemplo@sanjoaquin</h6>
+                <h6>0102365478</h6>
+              </div>
+          </div>
+          <div class="ui-g-12 ui-lg-8 text-right">
+            <img src="assets/layout/images/sanjoaquin.jpg" alt="" width="70" height="85"/>
+          </div>
+  
+          
+  
+                    <div  class="ui-g-12 ui-md-6">
+                      <div  class="ui-g-12 ui-md-2">
+                        <label for="input">N.: </label>
+                        </div>
+                      <div class="ui-g-12 ui-md-10"> 
+                        <input type="text" class="form-control border-secondary" [(ngModel)]="recibo.rcbnumDocumento" name="rcbnumDocumento"    placeholder="0000" required pInputText #rcbnumDocumento="ngModel">
+                        <div *ngIf="rcbnumDocumento.invalid && rcbnumDocumento.touched">
+                          <div *ngIf="rcbnumDocumento.errors.required">
+                            <div class="alert alert-danger" role="alert">
+                              ¡Ingrese el numero de documento!
+                            </div>
+                          </div>
+                          </div>
+                      </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-6"> 
+                      <div  class="ui-g-12 ui-md-4">
+                        <label for="input">Fecha: </label>
+                      </div>
+                      <div class="ui-g-12 ui-md-8"> 
+                        <p-calendar [(ngModel)]="recibo.rcbFechaemision"  name="rcbFechaemision"   [locale]="es"  #rcbFechaemision="ngModel" [showIcon]="true" dateFormat="yy-mm-dd" placeholder="aaaa-mm-dd" ></p-calendar>
+                     
+                      <div *ngIf="rcbFechaemision.invalid && rcbFechaemision.touched">
+                        <div *ngIf="rcbFechaemision.errors.required">
+                          <div class="alert alert-danger" role="alert">
+                            ¡Ingrese la fecha de Emision del Recibo!
+                          </div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="p-grid" style="margin: 5px; background-color: whitesmoke;">
+                      <div class="p-col ">
+                          
+                          <div  class="ui-g-12 ui-md-6">
+                            <div  class="ui-g-12 ui-md-4">
+                              <label for="input">Recibo de: </label>
+                            </div>
+                            <div class="ui-g-12 ui-md-8"> 
+                              <input type="text" class="form-control border-secondary" [(ngModel)]="recibo.rcbCliente"  name="rcbCliente"  placeholder="Juan Montalvo" #rcbCliente="ngModel"  required pInputText>
+                              <div *ngIf="rcbCliente.invalid && rcbCliente.touched">
+                                <div *ngIf="rcbCliente.errors.required">
+                                  <div class="alert alert-danger" role="alert">
+                                    ¡Ingrese datos del cliente!
+                                  </div>
+                                </div>
+                                </div>
+                            </div>
+                          </div>
+                          <div class="ui-g-12 ui-md-6"> 
+                            <div  class="ui-g-12 ui-md-3">
+                              <label for="input">Por $: </label>
+                            </div>
+                            <div class="ui-g-12 ui-md-9"> 
+                            <input type="text" class="form-control border-secondary" [(ngModel)]="recibo.rcbValor"  name="rcbValor"  placeholder="$10.00" #rcbValor="ngModel" required pInputText >
+                            <div *ngIf="rcbValor.invalid && rcbValor.touched">
+                              <div *ngIf="rcbValor.errors.required">
+                                <div class="alert alert-danger" role="alert">
+                                  ¡Ingrese el valor del recibo!
+                                </div>
+                              </div>
+                              </div> 
+                          </div>
+                          </div>
+                          <div class="ui-g-12 ui-md-12"> 
+                            <div  class="ui-g-12 ui-md-3">
+                              <label for="input">La catidad de: </label>
+                            </div>
+                            <div class="ui-g-12 ui-md-9"> 
+                            <input type="text" class="form-control border-secondary" [(ngModel)]="recibo.rcbdescripcionCantidad"  name="rcbdescripcionCantidad"  #rcbnumDescripcion="ngModel" required placeholder="Diez dólares"  InputText >
+                            <div *ngIf="rcbnumDescripcion.invalid && rcbnumDescripcion.touched">
+                              <div *ngIf="rcbnumDescripcion.errors.required">
+                                <div class="alert alert-danger" role="alert">
+                                  ¡Ingrese la descripcion de la cantidad!
+                                </div>
+                              </div>
+                              </div>  
+                          </div>
+                            </div>
+                        <div class="ui-g-12 ui-md-12"> 
+                          <div  class="ui-g-12 ui-md-3">
+                          <label for="inputEmail4">Por concepto de:</label>
+                          </div>
+                          <div class="ui-g-12 ui-md-9"> 
+                          <input type="text" class="form-control border-secondary" [(ngModel)]="recibo.rcbConcepto"  name="rcbConcepto"  placeholder="Abono para la eucaristía del dia 22/08/21" #rcbConcepto="ngModel"  required InputText >
+                          <div *ngIf="rcbConcepto.invalid && rcbConcepto.touched">
+                            <div *ngIf="rcbConcepto.errors.required">
+                              <div class="alert alert-danger" role="alert">
+                                ¡Ingrese el concepto!
+                              </div>
+                            </div>
+                            </div>  
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div hidden class="ui-g-12 ui-md-12"> 
+                      <div class="ui-g-12 ui-md-4"> </div>
+                      <div class="ui-g-12 ui-md-4"> 
+                        <textarea  class="form-control border-secondary text-center"></textarea>              
+                      </div>
+                      <div class="ui-g-12 ui-md-4"> </div>
+                       </div>
+                    <div hidden class="ui-g-12 ui-md-12 text-center">
+                      <label for="inputEmail4">Firma Autorizada</label>
+                       </div>
+                  <div class="ui-g-12 ui-md-12 text-center"> 
+                  
+                      <p-button *ngIf="validaboton==true" label="Imprimir Recibo" icon = "pi pi-print" (click)="getRecibo()" styleClass="ui-button-success"></p-button>  
+                      <p-button *ngIf="validaboton==false" label="Guardar Recibo" (click)="crearRecibo(reciboform)" icon = "pi pi-save" styleClass="ui-button-info"></p-button>     
+                    <p-button label="Regresar" icon = "pi pi-arrow-circle-right" [routerLink]="['/facturacion/recibo/']" styleClass="ui-button-danger ml-3"></p-button>
+                  </div>
+        </div>
+      </form>
+    </div>
+  
+    <div class="ui-g-12 ui-md-2">
+    </div>
+  </div>            
+               
+  <div>
+    <br>
+
+    <p-dialog header="Vista Previa Del Recibo" [(visible)]="displayMaximizable" [modal]="true"
+      [style]="{width: '50vw'}" [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+      <kendo-pdf-export #pdf paperSize="A4" margin="5mm"
+        style="font-family: 'DejaVu Sans', 'Arial', sans-serif;font-size: 13px;">
+    
+      
+              <!-- Left Side -->
+           
+                <form #reciboform="ngForm">
+                <h1 >Recibo de Pago</h1>
+                  <div class="ui-g form-group">
+                    <div class="ui-g-12 ui-lg-4">
+                      <div  class="ui-g-12 ui-md-12">
+                        <h4>San Joaquín</h4>
+                        <h6>ejemplo@sanjoaquin</h6>
+                        <h6>0102365478</h6>
+                      </div>
+                  </div>
+                  <div class="ui-g-12 ui-lg-6 text-right">
+                    <img src="assets/layout/images/sanjoaquin.jpg" alt="" width="70" height="85"/>
+                  </div>
+          
+                  
+          
+                            <div  class="ui-g-12 ui-md-6">
+                              <div  class="ui-g-12 ui-md-6">
+                                <label for="input"><b>N.:</b> {{recibo.rcbnumDocumento}}</label>
+                                </div>
+            
+                            </div>
+                            <div class="ui-g-12 ui-md-6"> 
+                              <div  class="ui-g-12 ui-md-6">
+                                <label for="input"><b>Fecha:</b> {{recibo.rcbFechaemision}}</label>
+                              </div>
+                             
+                            </div>
+                            <div class="p-grid" style="margin: 5px; background-color: whitesmoke;">
+                              <div class="p-col ">
+                                  
+                                  <div  class="ui-g-12 ui-md-10">
+                                    <div  class="ui-g-12 ui-md-10">
+                                      <label for="input"><b>Recibo de: </b> {{recibo.rcbCliente}}</label>
+                                    </div>
+                                   
+                                  </div>
+                                  <div class="ui-g-12 ui-md-6"> 
+                                    <div  class="ui-g-12 ui-md-6">
+                                      <label for="input"><b>Por: $</b> {{recibo.rcbValor}}</label>
+                                    </div>
+                                   
+                                  </div>
+                                  <div class="ui-g-12 ui-md-12"> 
+                                    <div  class="ui-g-12 ui-md-12">
+                                      <label for="input"><b>La catidad de:</b> {{recibo.rcbdescripcionCantidad}}</label>
+                                    </div>
+                               
+                                    </div>
+                                <div class="ui-g-12 ui-md-12"> 
+                                  <div  class="ui-g-12 ui-md-12">
+                                  <label for="inputEmail4"><b>Por concepto de:</b> {{recibo.rcbConcepto}}</label>
+                                  </div>
+                             
+                                </div>
+                              </div>
+                            </div>
+                 
+                            <div  class="ui-g-12 ui-md-12 text-center">
+                                <p>_____________________________________</p> <br>
+                              <label for="inputEmail4"><b>Firma Autorizada</b></label>
+                               </div>
+
+                </div>
+              </form>
+     
+       
+                       
+      </kendo-pdf-export>
+      <p-footer>
+        <div class="p-grid">
+          <div class="p-col text-left">
+            <p-button label="Descargar" (onClick)="pdf.saveAs('Reporte.pdf')" icon="pi pi-cloud-download"
+              styleClass="ui-button-info"></p-button>
+          </div>
+          <div class="p-col text-right">
+            <p-button icon="pi pi-times" (click)="dis2=false" label="Cerrar" styleClass="ui-button-secondary">
+            </p-button>
+          </div>
+        </div>
+      </p-footer>
+    </p-dialog>
+  </div>             
+              

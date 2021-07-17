@@ -1,0 +1,171 @@
+<div class="card card-w-title">
+    <div class="p-grid" style="margin: 5px; background-color: whitesmoke;">
+        <div class="p-col">
+            <button icon="pi pi-user" pButton type="button" (click)="showDialog()" label="Nuevo"
+                class="ui-button-success"></button>
+        </div>
+    </div>
+    <p-table #dt 
+        [value]="usuarios" 
+        [paginator]="true" 
+        [rows]="10"
+        [showCurrentPageReport]="true"
+        [rowsPerPageOptions]="[10,25,50]" 
+        [loading]="loading" 
+        styleClass="p-datatable-customers p-datatable-gridlines"
+        [paginator]="true" 
+        currentPageReportTemplate="Lista de Usuarios"
+        [globalFilterFields]="['usuaId']">
+        <ng-template pTemplate="caption">
+            <div class="p-grid">
+                <div class="p-col" style="text-align: left;">
+                    <p>Usuarios</p>
+                </div>
+                <div class="p-col" style="text-align: right">
+                    <i class="pi pi-search" style="margin:4px 4px 0 0"></i>
+                    <input type="text" pInputText size="50" placeholder="Buscar usuario"
+                        (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+                </div>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 80px;">ID</th>
+                <th>Usuario</th>
+                <th style="width: 125px;">Identificación</th>
+                <th>Nombre Persona</th>
+                <th>Email</th>
+                <th style="width: 110px;">Télefono</th>
+                <th>Dirección</th>
+                <th style="width: 100px;">Acciones</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-usuario>
+            <tr >
+                <td style="width: 110px;">{{usuario.usuaId}}</td>
+                <td>{{usuario.usuaUsuario}}</td>
+                <td style="width: 125px;">{{usuario.usuaFkPersona.persCedula}}</td>
+                <td>{{usuario.usuaFkPersona.persNombre}} {{usuario.usuaFkPersona.persApellido}}</td>
+                <td>{{usuario.usuaFkPersona.persEmail}}</td>
+                <td style="width: 110px;">{{usuario.usuaFkPersona.persTelefono}}</td>
+                <td>{{usuario.usuaFkPersona.persDireccion}}</td>
+                <td style="width: 100px;" class="text-center">
+                    <p-button icon="pi pi-pencil" styleClass="ui-button-warning"(click)="cargarUsuario(usuario)"></p-button>
+                    <p-button icon="pi pi-trash" styleClass="ui-button-danger"(click)="eliminarUser(usuario)"></p-button>
+                </td></tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td [attr.colspan]="8">No hay datos.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <p-dialog header="Gestión Usuario" [(visible)]="dis" [modal]="true" [style]="{width: '40vw'}"
+        [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+        <p-scrollPanel [style]="{width: '100%', height: '400px'}">
+            <div class="ui-g ui-fluid">
+                <form [formGroup]="addForm1">
+                    <div class="ui-g form-group ">
+                        <div class="ui-g-12 ui-md-3">
+                            <label for="input">Usuario: </label>
+                        </div>
+                        <div class="ui-g-12 ui-md-9">
+                            <div class="ui-inputgroup">
+                                <span class="ui-inputgroup-addon"><i class="pi pi-id-card"></i></span>
+                                <input type="text" id="userUsuario" name="userUsuario" 
+                                    formControlName="userUsuario" placeholder="Nombre de usuario" pInputText >
+                            </div>
+                        </div>
+                        <div class="ui-g-12 ui-md-3">
+                            <label for="input">Contraseña: </label>
+                        </div>
+                        <div class="ui-g-12 ui-md-9">
+                            <div class="ui-inputgroup">
+                                <span class="ui-inputgroup-addon"><i class="pi pi-question-circle"></i></span>
+                                <input pPassword  type="password" placeholder="Ingrese una contraseña"    id="userPassword" name="userPassword"
+                                    formControlName="userPassword">
+                            </div>
+                        </div>
+                        <div class="ui-g-12 ui-md-5">
+                            <label for="input">Identificación de Persona: </label>
+                        </div>
+                        <div class="ui-g-12 ui-md-7">
+                            <p-dropdown (onChange)="seleccionarPersona()" id="userFkPersona" name="userFkPersona" formControlName="userFkPersona"  [options]="personas" [(ngModel)]="persona" [filter]="true" optionLabel="persCedula"></p-dropdown>   
+                        </div>
+                        <div class="ui-g-12 " *ngIf="this.seleccionPersona==true">
+                            <div class="ui-g-12 ui-md-3">
+                                <label for="input">Nombres: </label>
+                            </div>
+    
+                            <div class="ui-g-12 ui-md-9">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
+                                    <input type="text" id="userNombre" name="userNombre"
+                                        formControlName="userNombre" placeholder="Nombres" pInputText [(ngModel)]="persona.persNombre">
+                                </div>
+                            </div>
+                            <div class="ui-g-12 ui-md-3">
+                                <label for="input">Apellidos: </label>
+                            </div>
+                            <div class="ui-g-12 ui-md-9">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
+                                    <input type="text" id="userApellido" name="userApellido"
+                                        formControlName="userApellido" placeholder="Apellidos" pInputText
+                                        [(ngModel)]="persona.persApellido">
+                                </div>
+                            </div>
+                            <div class="ui-g-12 ui-md-3">
+                                <label for="input">Email: </label>
+                            </div>
+                            <div class="ui-g-12 ui-md-9">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class=" pi pi-envelope"></i></span>
+                                    <input type="email" id="userCorreo" name="userCorreo"
+                                        formControlName="userCorreo" placeholder="Email" pInputText [(ngModel)]="persona.persEmail">
+                                </div>
+                            </div>
+                            <div class="ui-g-12 ui-md-3">
+                                <label for="input">Telefono: </label>
+                            </div>
+                            <div class="ui-g-12 ui-md-9">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class=" pi pi-mobile"></i></span>
+                                    <input maxlength="10" type="text" id="userTelefono" placeholder="Telefono" name="userTelefono"
+                                        formControlName="userTelefono" pInputText
+                                        [(ngModel)]="persona.persTelefono">
+                                </div>
+                            </div>
+                            <div class="ui-g-12 ui-md-3">
+                                <label for="input">Dirección: </label>
+                            </div>
+                            <div class="ui-g-12 ui-md-9">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class=" pi pi-home"></i></span>
+                                    <input type="text" id="userDireccion" placeholder="Direccion" name="userDireccion"
+                                        formControlName="userDireccion" pInputText
+                                        [(ngModel)]="persona.persDireccion">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </p-scrollPanel>
+        
+        <p-footer>
+            <div class="ui-g form-group ">
+                <div class="ui-g-12 ui-md-3" *ngIf="botonEdit==true">
+                    <button type="button"  pButton icon="pi pi-save" (click)="editarUsuario()"label="Actualizar"></button>  
+                </div>
+                <div class="ui-g-12 ui-md-3" *ngIf="botonEdit==false">
+                    <button type="button" pButton icon="pi pi-save" (click)="crearUsuario()"label="Guardar"></button>  
+                </div>
+                <div class="ui-g-12 ui-md-6"></div>
+                <div class="ui-g-12 ui-md-3">
+                    <button type="button" pButton icon="pi pi-times" (click)="dis=false" label="Cancelar"class="ui-button-secondary"></button>
+                </div>
+            </div>
+        </p-footer>
+    </p-dialog>
+</div>

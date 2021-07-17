@@ -1,0 +1,216 @@
+<div class="ui-g ui-fluid">
+  <div class="ui-g-12 ui-lg-12">
+      <!-- Left Side -->
+      <div class="card card-w-title">
+        <form  #facturaform="ngForm">
+        <div class="ui-g form-group">
+          <div class="ui-g-12 ui-lg-4">
+              <div  class="ui-g-12 ui-md-12">
+                <h2>San Joaquín</h2>
+                <h6>ejemplo@sanjoaquin</h6>
+                <h6>0102365478</h6>
+              </div>
+          </div>
+          <div class="ui-g-12 ui-lg-8 text-right">
+            <img src="assets/layout/images/sanjoaquin.jpg" alt="" width="70" height="85"/>
+          </div>
+
+          
+          <div class="ui-g-12 ui-lg-4">
+
+            <div class="card card-w-title text-right">
+              <h1>Datos Factura</h1>
+              <div class="ui-g form-group text-left">
+                <div  class="ui-g-12 ui-md-6">
+                  <label for="input">Fecha de Emisión: </label>
+                </div>
+                <div class="ui-g-12 ui-md-6"> 
+                  <p-calendar disabled [(ngModel)]="factura.factFechaemision"  [readonlyInput]="true" [locale]="es" name="factFechaEmision"  [showIcon]="true" dateFormat="yy-mm-dd"  placeholder="aaaa-mm-dd" required #fechaEmision></p-calendar>
+                  
+                </div>
+                <div  class="ui-g-12 ui-md-6">
+                  <label for="input">N. Documento: </label>
+                </div>
+                <div class="ui-g-12 ui-md-6"> 
+                  <input type="text"  name="factNumdocumento" [(ngModel)]="factura.factNumdocumento"  pInputText required #numDocumento="ngModel"> 
+                  <div *ngIf="numDocumento.invalid && numDocumento.touched">
+                  <div *ngIf="numDocumento.errors.required">
+                    <div class="alert alert-danger" role="alert">
+                      ¡Ingrese el numero de documento!
+                    </div>
+                  </div>
+                  </div>
+                </div>
+                <div  class="ui-g-12 ui-md-6">
+                  <label for="input">N. Autorización: </label>
+                </div>
+                <div class="ui-g-12 ui-md-6"> 
+                  <input type="text" name="factNumdocumento" [(ngModel)]="factura.factNumautorizacion" pInputText  required #numAutorizacion="ngModel"> 
+                  <div *ngIf="numAutorizacion.invalid && numAutorizacion.touched">
+                    <div *ngIf="numAutorizacion.errors.required">
+                      <div class="alert alert-danger" role="alert">
+                        ¡Ingrese el numero de Autorizacion!
+                      </div>
+                    </div>
+                    </div>
+                </div>
+                <div  class="ui-g-12 ui-md-4">
+                  <label for="input">Caja: </label>
+                </div>
+                <div class="ui-g-12 ui-md-8"> 
+                  <p-dropdown  placeholder="Seleccione Caja..."  (onChange)="cargarDatosCaja($event)" [showClear]="true" [options]="cajas" optionLabel="cajaObservaciones"></p-dropdown>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-g-12 ui-lg-8">
+            <div class="card card-w-title text-right">
+              <h1>Datos Cliente</h1>
+              <div class="ui-g form-group text-left">
+                <div  class="ui-g-12 ui-md-9">
+
+                  <p-autoComplete [suggestions]=clientes (completeMethod)="autocompleteCliente($event)" [size]="30" field="clieFkPersona.persCedula" (onSelect)="cargarCliente($event)" placeholder="Ingrese la cédula del Cliente"  >
+                    <ng-template let-cli pTemplate="clientes" >
+                   {{cli.clieFkPersona.persCedula}} Cliente: {{cli.clieFkPersona.persApellido}} {{cli.clieFkPersona.persNombre}}
+                    </ng-template>
+                  </p-autoComplete>
+                 
+                </div>
+              <div class="ui-g-12 ui-md-3 text-center"> 
+                 <!--  <p-button label="Buscar" icon = "pi pi-search" styleClass="ui-button-success"></p-button>   -->
+                </div> 
+                <div  class="ui-g-12 ui-md-3">
+                    <label for="input"  >Nombres cliente: </label>
+                </div>
+                <div class="ui-g-12 ui-md-9"> 
+                    <input type="text" id="nombre"  [(ngModel)]="persona.persNombre"  name="persNombre" pInputText readonly > 
+                </div>
+                <div  class="ui-g-12 ui-md-3">
+                    <label for="input">Email: </label>
+                </div>
+                <div class="ui-g-12 ui-md-3"> 
+                    <input type="text" id="email" [(ngModel)]="persona.persEmail"  name="persEmail" pInputText  readonly> 
+                </div>
+                <div  class="ui-g-12 ui-md-3">
+                  <label for="input">Teléfono: </label>
+                </div>
+                <div class="ui-g-12 ui-md-3"> 
+                    <input type="text" id="telefono" [(ngModel)]="persona.persTelefono"  name="persTelefono" pInputText readonly> 
+                </div>
+                <div  class="ui-g-12 ui-md-3">
+                    <label for="input">Dirección: </label>
+                </div>
+                <div class="ui-g-12 ui-md-9"> 
+                    <input type="text" id="direccion" [(ngModel)]="persona.persDireccion"  name="persDireccion"  pInputText  readonly> 
+                </div>
+              </div>
+            </div>
+           
+          </div>
+          <div  class="ui-g-12 ui-md-4 text-right">
+            <label for="input">Observacion: </label>
+          </div>
+          <div class="ui-g-12 ui-md-8"> 
+            <textarea [rows]="5" [cols]="30" [(ngModel)]="cajamovimiento.cajmObservaciones" name="cajmObservaciones" pInputTextarea autoResize="autoResize" #factObservacion="ngModel"></textarea>
+            <div *ngIf="factObservacion.invalid && factObservacion.touched">
+              <div *ngIf="factObservacion.errors.required">
+                <div class="alert alert-danger" role="alert">
+                  ¡Ingrese una observacion para la venta!
+                </div>
+              </div>
+              </div>
+          </div>
+          <div class="ui-g-12 ui-lg-12">
+            <div class="card card-w-title text-right">
+              <h1>Detalle Factura</h1>
+              <div class="p-grid" style="margin: 5px; background-color: whitesmoke;">
+                <div class="p-col text-left">
+                    <div class="ui-g-12 ui-md-3">
+                        <label for="input"><i class="pi pi-search"></i>Buscar Producto:</label>        
+                    </div>
+                    <div class="ui-g-12 ui-md-6">
+                      <p-autoComplete [suggestions]=productos (completeMethod)="autocompleteProducto($event)" [size]="50" field="prodNombre" (onSelect)="cargarProductos($event)" >
+                        <ng-template let-pro pTemplate="productos" >
+                       {{pro.prodNombre}} Stock: {{pro.prodCantidad}} Precio: {{pro.prodPrecio}}
+                        </ng-template>
+                      </p-autoComplete>       
+                    </div>
+                </div>
+               
+               
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped my-3">
+                  <thead>
+                    <tr>
+                      <th scope="col">Codigo</th>
+                      <th scope="col">Descripcion</th>
+                      <th scope="col">Cantidad</th>
+                      <th scope="col">Nro Existencias</th>
+                      <th scope="col">Precio Unitario</th>
+                      <th scope="col">Total</th>
+                      <th scope="col">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of factura.detalleFacturaCollection">
+                      <td>{{item.producto.prodId}}</td>
+                      <td>{{item.producto.prodNombre}}</td>
+                      <td><div></div><input type="text"  class="col-sm-4"  value="{{item.detfCantidad}}" (change)="actualizarCantidad(item.producto.prodId,$event)" ></td>
+                      <td>{{item.producto.prodCantidad}}</td>
+                      <td>{{item.producto.prodPrecio}}</td>
+                      <td>{{item.calcularTotalProducto()}}</td>
+                      <td><p-button  icon = "pi pi-trash"  styleClass="ui-button-danger  col-sm-4" (onClick)="eliminarDetalle(item.producto.prodId)"></p-button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="float-right">
+                <table class="table" >
+                  <tr hidden>
+                    <td>Subtotal sin Impuesto:</td>
+                    <td class="ml-4">0.00</td>
+                  </tr>
+                  <tr hidden>
+                    <td class="text-right">Subtotal 12%:</td>
+                    <td class="ml-4">0.00</td>
+                  </tr>
+                  <tr>
+                    <td class="text-right" >Subtotal:</td>
+                    <td class="ml-4">{{factura.calcularSubTotal()}}{{factura.factSubtotal}}</td>
+                  </tr>
+                  <tr>
+                    <td class="text-right">Descuento:</td>
+                    <td class="ml-4">0.00</td>
+                  </tr>
+                  <tr>
+                    <td class="text-right">IVA:</td>
+                    <td class="ml-4">{{factura.calcularIva()}}{{factura.factTotalIva}}</td>
+                  </tr>
+                  <tr>
+                    <td class="text-right">Total:</td>
+                    <td class="ml-4">{{factura.calcularTotales()}}{{factura.factTotal}}</td>
+                  </tr>
+                </table>
+                <div class="text-center">
+                  <div *ngIf="validaboton==false">
+                    <p-button label="Guardar Factura" (click)="crearFactura(facturaform)" icon = "pi pi-save" styleClass="ui-button-info"  ></p-button>
+                  </div>
+                 
+                 <div *ngIf="validaboton==true">
+                  <p-button label="Imprimir" icon = "pi pi-print" styleClass="ui-button-success"></p-button>
+                 </div>
+                 
+                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </form>
+      </div>
+    </div>
+</div>
+
+
+

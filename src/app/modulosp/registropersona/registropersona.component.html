@@ -1,0 +1,178 @@
+<div class="ui-g ui-fluid">
+    <div class="ui-g-12 ui-lg-12">
+        <!-- Left Side -->
+        <div class="card card-w-title">
+            <h1>Registro de Usuarios:</h1>
+            <div class="ui-g form-group">
+                <form [formGroup]="addForm2">
+                    <div class="card card-w-title">
+                        <div class="ui-g form-group ">
+                            <div class="ui-g-12 ui-lg-8 ">
+                                <div class="ui-g-12 ui-md-3">
+                                    <label for="input">Cedula: </label>
+                                </div>
+                                <div class="ui-g-12 ui-md-9">
+                                    <div class="ui-inputgroup">
+                                        <span class="ui-inputgroup-addon"><i class="pi pi-id-card"></i></span>
+                                        <input maxlength="10" type="text" id="inse_cedula" name="inse_cedula"
+                                            formControlName="inse_cedula" placeholder="Cedula" pInputText [(ngModel)]="persona2.persCedula">
+                                    </div>
+                                </div>
+                                <div class="ui-g-12 ui-md-3">
+                                    <label for="input">Nombres: </label>
+                                </div>
+                                <div class="ui-g-12 ui-md-9">
+                                    <div class="ui-inputgroup">
+                                        <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
+                                        <input type="text" id="inse_nombre" name="inse_nombre"
+                                            formControlName="inse_nombre" placeholder="Nombres" pInputText [(ngModel)]="persona2.persNombre">
+                                    </div>
+                                </div>
+                                <div class="ui-g-12 ui-md-3">
+                                    <label for="input">Apellidos: </label>
+                                </div>
+                                <div class="ui-g-12 ui-md-9">
+                                    <div class="ui-inputgroup">
+                                        <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
+                                        <input type="text" id="inse_apellido" name="inse_apellido"
+                                            formControlName="inse_apellido" placeholder="Apellidos" pInputText
+                                            [(ngModel)]="persona2.persApellido">
+                                    </div>
+                                </div>
+                                <div class="ui-g-12 ui-md-3">
+                                    <label for="input">Email: </label>
+                                </div>
+                                <div class="ui-g-12 ui-md-9">
+                                    <div class="ui-inputgroup">
+                                        <span class="ui-inputgroup-addon"><i class=" pi pi-envelope"></i></span>
+                                        <input type="email" id="inse_email" name="inse_email"
+                                            formControlName="inse_email" placeholder="Email" pInputText [(ngModel)]="persona2.persEmail">
+                                    </div>
+                                </div>
+                                <div class="ui-g-12 ui-md-3">
+                                    <label for="input">Telefono: </label>
+                                </div>
+                                <div class="ui-g-12 ui-md-9">
+                                    <div class="ui-inputgroup">
+                                        <span class="ui-inputgroup-addon"><i class=" pi pi-mobile"></i></span>
+                                        <input maxlength="10" type="text" id="inse_telefono" placeholder="Telefono" name="inse_telefono"
+                                            formControlName="inse_telefono" pInputText
+                                            [(ngModel)]="persona2.persTelefono">
+                                    </div>
+                                </div>
+                                <div class="ui-g-12 ui-md-3">
+                                    <label for="input">Dirección: </label>
+                                </div>
+                                <div class="ui-g-12 ui-md-9">
+                                    <div class="ui-inputgroup">
+                                        <span class="ui-inputgroup-addon"><i class=" pi pi-home"></i></span>
+                                        <input type="text" id="inse_direccion" placeholder="Direccion" name="inse_direccion"
+                                            formControlName="inse_direccion" pInputText
+                                            [(ngModel)]="persona2.persDireccion">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="ui-g-12 ui-lg-12 text-center">
+                                <div class="ui-g-12 ui-lg-6 text-center">
+                                    <div class="ui-g-12 ui-md-3">
+                                        <label for="input">Fecha de nacimiento: </label>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-9">
+                                        <div class="ui-inputgroup">
+                                            <span class="ui-inputgroup-addon"><i
+                                                    class=" pi pi-calendar-plus"></i></span>
+                                            <input type="date" id="inse_fechanaci" name="inse_fechanaci"
+                                                formControlName="inse_fechanaci" pInputText
+                                                [(ngModel)]="persona2.persfechanacimiento" placeholder="AAAA-MM-DD">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ui-g-12 ui-lg-6 text-center">
+                                    <div class="ui-g-12 ui-md-3">
+                                        <label for="input">Fecha de Bautizo: </label>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-9">
+                                        <div class="ui-inputgroup">
+                                            <span class="ui-inputgroup-addon"><i
+                                                    class=" pi pi-calendar-plus"></i></span>
+                                            <input type="date" id="inse_fechabautizo" name="inse_fechabautizo"
+                                                formControlName="inse_fechabautizo" pInputText
+                                                [(ngModel)]="persona2.persfechabautismo" placeholder="AAAA-MM-DD">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ui-g-12 ui-lg-12 text-center">
+                                <p-button icon="pi pi-save" stileClass="ui-button-info" label="Guardar"
+                                    (click)='create()' *ngIf="!persona2.persid else elseBlock"></p-button>
+                                <ng-template #elseBlock>
+                                    <button class="btn btn-primary" role="button" (click)='update()'>Editar</button>
+                                    <button class="btn btn-danger" role="button" (click)='cancelar()'>Cancelar</button>
+                                </ng-template>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+  
+        <p-table #dt1 [value]="persona" dataKey="persCedula" [rows]="10" [showCurrentPageReport]="true"
+            [rowsPerPageOptions]="[10,25,50]" [loading]="loading"
+            styleClass="p-datatable-customers p-datatable-gridlines" [showCurrentPageReport]="true"
+            [rowsPerPageOptions]="[10,25,50]" [loading]="loading"
+            styleClass="p-datatable-customers p-datatable-gridlines" [paginator]="true"
+            currentPageReportTemplate="lista de personas con documentos"
+            [globalFilterFields]="['persid','persCedula','persNombre','persApellido','persfechabautizo','persfechanacimiento','persEmail','persTelefono','persDireccion']">
+            <ng-template pTemplate="caption">
+                <div class="p-d-flex">
+                    <p>Usuarios Registrados</p>
+                    <span class="p-input-icon-left p-ml-auto">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')"
+                            placeholder="Buscar" />
+                    </span>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Cédula</th>
+                    <th>Nombres</th>
+                    <th>Apellidos</th>
+                    <th>Email</th>
+                    <th>Telefono</th>
+                    <th>Dirección</th>
+                    <th>Fecha de Nacimiento</th>
+                    <th>Fecha de Bautizo</th>
+                    <th>Acciones</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-person>
+                <tr>
+                    <td>{{person.persCedula}}</td>
+                    <td>{{person.persNombre}}</td>
+                    <td>{{person.persApellido}}</td>
+                    <td>{{person.persEmail}}</td>
+                    <td>{{person.persTelefono}}</td>
+                    <td>{{person.persDireccion}}</td>
+                    <td>{{person.persfechanacimiento}}</td>
+                    <td>{{person.persfechabautismo}}</td>
+                    <td>
+                        <p-button icon="pi pi-pencil" styleClass="ui-button-warning" (click)='cargarPersona(person)'>
+                        </p-button>
+                        <p-button icon="pi pi-trash" styleClass="ui-button-danger" (click)='delete(person)'></p-button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="7">No existen registros</td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+
+</div>

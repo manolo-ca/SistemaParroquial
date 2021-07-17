@@ -1,0 +1,248 @@
+<div class="card card-w-title">
+    <h1>Productos</h1>
+    <div class="p-grid" style="margin: 5px; background-color: whitesmoke;">
+        <div class="p-col">
+            <button icon="pi pi-plus" pButton type="button" (click)="showDialog()" label="Agregar" class="ui-button-success"></button>
+        </div>
+        <div class="p-col text-right">
+            <button type="button" pButton pRipple icon = "pi pi-print"  label="Reporte" (click)="exportPdf()" class="p-button-warning p-mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>        
+        </div>
+    </div>
+    <p-table #dt 
+    [value]="productos"
+    dataKey="prodId" 
+    [paginator]="true" 
+    [columns]="cols" 
+    [rows]="10" 
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10,25,50]" 
+    [loading]="loading" 
+    styleClass="p-datatable-customers p-datatable-gridlines"
+    [paginator]="true" 
+    currentPageReportTemplate="Lista de Productos" 
+    [globalFilterFields]="['prodNombre']">
+        <ng-template pTemplate="caption">
+            <div class="p-grid">
+                <div class="p-col" style="text-align: left;">
+                    <p>Lista de Productos</p>
+                </div>
+                <div class="p-col" style="text-align: right">
+                    <i class="pi pi-search" style="margin:4px 4px 0 0"></i>
+                    <input type="text" pInputText size="50" placeholder="Nombre del Producto" style="width:auto"
+                        (input)="dt.filterGlobal($event.target.value, 'contains')">
+                </div>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr class="text-center"  style="font-size: smaller;">
+                <!-- <th style="width: 80px;">ID</th> -->
+                <th>Nombre</th>
+                <th style="width: 80px;">Cantidad</th>
+                <th style="width: 80px;">Precio</th>
+                <th>Detalle</th>
+                <th>Proveedor</th>
+                <th>Almacen</th>
+                <th>Categoria</th>
+                <th style="width: 80px;">Iva</th>
+                <th style="width: 100px;">Acciones</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-productos>
+            <tr >
+                <!-- <td>{{productos.prodId}}</td> -->
+                <td>{{productos.prodNombre}}</td>
+                <td style="width: 80px;">{{productos.prodCantidad}}</td>
+                <td style="width: 80px;">{{productos.prodPrecio}}</td>
+                <td>{{productos.prodDetalle}}</td>
+                <td>{{productos.prodFkProveedor.provFkPersona.persNombre}} {{productos.prodFkProveedor.provFkPersona.persApellido}}</td>
+                <td>{{productos.prodFkAlmacen.almaNombre}}</td>
+                <td>{{productos.prodCategoria}}</td>
+                <td class="text-center" *ngIf="productos.prodIva == false">
+                    <p-message severity="error" text="sin Iva"></p-message>
+                </td>
+                <td  class="text-center" *ngIf="productos.prodIva == true">
+                    <p-message severity="success" text="IVA"></p-message>
+                </td>
+                <td style="width: 100px;" class="text-center">
+                    <p-button icon="pi pi-pencil" (click)="showDialogEdit(productos)" styleClass="ui-button-warning">
+                    </p-button>
+                    <p-button icon="pi pi-trash" (click)="eliminarProducto(productos)" styleClass="ui-button-danger">
+                    </p-button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td [attr.colspan]="cols.length">No hay datos.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+
+    <p-dialog header="Ingresar nuevo Producto" [(visible)]="dis" [modal]="true" [style]="{width: '45vw'}"
+        [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+        <p-scrollPanel [style]="{height: '500px'}">
+            <form [formGroup]="addForm1">
+                <div style="display:flex; justify-content: left; align-items: center;">
+                    <p><strong>Proveedor: </strong></p>
+                    <div class="ui-g-12 ui-md-4">
+                        <p-dropdown id="prodFkProveedor" name="prodFkProveedor" [ngModelOptions]="{standalone: true}"
+                            [options]="proveedores" [(ngModel)]="proveedor" [filter]="true"  (onChange)="cargarDatosProveedor($event)"
+                            optionLabel="provFkPersona.persNombre"></p-dropdown>
+                    </div>
+                </div>
+                <br>
+                <div  style="display:flex; justify-content: left; align-items: center;">
+                    <p><strong>Almacen: </strong></p>
+                    <div class="ui-g-12 ui-md-4">
+                        <p-dropdown id="prodFkAlmacen" name="prodFkAlmacen" [ngModelOptions]="{standalone: true}" (onChange)="cargarDatosAlmacen($event)"
+                            [options]="almacenes" [(ngModel)]="almacen" [filter]="true" optionLabel="almaNombre">
+                        </p-dropdown>
+                    </div>
+                </div>
+                <br>
+                <div  style="display:flex; justify-content: left; align-items: center;">
+                    <p><strong>Nombre: </strong></p>
+                    <input maxlength="250" class="input nombre" type="text" formControlName="prodNombre" name="prodNombre"
+                        id="prodNombre" pInputText placeholder="Nombre" class="form-control"
+                        [(ngModel)]="producto.prodNombre">
+                    <small class="p-error" style="color: red;"
+                        *ngIf="submitted && f.prodNombre.errors && f.prodNombre.errors.required">Campo requerido</small>
+                </div>
+                <br>
+                <div style="display:flex; justify-content: left; align-items: center;">
+                    <p><strong>Categoria: </strong></p>
+                    <input maxlength="250" class="input nombre" type="text" formControlName="prodCategoria" name="prodCategoria"
+                        id="prodCategoria" pInputText placeholder="Categoria" class="form-control"
+                        [(ngModel)]="producto.prodCategoria">
+                    <small class="p-error" style="color: red;"
+                        *ngIf="submitted && f.prodCategoria.errors && f.prodCategoria.errors.required">Campo requerido</small>
+
+                </div>
+                <br>
+                <div style="display:flex; justify-content: left; align-items: center;" >
+                    <p><strong>Iva: </strong></p>
+                    <p-checkbox [(ngModel)]="producto.prodIva" binary="true" formControlName="prodIva" name="prodIva" id="prodIva"></p-checkbox>
+                </div>
+                <br>
+                <div style="display:flex; justify-content: left; align-items: center;">
+                    <p><strong>Detalle: </strong></p>
+                    <input maxlength="250" class="input detalle" type="text" formControlName="prodDetalle"
+                        name="prodDetalle" id="prodDetalle" pInputText placeholder="Detalle" class="form-control"
+                        [(ngModel)]="producto.prodDetalle">
+                    <small class="p-error" style="color: red;"
+                        *ngIf="submitted && f.prodDetalle.errors && f.prodDetalle.errors.required">Campo requerido</small>
+
+                </div>
+                <br>
+                <div style="display:flex; justify-content: left; align-items: center;">
+                    <p><strong>Cantidad: </strong></p>
+                    <input maxlength="250" class="input cantidad" type="text" pKeyFilter="int" formControlName="prodCantidad"
+                        name="prodCantidad" id="prodCantidad" pInputText placeholder="Cantidad" class="form-control"
+                        [(ngModel)]="producto.prodCantidad">
+                    <small class="p-error" style="color: red;"
+                        *ngIf="submitted && f.prodCantidad.errors && f.prodCantidad.errors.required">Campo requerido</small>
+
+                </div>
+                <br>
+                <div  style="display:flex; justify-content: left; align-items: center;">
+                    <p><strong>Precio: </strong></p>
+                    <input maxlength="250" class="input precio" type="text" pKeyFilter="money" formControlName="prodPrecio" name="prodPrecio"
+                        id="prodPrecio" pInputText placeholder="Precio" class="form-control"
+                        [(ngModel)]="producto.prodPrecio">
+                    <small class="p-error" style="color: red;"
+                        *ngIf="submitted && f.prodPrecio.errors && f.prodPrecio.errors.required">Campo requerido</small>
+
+                </div>
+                <br>
+            </form>
+        </p-scrollPanel>
+        <p-footer>
+            <button type="button" pButton icon="pi pi-save" (click)="crearProducto()" label="Guardar"></button>
+            <button type="button" pButton icon="pi pi-times" (click)="dis=false" label="Cancelar"
+                class="ui-button-secondary"></button>
+        </p-footer>
+    </p-dialog>
+
+    <p-dialog header="EditarProducto" [(visible)]="dis_edit" [modal]="true" [style]="{width: '45vw'}"
+        [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+        <form [formGroup]="addForm2">
+            <div  style="display:flex; justify-content: left; align-items: center;">
+                <p><strong>Proveedor: </strong></p>
+                <div class="ui-g-12 ui-md-4">
+                    <p-dropdown id="prodFkProveedor" name="prodFkProveedor" [ngModelOptions]="{standalone: true}" (onChange)="cargarDatosProveedor($event)"
+                        [options]="proveedores" [(ngModel)]="producto.prodFkProveedor" [filter]="true"
+                        optionLabel="provFkPersona.persNombre"></p-dropdown>
+                </div>
+            </div>
+            <br>
+            <div style="display:flex; justify-content: left; align-items: center;">
+                <p><strong>Almacen: </strong></p>
+                <div class="ui-g-12 ui-md-4">
+                    <p-dropdown id="prodFkAlmacen" name="prodFkAlmacen" [ngModelOptions]="{standalone: true}"  (onChange)="cargarDatosAlmacen($event)"
+                        [options]="almacenes" [(ngModel)]="producto.prodFkAlmacen" [filter]="true" optionLabel="almaNombre">
+                    </p-dropdown>
+                </div>
+            </div>
+            <br>
+            <div  style="display:flex; justify-content: left; align-items: center;">
+                <p><strong>Nombre: </strong></p>
+                <input maxlength="250" class="input nombre" type="text" formControlName="prodNombre" name="prodNombre"
+                    id="prodNombre" pInputText placeholder="Nombre" class="form-control"
+                    [(ngModel)]="producto.prodNombre">
+                <small class="p-error" style="color: red;"
+                    *ngIf="submitted && f1.prodNombre.errors && f1.prodNombre.errors.required">Campo requerido</small>
+
+            </div>
+            <br>
+            <div  style="display:flex; justify-content: left; align-items: center;">
+                <p><strong>Categoria: </strong></p>
+                <input maxlength="250" class="input nombre" type="text" formControlName="prodCategoria" name="prodCategoria"
+                    id="prodCategoria" pInputText placeholder="Categoria" class="form-control"
+                    [(ngModel)]="producto.prodCategoria">
+                <small class="p-error" style="color: red;"
+                    *ngIf="submitted && f.prodCategoria.errors && f.prodCategoria.errors.required">Campo requerido</small>
+
+            </div>
+            <br>
+            <div style="display:flex; justify-content: left; align-items: center;" >
+                <p><strong>Iva: </strong></p>
+                <p-checkbox [(ngModel)]="producto.prodIva" binary="true" formControlName="prodIva" name="prodIva" id="prodIva"></p-checkbox>
+            </div>
+            <br>
+            <div  style="display:flex; justify-content: left; align-items: center;">
+                <p><strong>Detalle: </strong></p>
+                <input maxlength="250" class="input detalle" type="text" formControlName="prodDetalle"
+                    name="prodDetalle" id="prodDetalle" pInputText placeholder="Detalle" class="form-control"
+                    [(ngModel)]="producto.prodDetalle">
+                <small class="p-error" style="color: red;"
+                    *ngIf="submitted && f1.prodDetalle.errors && f1.prodDetalle.errors.required">Campo requerido</small>
+
+            </div>
+            <br>
+            <div  style="display:flex; justify-content: left; align-items: center;">
+                <p><strong>Cantidad: </strong></p>
+                <input maxlength="250" class="input cantidad" pKeyFilter="int" type="text" formControlName="prodCantidad"
+                    name="prodCantidad" id="prodCantidad" pInputText placeholder="Cantidad" class="form-control"
+                    [(ngModel)]="producto.prodCantidad">
+                <small class="p-error" style="color: red;"
+                    *ngIf="submitted && f1.prodCantidad.errors && f1.prodCantidad.errors.required">Campo
+                    requerido</small>
+            </div>
+            <br>
+            <div  style="display:flex; justify-content: left; align-items: center;">
+                <p><strong>Precio: </strong></p>
+                <input maxlength="250" class="input precio" type="text" pKeyFilter="money" formControlName="prodPrecio" name="prodPrecio"
+                    id="prodPrecio" pInputText placeholder="Precio" class="form-control"
+                    [(ngModel)]="producto.prodPrecio">
+                <small class="p-error" style="color: red;"
+                    *ngIf="submitted && f1.prodPrecio.errors && f1.prodPrecio.errors.required">Campo requerido</small>
+            </div>
+        </form>
+        <p-footer>
+            <button type="button" pButton icon="pi pi-save" (click)="editarProducto()" label="Editar"></button>
+            <button type="button" pButton icon="pi pi-times" (click)="dis_edit=false" label="Cancelar"
+                class="ui-button-secondary"></button>
+        </p-footer>
+    </p-dialog>
+</div>

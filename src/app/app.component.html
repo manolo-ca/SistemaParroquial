@@ -1,0 +1,160 @@
+<body>
+    <div class="wrapper">
+        <body class="login-body" *ngIf="!logeado; else perfil">
+            <div id="login-wrapper">
+
+                <div class="p-grid"><br><br>
+                    <div class="p-col text-right">
+                        <br>
+                        <h4> Parroquia <br>  San Joaquín</h4>
+                    </div>
+                    <div class="p-col text-left" style="width: 50%;" >
+                        <img src="assets/layout/images/sanjoaquin.jpg" alt="" width="85" height="95" />
+                    </div>
+                </div>
+                <div id="login-container" style="border-radius: 21px 21px 21px 21px;
+                    -moz-border-radius: 21px 21px 21px 21px;
+                    -webkit-border-radius: 21px 21px 21px 21px;
+                    border: 0px solid #000000; padding: 20px;">
+                    <span class="title">Sistema de Gestión Parroquial</span>
+                    <div class="ui-g ui-fluid">
+                        <form [formGroup]="addForm">
+                            <div class="ui-g-12">
+                                <input type="text" class="ui-inputtext ui-corner-all ui-state-default ui-widget" autocomplete="off" formControlName="usu_usuario" name="usu_usuario" 
+                                    id="usu_usuario" 
+                                    placeholder="Identificación" />
+                            </div>
+                            <div class="ui-g-12">
+                                <input type="password" autocomplete="off" formControlName="usu_password" name="usu_password" 
+                                    id="usu_password" class="ui-inputtext ui-corner-all ui-state-default ui-widget"
+                                    placeholder="Contraseña" />
+                            </div>
+                            <div class="ui-g-12 ui-md-6">
+                                <span class="remember-me">Recordar</span>
+                                <input type="checkbox">
+                            </div>
+                            <div class="ui-g-12 ui-md-6">
+                                <a href="#">Olvide Contraseña</a>
+                            </div>
+                            <div class="ui-g-12">
+                                <button type="button"
+                                    class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-left"
+                                    (click)="logIn()">
+                                    <span class="ui-button-icon-left ui-c fa fa-fw ui-icon-person"></span>
+                                    <span class="ui-button-text ui-c">Iniciar Sesión</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="login-footer">Copyright © Todos los Derechos Reservados. <br> Desarrollado en 2021</div>
+                <br><br>
+            </div>
+        </body>
+    </div>
+    <ng-template #perfil>
+        <div class="wrapper" [ngClass]="{'sidebar-inactive-l':menuInactiveDesktop, 'sidebar-active-m':menuActiveMobile}">
+            <div class="topbar clearfix" weight style="height:80px;background-color: #0d3b66;" >
+               <div class="p-grid">
+                    <div class="p-col">
+                        <a id="omega-menu-button" href="#" (click)="toggleMenu($event)">
+                            <span class="fa fa-bars"></span>
+                        </a>
+                        <span class="topbar-title"></span>
+                        <a id="options-menu-button" href="#" (click)="toggleTopMenu($event)">
+                            <span class="fa fa-ellipsis-h"></span>
+                        </a>
+                    </div>
+                    <div class="p-col" >
+                        <div class="p-grid text-center"><br><br>
+                            <div class="p-col ">
+                                <h6>  PARROQUIA      SAN JOAQUÍN</h6>
+                                <p style="font-size: 12px;">Arquidiócesis de Cuenca</p>   
+                            </div>
+                            <div class="p-col text-left" >
+                                <img src="assets/layout/images/sanjoaquin.jpg" alt="" width="50" height="60" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-col" >
+                        <div id="topbar-icons" class="animated"
+                            [ngClass]="{'topbar-icons-visible flipInX':topMenuActive,'flipOutX':topMenuLeaving}">
+                            <a *ngIf="this.user.usuaUsuario == this.UsuarioMaster" [routerLink]="['sistemaparroquial/usuario/administrar-usuario']">
+                                <br>
+                                <span class="topbar-icon fa fa-users"></span>
+                            </a>
+                        </div>
+                    </div>
+               </div>
+            </div>
+            <div class="sidebar" (click)="onMenuClick()">
+                <p-scrollPanel #scroller [style]="{height: '100%'}">
+                    <div class="sidebar-scroll-content" >
+                        <div class="logo" style="color: rgba(255, 255, 255, 0.795);">
+                            <span style="font-size: 15px; font-family: Helvetica;"> <b>Sistema de Gestión Parroquial</b> </span>
+                        </div>
+                        <div class="profile" >
+                            <img src="assets/layout/images/profile.png" alt="" />
+                            <a id="profile-button" href="#" (click)="toggleProfile($event)">
+                                <span class="username"><i class="fa fa-fw fa-cog"></i>{{this.user.usuaUsuario}}</span>
+                            </a>
+                            <ul [@submenu]="profileActive ? 'visible' : 'hidden'">
+                                <li><a href="#"><i class="fa fa-fw fa-sliders"></i><span>Cuenta</span></a></li>
+                                <li><a href="#"><i class="fa fa-fw fa-bell"></i><span>Notificaciones</span></a></li>
+                                <li><a (click)="cerrarSesion()"><i class="fa fa-fw fa-sign-out"></i><span>Cerrar Sesión</span></a></li>
+                            </ul>
+                        </div>
+                        <app-menu></app-menu>
+                    </div>
+                </p-scrollPanel>
+            </div><br>
+            <div class="main">
+                <router-outlet></router-outlet>
+            </div>
+            <div class="footer" style="background-color: #0d3b66;align-items: center; color:white; height:150px;">
+                <div class="p-grid">
+                    <div class="p-col">
+                        <h6 >REDES SOCIALES</h6>
+                        <br>
+                            <div class="columna3"></div>
+                            <div class="columna3" style="display: flex;padding: 5px;">
+                                <div class="columna4" style="display: flex; justify-content: center;padding: 5px;">
+                                    <a href="https://www.facebook.com/"><img src="assets/layout/images/001-facebook.png"   width="30" height="30"alt="Facebook"></a>
+                                </div>
+                                <div class="columna4" style="display: flex; justify-content: center;padding: 5px;">
+                                    <a href="https://www.instagram.com/?hl=es-la"><img src="assets/layout/images/011-instagram.png" width="30" height="30"alt="Instagram"></a>
+                                </div>
+                                <div class="columna4" style="display: flex; justify-content: center;padding: 5px;">
+                                    <a href="https://youtube.com/"><img src="assets/layout/images/008-youtube.png"width="30" height="30" alt="Youtube"></a>
+                                </div>
+                                <div class="columna4" style="display: flex; justify-content: center;padding: 5px;">
+                                    <a href="https://whatsapp.com/"><img src="assets/layout/images/003-whatsapp.png"width="30" height="30" alt="Whatsapp"></a>
+                                </div>
+                            </div>
+                            <div class="columna3"></div>  
+                    </div>
+                    <div class="p-col">
+                        <h6>CONTACTOS</h6>
+                        <p style="font-size: 14px;">Teléfono:(07)4177350</p>
+                        <p style="font-size: 14px;">Apartado:1354</p>
+                        <p style="font-size: 14px;">Correo:</p>
+                    </div>
+                    <div class="p-col">
+                        <h6>UBICACIÓN</h6>
+                        <p style="font-size: 14px;">Monseñor Leónidas Proaño y Carlos Arizaga Vega</p>
+                        <p style="font-size: 14px;">Cuenca-Ecuador </p>
+                    </div>
+                    <div class="p-col">
+                        <div style="width: 100%"><iframe width="100%" height="120px" 
+                            frameborder="0" scrolling="no" marginheight="0" marginwidth="0" 
+                            src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=es&amp;q=-2.8958310547869517,%20-79.05167331690237+(Mi%20nombre%20de%20egocios)&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed">
+                        </iframe><a href="https://www.mapsdirections.info/marcar-radio-circulo-mapa/"></a></div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+    
+</body>
+

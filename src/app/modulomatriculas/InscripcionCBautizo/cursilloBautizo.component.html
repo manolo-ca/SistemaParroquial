@@ -1,0 +1,173 @@
+<div class="ui-g ui-fluid">
+    <div class="ui-g-12 ui-lg-12">
+        <form [formGroup]="FormCursillo">
+            <div class="card card-w-title">
+                <h1>Registro para cursillo Pre-bautismal</h1>
+                <div class="ui-g form-group">
+                    <div class="ui-g-12 ui-lg-12 text-center" style="margin: 5px; background-color: whitesmoke;">
+                        <div class="ui-g-12 ui-md-1"></div>
+                        <div class="ui-g-12 ui-md-3">
+                            <label for="input">Lugar:</label>
+                            <input  placeholder="Parroquia de San Joaquín" formControlName="cursilloLugar" name="cursilloLugar" id="cursilloLugar" disabled type="text"  pInputText>
+                            
+                        </div>
+                        <div class="ui-g-12 ui-md-1"></div>
+                        <div class="ui-g-12 ui-md-2">
+                            <label for="input">Hora:</label>
+                            <p-calendar pInputText formControlName="cursilloHora" name="cursilloHora" id="cursilloHora" [(ngModel)]="date8" [timeOnly]="true" placeholder="00:00"></p-calendar>
+                            <div *ngIf="cursilloHora.invalid && (cursilloHora.dirty || cursilloHora.touched)"> 
+                                <p-message severity="error" text="Campo requerido"></p-message>
+                            </div>
+                        </div>
+                        <div class="ui-g-12 ui-md-1"></div>
+                        <div class="ui-g-12 ui-md-3">
+                            <label for="input">Fecha:</label>
+                            <p-calendar formControlName="fechaCursillo" name="fechaCursillo" id="fechaCursillo" [(ngModel)]="datecursillo"  [showIcon]="true" placeholder="Año/Mes/Día" dateFormat="yy/mm/dd"></p-calendar>
+                            <div *ngIf="fechaCursillo.invalid && (fechaCursillo.dirty || fechaCursillo.touched)"> 
+                                <p-message severity="error" text="Campo requerido"></p-message>
+                            </div>
+                        </div>
+                        <div class="ui-g-12 ui-md-1"></div>
+                    </div>
+                    <div class="ui-g-12 ui-lg-8">
+                        
+                        <div class="ui-g-12 ui-lg-12">
+                            <p-message severity="warn" text="Requisito para registrar un cursillo: Obligatoriamente la información de los diferentes participantes del cursillo deben estar pre-registrados en el sistema."></p-message>  
+                        </div>
+                        <div class="ui-g-12 ui-md-3">
+                            <p-button label="Buscar" (click)="findbyCedulaBautizo()" icon = "pi pi-search" styleClass="ui-button-success"></p-button>
+                        </div>
+                        <div class="ui-g-12 ui-md-9">
+                            <input formControlName="bautizocedula" name="bautizocedula" id="bautizocedula" type="text" placeholder="Ingrese la cedula del niño o niña que se bautizará" pInputText>
+                            <div *ngIf="bautizocedula.invalid && (bautizocedula.dirty || bautizocedula.touched)"> 
+                                <p-message severity="error" text="Campo requerido"></p-message>
+                            </div>
+                        </div>
+                        <div class="ui-g-12 ui-md-3">
+                            <label for="input"> Nombre Bautizo:</label>                
+                        </div>
+                        <div class="ui-g-12 ui-md-9">
+                            <div class="ui-inputgroup">
+                                <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
+                                <input [(ngModel)]="Personabautizo.persNombre" formControlName="bautizoNombre" name="bautizoNombre" id="bautizoNombre" disabled type="text"  pInputText>
+                            </div>
+                        </div>
+                        <div class="ui-g-12 ui-md-3">
+                            <label for="input"> Apellido:</label>                
+                        </div>
+                        <div class="ui-g-12 ui-md-9">
+                            <div class="ui-inputgroup">
+                                <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
+                                <input [(ngModel)]="Personabautizo.persApellido" formControlName="bautizoApellido" name="bautizoApellido" id="bautizoApellido" disabled type="text"  pInputText>
+                            </div>
+                        </div>
+                        <div class="ui-g-12 ui-md-3">
+                            <label for="input"> Fecha Nacimiento:</label>                
+                        </div>
+                        <div class="ui-g-12 ui-md-9">
+                            <div class="ui-inputgroup">
+                                <span class="ui-inputgroup-addon"><i class=" pi pi-calendar-plus"></i></span>
+                                <input [(ngModel)]="Personabautizo.persfechanacimiento" formControlName="bautizoNacimmiento" name="bautizoNacimmiento" id="bautizoNacimmiento" disabled type="text"  pInputText>
+                            </div>
+                        </div>
+                        <div class="ui-g-12 ui-md-3">
+                            <label for="input"> Dirección:</label>                
+                        </div>
+                        <div class="ui-g-12 ui-md-9">
+                            <div class="ui-inputgroup">
+                                <span class="ui-inputgroup-addon"><i class="pi pi-home"></i></span>
+                                <input [(ngModel)]="Personabautizo.persDireccion" formControlName="bautizoDireccion" name="bautizoDireccion" id="bautizoDireccion" disabled type="text"  pInputText>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-lg-4 text-center" style="background-color: whitesmoke;">
+                        <p>photo</p>
+                    </div>
+                    <div class="ui-g-12 ui-lg-6">
+                        <div class="card card-w-title">
+                            <h1>Datos del Padre</h1>
+                            <div class="ui-g form-group">
+                                <div class="ui-g-12 ui-lg-8">
+                                    <div class="ui-g-12 ui-md-4">
+                                        <p-button label="Buscar" (click)="findbyCedulaPadre()" icon = "pi pi-search" styleClass="ui-button-success"></p-button>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-8">
+                                        <input formControlName="padreCedula" name="padreCedula" id="padreCedula" type="text" placeholder="Ingrese la cedula para buscar" pInputText>
+                                        <div *ngIf="padreCedula.invalid && (padreCedula.dirty || padreCedula.touched)"> 
+                                            <p-message severity="error" text="Campo requerido"></p-message>
+                                        </div>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-3">
+                                        <label for="input"> Nombre:</label>                
+                                    </div>
+                                    <div class="ui-g-12 ui-md-9">
+                                        <div class="ui-inputgroup">
+                                            <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
+                                            <input  [(ngModel)]="PersonaPadre.persNombre" formControlName="padreNombre" name="padreNombre" id="padreNombre" disabled type="text"  pInputText>
+                                        </div>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-3">
+                                        <label for="input"> Apellido:</label>                
+                                    </div>
+                                    <div class="ui-g-12 ui-md-9">
+                                        <div class="ui-inputgroup">
+                                            <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
+                                            <input  [(ngModel)]="PersonaPadre.persApellido" formControlName="padreApellido" name="padreApellido" id="padreApellido" disabled type="text"  pInputText>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ui-g-12 ui-lg-4 text-center" style="background-color: whitesmoke;">
+                                    <p>photo</p>
+                                </div>
+        
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-lg-6">
+                        <div class="card card-w-title">
+                            <h1>Datos de la Madre</h1>
+                            <div class="ui-g form-group">
+                                <div class="ui-g-12 ui-lg-8">
+                                    <div class="ui-g-12 ui-md-4">
+                                        <p-button label="Buscar" (click)="findbyCedulaMadre()" icon = "pi pi-search" styleClass="ui-button-success"></p-button>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-8">
+                                        <input formControlName="madreCedula" name="madreCedula" id="madreCedula" type="text" placeholder="Ingrese la cedula para buscar" pInputText>
+                                        <div *ngIf="madreCedula.invalid && (madreCedula.dirty || madreCedula.touched)"> 
+                                            <p-message severity="error" text="Campo requerido"></p-message>
+                                        </div>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-3">
+                                        <label for="input"> Nombre:</label>                
+                                    </div>
+                                    <div class="ui-g-12 ui-md-9">
+                                        <div class="ui-inputgroup">
+                                            <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
+                                            <input [(ngModel)]="PersonaMadre.persNombre" formControlName="madreNombre" name="madreNombre" id="madreNombre" disabled type="text"  pInputText>
+                                        </div>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-3">
+                                        <label for="input"> Apellido:</label>                
+                                    </div>
+                                    <div class="ui-g-12 ui-md-9">
+                                        <div class="ui-inputgroup">
+                                            <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
+                                            <input [(ngModel)]="PersonaMadre.persApellido" formControlName="madreApellido" name="madreApellido" id="madreApellido" disabled type="text"  pInputText>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ui-g-12 ui-lg-4 text-center" style="background-color: whitesmoke;">
+                                    <p>photo</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="ui-g-12 ui-lg-12 text-center" style="background-color: whitesmoke;">
+                        <p-button label="Registrar" (click)="RegistrarCursillo()" icon = "pi pi-save" styleClass="ui-button-info"></p-button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

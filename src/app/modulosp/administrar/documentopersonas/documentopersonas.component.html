@@ -1,0 +1,55 @@
+<div class="card">
+    <h2>Administración de Documentos </h2><hr>
+   
+    <br>
+    
+    <p-table #dt1 [value]="documentospersonas" dataKey="persCedula"
+        [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-customers p-datatable-gridlines"
+        [paginator]="true" currentPageReportTemplate="lista de personas con documentos"
+        [globalFilterFields]="['persCedula','persNombre','persApellido']">
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex">
+                <h5>Usuarios Registrados</h5>
+                <span class="p-input-icon-left p-ml-auto">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Buscar" />
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Cédula</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                
+                <th>
+                    <div class="text-center">
+                        Acción
+                    </div>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-documentosp>
+            <tr>
+                <td>
+                    {{documentosp.persCedula}}
+                </td>
+                <td>
+                   {{documentosp.persNombre}}
+                </td>
+                <td>
+                   {{documentosp.persApellido}}
+                </td>
+               
+                <td style="width: 70px; padding: 5px;text-align: center;"> 
+                    <p-button icon="pi pi-plus" [routerLink]="['/serviciospastorales/documentos-persona-crear',documentosp.persid]"  label="Crear Documento" styleClass="ui-button-success"></p-button>
+                </td>           
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="7">No registros</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

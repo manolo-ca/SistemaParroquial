@@ -1,0 +1,88 @@
+<div class="card card-w-title">
+  <h1>Activos</h1>
+  <div class="p-grid" style="margin: 5px; background-color: whitesmoke;">
+    <div class="p-col">
+        <button icon="pi pi-plus" pButton type="button" (click)="showDialog()" label="Agregar" class="ui-button-success"></button>
+    </div>
+    <div class="p-col text-right">
+        <button type="button" pButton pRipple icon = "pi pi-print"  label="Reporte" (click)="exportPdf()" class="p-button-warning p-mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>        
+    </div>
+  </div>
+  <p-table #dt [value]="activos" [paginator]="true" [columns]="cols" [rows]="4" [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-customers p-datatable-gridlines"
+    [paginator]="true" currentPageReportTemplate="Lista de Activos" [globalFilterFields]="['actiNombre']">
+    <ng-template pTemplate="caption">
+      <div class="p-grid">
+        <div class="p-col" style="text-align: left;">
+          <p>Lista de Activos</p>
+        </div>
+        <div class="p-col" style="text-align: right">
+          <i class="pi pi-search" style="margin:4px 4px 0 0"></i>
+          <input type="text" pInputText size="50" placeholder="Nombre del Activo"
+            (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th *ngFor="let col of cols">
+          {{col.header}}
+        </th>
+        <th style="width: 100px;">Acciones</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-activos>
+      <tr>
+        <td>{{activos.actiNombre}}</td>
+        <td style="width: 100px;" class="text-center">
+          <p-button icon="pi pi-pencil" (click)="showDialogEdit(activos)" styleClass="ui-button-warning"></p-button>
+          <p-button icon="pi pi-trash" (click)="eliminarActivo(activos)" styleClass="ui-button-danger"></p-button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td [attr.colspan]="cols.length">No hay datos.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+  <p-dialog header="Ingresar nuevo Activo" [(visible)]="dis" [modal]="true" [style]="{width: '20vw'}"
+    [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+    <form [formGroup]="addForm1">
+      <div class="p-grid" style="display:flex; justify-content: left; align-items: center;">
+        <p><strong>Nombre: </strong></p>
+        <input maxlength="250" class="input nombre" type="text" formControlName="actiNombre" name="actiNombre" (click)="submitted = false"
+          id="actiNombre" pInputText placeholder="Nombre" class="form-control" [(ngModel)]="activo.actiNombre">
+        <small class="p-error" style="color: red;"
+          *ngIf="submitted && f.actiNombre.errors && f.actiNombre.errors.required">Campo requerido</small>
+
+      </div>
+      <br>
+    </form>
+    <p-footer>
+      <button type="button" pButton icon="pi pi-save" (click)="crearActivo()" label="Guardar"></button>
+      <button type="button" pButton icon="pi pi-times" (click)="dis=false" label="Cancelar"
+        class="ui-button-secondary"></button>
+    </p-footer>
+  </p-dialog>
+
+  <p-dialog header="Editar Activo" [(visible)]="dis_edit" [modal]="true" [style]="{width: '20vw'}" [maximizable]="true"
+    [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+    <form [formGroup]="addForm2">
+      <div class="p-grid" style="display:flex; justify-content: left; align-items: center;">
+        <p><strong>Nombre: </strong></p>
+        <input maxlength="250" class="input nombre" type="text" formControlName="actiNombre" name="actiNombre" (click)="submitted = false"
+          id="actiNombre" pInputText placeholder="Nombre" class="form-control" [(ngModel)]="activo.actiNombre">
+        <small class="p-error" style="color: red;"
+          *ngIf="submitted && f1.actiNombre.errors && f1.actiNombre.errors.required">Campo requerido</small>
+
+      </div>
+      <br>
+    </form>
+    <p-footer>
+      <button type="button" pButton icon="pi pi-save" (click)="editarActivo()" label="Guardar"></button>
+      <button type="button" pButton icon="pi pi-times" (click)="dis_edit=false" label="Cancelar"
+        class="ui-button-secondary"></button>
+    </p-footer>
+  </p-dialog>
+</div>

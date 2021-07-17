@@ -1,0 +1,26 @@
+.columna3 {
+    width:33%;
+    float:left;
+  }
+  
+  @media (max-width: 500px) {
+    
+    .columna3 {
+      width:auto;
+      float:none;
+    }
+    
+  }
+  .columna4 {
+    width:25%;
+    float:left;
+  }
+  
+  @media (max-width: 500px) {
+    
+    .columna4 {
+      width:auto;
+      float:none;
+    }
+    
+  }

@@ -1,0 +1,471 @@
+<div class="ui-g ui-fluid" style="background-color: whitesmoke;">
+    <form  #facturaform="ngForm">
+        <br><br>
+        <div class="ui-g-12 ui-lg-12">
+            <div  class="ui-g-12 ui-md-1">
+                <label for="input">Fecha de Emisión: </label>
+            </div>
+            <div class="ui-g-12 ui-md-2"> 
+                <p-calendar disabled [(ngModel)]="fechaemision"  [readonlyInput]="true" [locale]="es" name="factFechaEmision"  [showIcon]="true" dateFormat="yy-mm-dd"  placeholder="aaaa-mm-dd" required #fechaEmision></p-calendar>
+            </div>
+            <div  class="ui-g-12 ui-md-1">
+                <label for="input">Nro. Doc: </label>
+            </div>
+            <div class="ui-g-12 ui-md-2"> 
+                <input type="text" disabled name="factNumdocumento" [(ngModel)]="factura.factNumdocumento"  pInputText required #numDocumento="ngModel" placeholder="NÚMERO DOCUMENTO" readonly> 
+                <div *ngIf="numDocumento.invalid && numDocumento.touched">
+                    <div *ngIf="numDocumento.errors.required">
+                    <div class="alert alert-danger" role="alert">
+                        ¡Ingrese el numero de documento!
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <div  class="ui-g-12 ui-md-1">
+                <label for="input">Nro. Aut: </label>
+            </div>
+            <div class="ui-g-12 ui-md-2"> 
+                <input type="text" disabled name="factNumautorizacion" [(ngModel)]="factura.factNumautorizacion" pInputText  required #numAutorizacion="ngModel" placeholder="NÚMERO AUTORIZACIÓN" readonly> 
+                <div *ngIf="numAutorizacion.invalid && numAutorizacion.touched">
+                <div *ngIf="numAutorizacion.errors.required">
+                    <div class="alert alert-danger" role="alert">
+                    ¡Ingrese el numero de Autorizacion!
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div  class="ui-g-12 ui-md-1">
+                <label for="input">Caja: </label>
+            </div>
+            <div class="ui-g-12 ui-md-2"> 
+                <p-dropdown  placeholder="Seleccione Caja..."  (onChange)="cargarDatosCaja($event)"  [options]="cajas" optionLabel="cajaNombre"></p-dropdown>
+                
+            </div>
+        </div>
+        <div class="ui-g-12 ui-lg-12">
+            <div class="card card-w-title text-right">
+                <div class="ui-g form-group text-left">
+                    <div  class="ui-g-12 ui-md-1">
+                        <label for="input"  > CI ó RUC: </label>
+                    </div>
+                    <div  class="ui-g-12 ui-md-3">
+                        <p-autoComplete [suggestions]=clientes (completeMethod)="autocompleteCliente($event)" [size]="30" field="clieFkPersona.persCedula" (onSelect)="cargarCliente($event)" placeholder="BUSQUEDA POR: NOMBRE ó CI ó RUC"  >
+                            <ng-template let-cli pTemplate="clientes" >
+                                {{cli.clieFkPersona.persCedula}} Cliente: {{cli.clieFkPersona.persApellido}} {{cli.clieFkPersona.persNombre}}
+                            </ng-template>
+                        </p-autoComplete>
+                    </div>
+                    <div  class="ui-g-12 ui-md-1">
+                        <label for="input"  >Cliente: </label>
+                    </div>
+                    <div class="ui-g-12 ui-md-3"> 
+                        <input disabled type="text" id="nombre"  [(ngModel)]="persona.persNombre"  name="persNombre" pInputText readonly placeholder="NOMBRES Y APELLIDOS DEL CLIENTE"> 
+                    </div>
+                    <div  class="ui-g-12 ui-md-1">
+                        <label for="input">Email: </label>
+                    </div>
+                    <div class="ui-g-12 ui-md-2"> 
+                        <input disabled type="text" id="email" [(ngModel)]="persona.persEmail"  name="persEmail" pInputText  readonly placeholder="CORREO ELECTRONICO DEL CLIENTE"> 
+                    </div>
+                    <div  class="ui-g-12 ui-md-1">
+                        <p-button icon="pi pi-users" styleClass="ui-button-success" label="  " (click)="gestionarcliente()"> <br> </p-button>
+                    </div>
+                    <div  class="ui-g-12 ui-md-1">
+                        <label for="input">Teléfono: </label>
+                    </div>
+                    <div class="ui-g-12 ui-md-3"> 
+                        <input disabled type="text" id="telefono" [(ngModel)]="persona.persTelefono"  name="persTelefono" pInputText readonly placeholder="CONTACTO DEL CLIENTE"> 
+                    </div>
+                    <div  class="ui-g-12 ui-md-1">
+                        <label for="input">Dirección: </label>
+                    </div>
+                    <div class="ui-g-12 ui-md-7"> 
+                        <input disabled type="text" id="direccion" [(ngModel)]="persona.persDireccion"  name="persDireccion"  pInputText  readonly placeholder="DIRECCIÓN DEL CLIENTE"> 
+                    </div>
+                    <div  class="ui-g-12 ui-md-2 ">
+                        <label for="input">Observacion: </label>
+                    </div>
+                    <div class="ui-g-12 ui-md-10"> 
+                    <textarea [rows]="2" [cols]="30" [(ngModel)]="cajamovimiento.cajmObservaciones" name="cajmObservaciones" pInputTextarea autoResize="autoResize" #factObservacion="ngModel" placeholder="OBSERVACIÓN DE LA VENTA"></textarea>
+                    <div *ngIf="factObservacion.invalid && factObservacion.touched">
+                        <div *ngIf="factObservacion.errors.required">
+                                <div class="alert alert-danger" role="alert">
+                                    ¡Ingrese una observacion para la venta!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card card-w-title">
+            <div class="ui-g form-group">
+                <div class="ui-g-12 ui-lg-12">
+                    <div class="p-grid" style="margin: 5px; background-color: whitesmoke;">
+                        <div class="p-col text-left">
+                            <div class="ui-g-12 ui-md-2">
+                                <label for="input"><i class="pi pi-search"></i> <b>Almacenes:</b></label>        
+                            </div>
+                            <div hidden class="ui-g-12 ui-md-6">
+                                <p-autoComplete [suggestions]=productos (completeMethod)="autocompleteProducto($event)" [size]="50" field="prodNombre" (onSelect)="cargarProductos($event)" >
+                                    <ng-template let-pro pTemplate="productos" >
+                                        {{pro.prodNombre}} Stock: {{pro.prodCantidad}} Precio: {{pro.prodPrecio}}
+                                    </ng-template>
+                                </p-autoComplete>       
+                            </div>
+                            <div class="ui-g-12 ui-md-4">
+                                <p-dropdown  placeholder="Busqueda por Almacen"  (onChange)="FiltroProductosAlmacen($event)" [showClear]="false" [options]="almacenes" optionLabel="almaNombre"></p-dropdown>      
+                            </div>
+                            <div class="ui-g-12 ui-md-6">
+                                <p-button icon="pi pi-list" styleClass="ui-button-info" label=" Agregar Productos" (click)="validaAlmacen()"></p-button>        
+                            </div>
+                        </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped my-3">
+                                <thead>
+                                <tr style="text-align:center;">
+                                    <th scope="col">Codigo</th>
+                                    <th scope="col">Descripcion</th>
+                                    <th scope="col">Cantidad</th>
+                                    <th scope="col">Precio</th>
+                                    <th scope="col">Nro Existencias</th>
+                                    <th scope="col">Subtotal</th>
+                                    <th scope="col">%Desc</th>
+                                    <th scope="col">SubTDesc</th>
+                                    <th scope="col">SubTIva</th>
+                                    <th scope="col">Acciones</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let item of factura.detalleFacturaCollection" style="text-align:center;">
+                                    <td>{{item.producto.prodId}}</td>
+                                    <td>{{item.producto.prodNombre}}</td>
+                                    <td><input type="text" name="detfCantidad"  class="col-sm-4"  value="{{item.detfCantidad}}" (keyup)="actualizarCantidad(item.producto.prodId,$event)" ></td>
+                                    <td>{{item.producto.prodPrecio}}</td>
+                                    <td>{{item.producto.prodCantidad}}</td>
+                                    <td>{{item.calcularTotalProducto() | number:'1.0-2' }}</td>
+                                    <td><input type="text"  name="detfPdescuento" class="col-sm-4"  value="{{item.detfPdescuento}}" (keyup)="actualizarDescuento(item.producto.prodId,$event)" ></td>
+                                    <td>{{item.calcularTotalProducto()-item.detfDescuento | number:'1.0-2'}}</td>
+                                    <td>{{item.calcularTotalProducto()+item.detfIva | number:'1.0-2' }}</td>
+                                    <td><p-button  icon = "pi pi-trash"  styleClass="ui-button-danger  col-sm-4" (onClick)="eliminarDetalle(item.producto.prodId)"></p-button></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="float-right">
+                            <table class="table" style="font-weight: bold; font-size: 20px;">
+                                <tr >
+                                    <td class="text-right">Subtotal IVA 12%:</td>
+                                    <td class="ml-4">${{factura.calcularSubTotal()}}{{factura.factSubtotalIva | number:'1.0-2'}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right">Subtotal IVA 0%:</td>
+                                    <td class="ml-4">${{factura.calcularSubTotal()}}{{factura.factSubtotal | number:'1.0-2'}}</td>
+                                </tr>
+            
+                                <tr>
+                                    <td class="text-right">SubTotal con Descuento IVA 12%:</td>
+                                    <td class="ml-4">${{factura.calcularDescuentoTotal()}}{{factura.calcularSubTotal()}}{{factura.factSubtotalIva-factura.factDescuentototalIva | number:'1.0-2'}}</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="text-right">SubTotal con Descuento IVA 0%:</td>
+                                    <td class="ml-4">${{factura.calcularDescuentoTotal()}}{{factura.calcularSubTotal()}}{{factura.factSubtotal-factura.factDescuentototal | number:'1.0-2'}}</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="text-right">Total Descuento:</td>
+                                    <td class="ml-4">${{factura.calcularDescuentoTotal()}}{{factura.factDescuentototal+factura.factDescuentototalIva | number:'1.0-2'}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right">IVA:</td>
+                                    <td class="ml-4">${{factura.calcularIva()}}{{factura.factTotalIva | number:'1.0-2'}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right">Total:</td>
+                                    <td class="ml-4" style="color: red; font-size: 30px;">${{factura.calcularTotales()}}{{factura.factTotal | number:'1.0-2'}}</td>
+                                </tr>
+                            </table>
+                            <div class="text-center">
+                                <div *ngIf="validaboton==false">
+                                    <p-button label="Guardar Factura" (click)="crearFactura(facturaform)" icon = "pi pi-save" styleClass="ui-button-info"  ></p-button>
+                                </div>
+                            <div *ngIf="validaboton==true">
+                                <p-button label="Imprimir" icon = "pi pi-print" (click)="imprimirFactura()" styleClass="ui-button-success"></p-button>
+                            </div>
+            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!--Ventana de gestion de clientes-->
+
+<p-dialog header="GESTÓN DE CLIENTES" [(visible)]="dis" [modal]="true" [style]="{width: '80vw'}"
+    [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+    <p-scrollPanel [style]="{width: '100%', height: '500px'}">
+        <app-cliente></app-cliente>
+    </p-scrollPanel>
+    <p-footer>
+        <div class="p-grid">
+            <div class="p-col text-right">
+                <p-button icon="pi pi-times" (click)="dis=false" label="Cerrar" styleClass="ui-button-secondary"></p-button>
+            </div>
+        </div>
+    </p-footer>
+</p-dialog>
+
+<!--Ventana de productos por almacen-->
+<p-dialog header="LISTA DE PRODUCTOS POR ALMACEN" [(visible)]="dis2" [modal]="true" [style]="{width: '80vw'}"
+    [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+    <p-scrollPanel [style]="{width: '100%', height: '500px'}">
+        <div class="card">
+            <p-table  #dt1
+            [value]="productosAlmacenF"  
+            dataKey="prodId" 
+            [rows]="8" 
+            [showCurrentPageReport]="true"
+            [rowsPerPageOptions]="[10,25,50]" 
+            [loading]="loading" 
+            styleClass="p-datatable-customers p-datatable-gridlines"
+            [paginator]="true" 
+            currentPageReportTemplate="Lista de Producos por Almacen"
+            [globalFilterFields]="['prodId','prodNombre','prodCantidad','prodPrecio','prodDetalle','prodIva']">
+                <ng-template pTemplate="caption">
+                    <div class="p-d-flex">
+                        <p>Lista de Productos</p>
+                        <span class="p-input-icon-left p-ml-auto">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')"
+                                placeholder="Buscar Producto" />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Observaciones</th>
+                        <th style="width: 80px;">Codigo</th>
+                        <th >Producto</th>
+                        <th style="width: 110px;">Cantidad</th>
+                        <th style="width: 110px;">Precio</th>
+                        <th >Detalle</th>
+                        <th style="width: 80px;">IVA</th>
+                        <th>Acciones</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-producto>
+
+                        <tr>
+                            <td style="width: 110px;" class="text-center" *ngIf="producto.prodCantidad>0 && producto.prodCantidad<=5">
+                                <p-message severity="warn" text="Pocas Existencias"></p-message>
+                            </td>
+                            <td style="width: 110px;" class="text-center" *ngIf="producto.prodCantidad==0 || producto.prodCantidad<0 ">
+                                <p-message severity="error" text="Sin existencias"></p-message>
+                            </td>
+                            <td style="width: 110px;" class="text-center" *ngIf="producto.prodCantidad>5">
+                                <p-message severity="success" text="Disponible"></p-message>
+                            </td>
+                            <td style="width: 80px;">{{producto.prodId}}</td>
+                            <td >{{producto.prodNombre}}</td>
+                            <td style="width: 110px;">{{producto.prodCantidad}}</td>
+                            <td style="width: 110px;">{{producto.prodPrecio}}</td>
+                            <td >{{producto.prodDetalle}}</td>
+                            <td style="width: 110px;" class="text-center" *ngIf="producto.prodIva == true">
+                                <p-message severity="success" text="IVA"></p-message>
+                            </td>
+                            <td style="width: 110px;" class="text-center" *ngIf="producto.prodIva == false">
+                                <p-message severity="error" text="SIN IVA"></p-message>
+                            </td>
+                            <td>
+                                <p-button *ngIf="producto.prodCantidad>0" icon="pi pi-shopping-cart" (click)="cargarProductos(producto)" label="Agregar" styleClass="ui-button-primary"></p-button>
+                            </td>
+                        </tr>
+                
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="7">No existen productos registrados en este almacen</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </p-scrollPanel>
+    <p-footer>
+        <div class="p-grid">
+            <div class="p-col text-right">
+                <p-button icon="pi pi-times" (click)="dis2=false" label="Cerrar" styleClass="ui-button-secondary"></p-button>
+            </div>
+        </div>
+    </p-footer>
+</p-dialog>
+
+<!--Ventana de factura impresion-->
+<p-dialog header="Factura emitida" [(visible)]="disfactura" [modal]="true" [style]="{width: '40vw'}"
+[maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+
+<form >
+    <p-scrollPanel [style]="{width: '100%', height: '500px'}">
+        <kendo-pdf-export #pdf paperSize="A4" margin="5mm" style="font-size: 12px;">
+        <div class="ui-g ui-fluid" style="background-color: white;">
+            <form  #facturaform="ngForm">
+                <br><br>
+                <div>
+                <div class="ui-g-12 ui-lg-10">
+                    <div  class="ui-g-12 ui-md-12 text-center">
+                      <h5><b>PARROQUIA SAN JOAQUIN DE BARABON</b></h5>
+                      <h6>Direccion: MONSEÑOR LEONIDAS PROAÑO S/N Y CARLOS ARIZAGA VEGA</h6>
+                      <h6>Telefono:074177350</h6>
+                      <h6>Cuenca - Ecuador</h6>
+                    </div>
+                </div>
+                <div class="ui-g-12 ui-lg-1 mt-3 text-right">
+                    <img src="assets/layout/images/sanjoaquin.jpg" alt="" width="70" height="85"/>
+                </div>
+
+                <div class="ui-g-12 ui-lg-12">
+                    <div  class="ui-g-12 ui-md-6">
+                        <label for="input"><b>R.U.C: 019047598001</b></label>
+                    </div>
+                  
+                    <div  class="ui-g-12 ui-md-6">
+                        <label for="input"><b>Nro. Doc: {{factura.factNumdocumento}} </b></label>
+                    </div>  
+                </div>
+
+                <div class="ui-g-12 ui-lg-12 text-center">
+                <label for="input"><b>DOCUMENTO CATEGORIZADO: NO OBLIGADO A LLEVAR CONTABILIDAD</b></label>
+                </div>
+
+              
+                    
+                <div class="ui-g-12 ui-lg-12">
+                    <div  class="ui-g-12 ui-md-6">
+                        <label for="input"><b>Fecha:</b> {{factura.factFechaemision}}</label>
+                    </div>
+                  
+                    <div  class="ui-g-12 ui-md-6">
+                        <label for="input"><b>Autorización SRI: {{factura.factNumautorizacion}} </b></label>
+                    </div>  
+              
+                </div>
+
+            
+                    <div class="card  text-left">
+                        <div class="ui-g-12 ui-lg-12">
+                            <div  class="ui-g-12 ui-md-6">
+                           <ul style="list-style: none;padding: 0%;">
+                               <li> <label for="input"><b>Cliente:</b> {{persona.persNombre}}{{persona.persApellido}} </label></li>
+                               <li><label for="input"><b>CI:</b> {{persona.persCedula}}</label></li>
+                               <li> <label for="input"><b>Telf:</b> {{persona.persTelefono}}</label></li>
+                           </ul>
+                        </div>
+                           <div  class="ui-g-12 ui-md-6">
+                           <ul style="list-style: none;padding: 0%;">
+                            <li><label for="input"><b>Email:</b> {{persona.persEmail}}</label></li>
+                            <li><label for="input"><b>Direccion:</b> {{persona.persDireccion}}</label></li>
+                        </ul>
+                        </div>
+                    </div> 
+                </div>
+            </div> 
+                
+
+                <div class="card ">
+                    <div class="ui-g form-group">
+                        <div class="ui-g-12 ui-lg-12">
+                            <label for="input"><b>Detalle</b></label>
+                                <div class="table-responsive">
+                                    <table class="table table-striped my-3">
+                                        <thead>
+                                        <tr style="text-align:center;">
+                                            <th scope="col">Codigo</th>
+                                            <th scope="col">Descripcion</th>
+                                            <th scope="col">Cantidad</th>
+                                            <th scope="col">Prec Unt</th>
+                                            <th scope="col">% Desc</th>
+                                            <th scope="col">Prec Total</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody *ngFor="let item of factura.detalleFacturaCollection" style="text-align:center;">
+                                            <td>{{item.detfFkProductos.prodId}}</td>
+                                            <td>{{item.detfFkProductos.prodNombre}}</td>
+                                            <td>{{item.detfCantidad}}</td>
+                                            <td>{{item.detfFkProductos.prodPrecio}}</td>
+                                            <td>% {{item.detfPdescuento}}</td>
+                                            <td>{{item.detfSubtotal-item.detfDescuento | number:'1.0-2'}}</td>
+                                        </tbody>
+                                    </table>
+                                </div>
+                               
+                        </div>
+                    </div>
+                    <div class="float-right">
+                        <table class="table"  style="font-weight: bold; font-size: 12px;">
+                            <tr >
+                                <td class="text-right">Subtotal IVA 12%:</td>
+                                <td class="ml-4">${{factura.calcularSubTotal()}}{{factura.factSubtotalIva | number:'1.0-2'}}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-right">Subtotal IVA 0%:</td>
+                                <td class="ml-4">${{factura.calcularSubTotal()}}{{factura.factSubtotal | number:'1.0-2'}}</td>
+                            </tr>
+        
+                            <tr>
+                                <td class="text-right">SubTotal con Descuento IVA 12%:</td>
+                                <td class="ml-4">${{factura.calcularDescuentoTotal()}}{{factura.calcularSubTotal()}}{{factura.factSubtotalIva-factura.factDescuentototalIva | number:'1.0-2'}}</td>
+                            </tr>
+
+                            <tr>
+                                <td class="text-right">SubTotal con Descuento IVA 0%:</td>
+                                <td class="ml-4">${{factura.calcularDescuentoTotal()}}{{factura.calcularSubTotal()}}{{factura.factSubtotal-factura.factDescuentototal | number:'1.0-2'}}</td>
+                            </tr>
+
+                            <tr>
+                                <td class="text-right">Total Descuento:</td>
+                                <td class="ml-4">${{factura.calcularDescuentoTotal()}}{{factura.factDescuentototal+factura.factDescuentototalIva | number:'1.0-2'}}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-right">IVA:</td>
+                                <td class="ml-4">${{factura.calcularIva()}}{{factura.factTotalIva | number:'1.0-2'}}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-right">Total:</td>
+                                <td class="ml-4" style="color: red; font-size: 30px;">${{factura.calcularTotales()}}{{factura.factTotal | number:'1.0-2'}}</td>
+                            </tr>
+                        </table>
+                </div>
+
+                    <div class="row" style="text-align:center;">
+                        <div  class="ui-g-12 ui-md-6 text-center" style="background-color: white;">
+                            <p><b>_____________________</b></p><br>
+                            <label for="input"><b>Firma Autoriza</b></label>
+                          </div>
+                          <div  class="ui-g-12 ui-md-6 text-center" style="background-color: white;">
+                            <p><b>_____________________</b></p><br>
+                            <label for="input"><b>Firma Cliente</b></label>
+                          </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </kendo-pdf-export>
+    </p-scrollPanel>
+</form>
+
+<p-footer>
+    <div class="p-grid">
+    <div class="p-col text-left">
+        <p-button label="Descargar" (onClick)="pdf.saveAs('FacturaImpresa.pdf')" icon="pi pi-cloud-download"
+          styleClass="ui-button-info"></p-button>
+      </div>
+      <div class="p-col text-right">
+    <button type="button" pButton icon="pi pi-times" (click)="disfactura=false" label="Cancelar"
+        class="ui-button-secondary"></button>
+        </div>
+        </div>
+</p-footer>
+</p-dialog>

@@ -1,0 +1,223 @@
+<div class="card">
+
+    <h1>Gestión de Compras</h1>
+    <div class="p-grid" style="margin: 5px; background-color: whitesmoke;">
+        <div class="p-col">
+            <p-button icon="pi pi-plus" (click)="crearCompra()" label="Ingresar Compra" styleClass="ui-button-success">
+            </p-button>
+        </div>
+    </div>
+
+    <p-table #dt1 [value]="compras" dataKey="compId" [rows]="10" [showCurrentPageReport]="true"
+        [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-customers p-datatable-gridlines"
+        [paginator]="true" currentPageReportTemplate="Lista de Compras"
+        [globalFilterFields]="['compId','compFechaemision','compNumdocumento','compNumautorizacion','compFkProveedor.provFkPersona.persCedula','compFkProveedor.provFkPersona.persNombre','compFkProveedor.provFkPersona.persApellido','compra.compEstado','compra.compTotal']">
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex">
+                <p>Compras Realizadas</p>
+                <span class="p-input-icon-left p-ml-auto">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')"
+                        placeholder="Buscar" />
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th >ID</th>
+                <th >Feca de Compra</th>
+                <th >Número de Documento</th>
+                <th >Número de Autorización</th>
+                <th >CI o RUC</th>
+                <th>Proveedor</th>
+                <th >Estado</th>
+                <th >Total</th>
+                <th >
+                    Acciones
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-compra>
+            <tr>
+                <td>{{compra.compId}}</td>
+                <td>{{compra.compFechaemision}}</td>
+                <td>{{compra.compNumdocumento}}</td>
+                <td>{{compra.compNumautorizacion}}</td>
+                <td>{{compra.compFkProveedor.provFkPersona.persCedula}}</td>
+                <td>{{compra.compFkProveedor.provFkPersona.persNombre}}
+                    {{compra.compFkProveedor.provFkPersona.persApellido}}</td>
+                <td class="text-center" *ngIf="compra.compEstado == 'ANULADA'">
+                    <p-message severity="error" text="INACTIVO"></p-message>
+                </td>
+                <td  class="text-center" *ngIf="compra.compEstado == 'ACTIVO'">
+                    <p-message severity="success" text="ACTIVO"></p-message>
+                </td>
+                <td >{{compra.compTotal}}</td>
+                <td style="padding: 5px;text-align: center;">
+                    <p-button icon="pi pi-print" styleClass="ui-button-info" (click)="cargarCompra(compra)"></p-button>
+                    <p-button icon="pi pi-times circle" styleClass="ui-button-danger" (click)='delete(compra)'
+                        *ngIf="compra.compEstado == 'ACTIVO'"></p-button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+    <p-dialog header="Compra Realizada" [(visible)]="disa" [modal]="true" [style]="{width: '60vw'}" [maximizable]="true"
+        [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+
+
+        <form>
+            <p-scrollPanel [style]="{width: '100%', height: '500px'}">
+                <kendo-pdf-export #pdf paperSize="A4" margin="5mm" style="font-size: 12px;">
+                    <div class="ui-g ui-fluid" style="background-color: white;">
+                        <form #compraform="ngForm">
+                            <br><br>
+                            <div>
+                                <div class="ui-g-12 ui-lg-10">
+                                    <div class="ui-g-12 ui-md-12 text-center">
+                                        <h5><b>PARROQUIA SAN JOAQUIN DE BARABON</b></h5>
+                                        <h6>Direccion: MONSEÑOR LEONIDAS PROAÑO S/N Y CARLOS ARIZAGA VEGA</h6>
+                                        <h6>Telefono:074177350</h6>
+                                        <h6>Cuenca - Ecuador</h6>
+                                    </div>
+                                </div>
+                                <div class="ui-g-12 ui-lg-1 mt-3 text-right">
+                                    <img src="assets/layout/images/sanjoaquin.jpg" alt="" width="70" height="85" />
+                                </div>
+
+                                <div class="ui-g-12 ui-lg-12">
+                                    <div class="ui-g-12 ui-md-6">
+                                        <label for="input"><b>R.U.C: 019047598001</b></label>
+                                    </div>
+
+                                    <div class="ui-g-12 ui-md-6">
+                                        <label for="input"><b>Nro. Doc: {{compra.compNumdocumento}} </b></label>
+                                    </div>
+                                </div>
+
+                                <div class="ui-g-12 ui-lg-12 text-center">
+                                    <label for="input"><b>DOCUMENTO CATEGORIZADO: NO OBLIGADO A LLEVAR
+                                            CONTABILIDAD</b></label>
+                                </div>
+                                <div class="ui-g-12 ui-lg-12">
+                                    <div class="ui-g-12 ui-md-6">
+                                        <label for="input"><b>Fecha:</b> {{compra.compFechaemision}}</label>
+                                    </div>
+
+                                    <div class="ui-g-12 ui-md-6">
+                                        <label for="input"><b>Autorización SRI: {{compra.compNumautorizacion}}
+                                            </b></label>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="card  text-left">
+                                    <div class="ui-g-12 ui-lg-12">
+                                        <div class="ui-g-12 ui-md-6">
+                                            <ul style="list-style: none;padding: 0%;">
+                                                <li> <label for="input"><b>Proveedor:</b>
+                                                        {{persona.persNombre}}{{persona.persApellido}} </label></li>
+                                                <li><label for="input"><b>CI:</b> {{persona.persCedula}}</label></li>
+                                                <li> <label for="input"><b>Telf:</b> {{persona.persTelefono}}</label>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="ui-g-12 ui-md-6">
+                                            <ul style="list-style: none;padding: 0%;">
+                                                <li><label for="input"><b>Email:</b> {{persona.persEmail}}</label></li>
+                                                <li><label for="input"><b>Direccion:</b>
+                                                        {{persona.persDireccion}}</label></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card ">
+                                <div class="ui-g form-group">
+                                    <div class="ui-g-12 ui-lg-12">
+                                        <label for="input"><b>Detalle</b></label>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped my-3">
+                                                <thead>
+                                                    <tr style="text-align:center;">
+                                                        <th scope="col">Codigo</th>
+                                                        <th scope="col">Descripcion</th>
+                                                        <th scope="col">Cantidad</th>
+                                                        <th scope="col">Prec Unt</th>
+                                                        <th scope="col">% Desc</th>
+                                                        <th scope="col">Prec Total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody *ngFor="let item of compra.detalleCompraCollection"
+                                                    style="text-align:center;">
+                                                    <td>{{item.dectFkArticulos.prodId}}</td>
+                                                    <td>{{item.dectFkArticulos.prodNombre}}</td>
+                                                    <td>{{item.detcCantidad}}</td>
+                                                    <td>{{item.dectFkArticulos.prodPrecio}}</td>
+                                                    <td>% {{"0"}}</td>
+                                                    <td>{{item.detcSubtotal-item.detcDescuento | number:'1.0-2'}}</td>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="float-right my-3">
+                                            <table class="table" style="font-weight: bold; font-size: 12px;">
+                                                <tr>
+                                                    <td class="text-right">Subtotal IVA 12%:</td>
+                                                    <td class="ml-4">${{subtotaliva | number:'1.0-2'}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right">Subtotal IVA 0%:</td>
+                                                    <td class="ml-4">${{subtotalcero | number:'1.0-2'}}</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="text-right">Descuento:</td>
+                                                    <td class="ml-4">${{totalivadescuento | number:'1.0-2'}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right">IVA:</td>
+                                                    <td class="ml-4">${{totaliva | number:'1.0-2'}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right">Total:</td>
+                                                    <td class="ml-4" style="color: red; ">${{compra.compTotal |
+                                                        number:'1.0-2'}}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" style="text-align:center;">
+                                    <div class="ui-g-12 ui-md-6 text-center" style="background-color: white;">
+                                        <p><b>_____________________</b></p><br>
+                                        <label for="input"><b>Firma Autoriza</b></label>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-6 text-center" style="background-color: white;">
+                                        <p><b>_____________________</b></p><br>
+                                        <label for="input"><b>Firma Proveedor</b></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </kendo-pdf-export>
+            </p-scrollPanel>
+        </form>
+
+
+
+        <p-footer>
+            <div class="p-grid">
+                <div class="p-col text-left">
+                    <p-button label="Descargar" (onClick)="pdf.saveAs('CompraImpresa.pdf')" icon="pi pi-cloud-download"
+                        styleClass="ui-button-info"></p-button>
+                </div>
+                <div class="p-col text-right">
+                    <button type="button" pButton icon="pi pi-times" (click)="disa=false" label="Cancelar"
+                        class="ui-button-secondary"></button>
+                </div>
+            </div>
+        </p-footer>
+    </p-dialog>
+</div>

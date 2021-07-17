@@ -1,0 +1,36 @@
+<div class="card card-w-title">
+    <h1>Bienvenidos al Calendario de Eventos</h1>
+    <p-table #dt1 [value]="servicio" dataKey="servNombre"
+    [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-customers p-datatable-gridlines"
+    [paginator]="true" currentPageReportTemplate="Lista eventos"
+    [globalFilterFields]="['caleId','caleFecha','caleEvento']">
+    <ng-template pTemplate="caption">
+        <div class="p-d-flex">
+            <h5>Eventos</h5>
+            <span class="p-input-icon-left p-ml-auto">
+                <i class="pi pi-search"></i>
+                <input pInputText type="date" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Buscar" />
+            </span>
+        </div>
+    </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Fecha</th>
+                <th>Evento</th>
+                <th>Hora</th>
+                <th>Lugar</th>
+                <th>Responsable</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-servici>
+            <tr>
+                <td>{{servici.caleFecha}}</td>
+                <td>{{servici.caleEvento}}</td>
+                <td>{{servici.caleHora}}</td>
+                <td>{{servici.caleLugar}}</td>
+                <td>{{servici.caleResponsable}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+    
+</div>

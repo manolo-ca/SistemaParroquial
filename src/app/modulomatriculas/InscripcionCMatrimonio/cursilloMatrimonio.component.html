@@ -1,0 +1,158 @@
+
+<div class="ui-g ui-fluid">
+    <div class="ui-g-12 ui-lg-12">
+        <form [formGroup]="FormCursillo"> 
+            <div class="card card-w-title">
+                
+                <h1>Registro para cursillo Pre-matrimonial</h1>
+                <div class="ui-g form-group">
+                    <div class="ui-g-12 ui-lg-12 text-center" style="margin: 5px; background-color: whitesmoke;">
+                        <div class="ui-g-12 ui-md-1"></div>
+                        <div class="ui-g-12 ui-md-3">
+                            <label for="input">Lugar:</label>
+                            <input  placeholder="Parroquia de San Joaquín" formControlName="cursilloLugar" name="cursilloLugar" id="cursilloLugar" disabled type="text"  pInputText>    
+                            
+                        </div>
+                        <div class="ui-g-12 ui-md-1"></div>
+                        <div class="ui-g-12 ui-md-2">
+                            <label for="input">Hora:</label>
+                            <p-calendar pInputText formControlName="cursilloHora" name="cursilloHora" id="cursilloHora" [(ngModel)]="date8" [timeOnly]="true" placeholder="00:00"></p-calendar>
+                            <div *ngIf="cursilloHora.invalid && (cursilloHora.dirty || cursilloHora.touched)"> 
+                                <p-message severity="error" text="Campo requerido"></p-message>
+                            </div>
+                        </div>
+                        <div class="ui-g-12 ui-md-1"></div>
+                        <div class="ui-g-12 ui-md-3">
+                            <label for="input">Fecha:</label>
+                            <p-calendar formControlName="fechaCursillo" name="fechaCursillo" id="fechaCursillo" [(ngModel)]="datecursillo"  [showIcon]="true" placeholder="Año/Mes/Día" dateFormat="yy/mm/dd"></p-calendar>
+                            <div *ngIf="fechaCursillo.invalid && (fechaCursillo.dirty || fechaCursillo.touched)"> 
+                                <p-message severity="error" text="Campo requerido"></p-message>
+                            </div>
+                        </div>
+                        <div class="ui-g-12 ui-md-1"></div>
+                    </div>
+                    <div class="ui-g-12 ui-lg-12">
+                        <p-message severity="warn" text="Requisito para registrar un cursillo: Obligatoriamente la información de los diferentes participantes del cursillo deben estar pre-registrados en el sistema."></p-message>  
+                    </div>
+                    <div class="ui-g-12 ui-lg-6 ">
+                        <div class="card card-w-title">
+                            <h1>Datos del Novio:</h1>
+                            <div class="ui-g form-group">
+                                <div class="ui-g-12 ui-lg-12 text-center">
+                                    <div  class="ui-g-12 ui-md-4">
+                                        <p-button label="Buscar" (click)="findbyCedulaNovio()" icon = "pi pi-search" styleClass="ui-button-success"></p-button>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-8"> 
+                                        <input type="text" formControlName="novioCedula" name="novioCedula" id="novioCedula" placeholder="Ingrese la cédula del novio"  pInputText > 
+                                        <div *ngIf="novioCedula.invalid && (novioCedula.dirty || novioCedula.touched)"> 
+                                            <p-message severity="error" text="Campo requerido"></p-message>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ui-g-12 ui-lg-8 ">
+                                    <div  class="ui-g-12 ui-md-3">
+                                        <label for="input">Nombre: </label>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-9"> 
+                                        <div class="ui-inputgroup">
+                                            <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
+                                            <input disabled [(ngModel)]="PersonaNovio.persNombre" formControlName="novioNombre" name="novioNombre" id="novioNombre" type="text"  pInputText>
+                                            <div *ngIf="novioNombre.invalid && (novioNombre.dirty || novioNombre.touched)"> 
+                                                <p-message severity="error" text="Campo requerido"></p-message>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div  class="ui-g-12 ui-md-3">
+                                        <label for="input">Apellido: </label>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-9"> 
+                                        <div class="ui-inputgroup">
+                                            <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
+                                            <input disabled [(ngModel)]="PersonaNovio.persApellido" formControlName="novioApellido" name="novioApellido" id="novioApellido" type="text"  pInputText>
+                                            <div *ngIf="novioApellido.invalid && (novioApellido.dirty || novioApellido.touched)"> 
+                                                <p-message severity="error" text="Campo requerido"></p-message>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div  class="ui-g-12 ui-md-4">
+                                        <label for="input">Nacimiento: </label>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-8"> 
+                                        <div class="ui-inputgroup">
+                                            <span class="ui-inputgroup-addon"><i class=" pi pi-calendar-plus"></i></span>
+                                            <input disabled [(ngModel)]="PersonaNovio.persfechanacimiento" formControlName="novioNacimiento" name="novioNacimiento" id="novioNacimiento" type="text"  pInputText>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ui-g-12 ui-lg-4 text-center" style="background-color: whitesmoke;">
+                                    <p>Photo</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-lg-6 ">
+                        <div class="card card-w-title">
+                            <h1>Datos de la Novia:</h1>
+                            <div class="ui-g form-group">
+                                <div class="ui-g-12 ui-lg-12 text-center">
+                                    <div  class="ui-g-12 ui-md-4">
+                                        <p-button label="Buscar" (click)="findbyCedulaNovia()" icon = "pi pi-search" styleClass="ui-button-success"></p-button>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-8"> 
+                                        <input formControlName="noviaCedula" name="noviaCedula" id="noviaCedula" type="text" placeholder="Ingrese la cédula de la novio"  pInputText > 
+                                        <div *ngIf="noviaCedula.invalid && (noviaCedula.dirty || noviaCedula.touched)"> 
+                                            <p-message severity="error" text="Campo requerido"></p-message>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ui-g-12 ui-lg-8 ">
+                                    <div  class="ui-g-12 ui-md-3">
+                                        <label for="input">Nombre: </label>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-9"> 
+                                        <div class="ui-inputgroup">
+                                            <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
+                                            <input disabled [(ngModel)]="PersonaNovia.persNombre" formControlName="noviaNombre" name="noviaNombre" id="noviaNombre" type="text"  pInputText>
+                                            <div *ngIf="noviaNombre.invalid && (noviaNombre.dirty || noviaNombre.touched)"> 
+                                                <p-message severity="error" text="Campo requerido"></p-message>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div  class="ui-g-12 ui-md-3">
+                                        <label for="input">Apellido: </label>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-9"> 
+                                        <div class="ui-inputgroup">
+                                            <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
+                                            <input disabled [(ngModel)]="PersonaNovia.persApellido" formControlName="noviaApellido" name="noviaApellido" id="noviaApellido" type="text"  pInputText>
+                                            <div *ngIf="noviaApellido.invalid && (noviaApellido.dirty || noviaApellido.touched)"> 
+                                                <p-message severity="error" text="Campo requerido"></p-message>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div  class="ui-g-12 ui-md-4">
+                                        <label for="input">Nacimiento: </label>
+                                    </div>
+                                    <div class="ui-g-12 ui-md-8"> 
+                                        <div class="ui-inputgroup">
+                                            <span class="ui-inputgroup-addon"><i class=" pi pi-calendar-plus"></i></span>
+                                            <input disabled [(ngModel)]="PersonaNovia.persfechanacimiento" formControlName="noviaNacimiento" name="noviaNacimiento" id="noviaNacimiento" type="text"  pInputText>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ui-g-12 ui-lg-4 text-center" style="background-color: whitesmoke;">
+                                    <p>Photo</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-lg-12 text-center" style="background-color: whitesmoke;">
+                        <p-button label="Registrar" (click)="RegistrarCursillo()" icon = "pi pi-save" styleClass="ui-button-info"></p-button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+ 

@@ -1,0 +1,263 @@
+<div class="card card-w-title">
+    <h1>Gestión de Matriculas de Catequesís</h1>
+    <div class="p-grid" style="margin: 5px; background-color: whitesmoke;padding: 20px;">
+        <div class="p-col text-center">
+            <label for="input">Seleccione un periodo: </label>
+            <p-dropdown [showClear]="true" name="matr_fk_periodo" id="matr_fk_periodo" (onChange)="buscarporPeriodo()"  [options]="Periodos" [(ngModel)]="PersiodoSelec" optionLabel="periInicio" placeholder="Seleccione el periodo"></p-dropdown>
+            <p>Fin de periodo: {{PersiodoSelec ? PersiodoSelec.periFin : '   Ningún periodo seleccionado'}}</p>
+        </div>
+        <div class="p-col text-right">
+            <p-button (click)="showModalDialog()" icon = "pi pi-print"  label="Reporte"></p-button>
+        </div>
+    </div>
+    <div class="p-gid" >
+        <div class="p-col">
+            <p-table *ngIf="banderaMatPeriodo==true"  #dt1 [value]="serviciosMatriculas" 
+            dataKey="matrId"
+            [rows]="10" 
+            [showCurrentPageReport]="true" 
+            [rowsPerPageOptions]="[10,25,50]" 
+            [loading]="loading" 
+            styleClass="p-datatable-customers p-datatable-gridlines"
+            [paginator]="true"
+            currentPageReportTemplate="Lista de Matrículas"
+            [globalFilterFields]="['matrId','matrFkAlumno.alumFkPersona.persNombre','matrFkAlumno.alumFkPersona.persApellido','matrFkNivel.niveNombre','matrFkTipoinscrpcion.tipiNombre','matrLugar']">
+                <ng-template pTemplate="caption">
+                    <div class="p-d-flex">
+                        <p>Matrículas Registradas</p>
+                        <span class="p-input-icon-left p-ml-auto">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Buscar" />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr  class="text-center">
+                        <th style="width: 50px;">ID</th>
+                        <th style="width: 110px;">Estado Matrícula</th>
+                        <th>Alumno</th>
+                        <th>Tipo Inscripción</th>
+                        <th style="width: 100px;">Nivel</th>
+                        <th>Aprobación de Nivel</th>
+                        <th>Lugar</th>
+                        <th style="width: 100px;">Acciones</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                    <tr  class="text-center" [pSelectableRow]="rowData">
+                        <td style="width: 50px;">{{rowData.matrId}}</td>
+                        <td style="width: 110px;" *ngIf="rowData.matrEstado == false">
+                            <p-message severity="info" text="PENDIENTE"></p-message>
+                        </td>
+                        <td style="width: 110px;" *ngIf="rowData.matrEstado == true">
+                            <p-message severity="success" text="ACTIVO"></p-message>
+                        </td>
+                        <td>{{rowData.matrFkAlumno.alumFkPersona.persNombre}} {{rowData.matrFkAlumno.alumFkPersona.persApellido}}</td>
+                        <td>{{rowData.matrFkTipoinscrpcion.tipiNombre}}</td>
+                        <td style="width: 100px;">{{rowData.matrFkNivel.niveNombre}}</td>
+                        <td style="width: 110px;" *ngIf="rowData.matrEstadonivelapro == false">
+                            <p-message severity="error" text="REPROBADO"></p-message>
+                        </td>
+                        <td style="width: 110px;" *ngIf="rowData.matrEstadonivelapro == true">
+                            <p-message severity="success" text="APROBADO"></p-message>
+                        </td>
+                        <td>{{rowData.matrLugar}}</td>
+                        <td style="width: 100px;">
+                            <p-button icon="pi pi-pencil" styleClass="ui-button-warning" (click)=" cargarMatricula(rowData)"></p-button>
+                            <p-button icon="pi pi-trash" styleClass="ui-button-danger" (click)='delete(rowData)'></p-button>
+                        </td>
+                    </tr>
+
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+    
+    <p-dialog header="Gestión de Matrícula" [(visible)]="dis" [modal]="true" [style]="{width: '70vw'}"
+    [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+    <form [formGroup]="addFormMatricula">
+        <div class="ui-g ui-fluid">
+            <div class="ui-g form-group ">
+
+                <div  class="ui-g-12">
+                    <div class="ui-g-12 ui-md-1">
+                        <label for="input">Alumno:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <input disabled pInputText type="text" formControlName="alumnoNombre"
+                            name="alumnoNombre" id="alumnoNombre" >
+                    </div>
+                    <div class="ui-g-12 ui-md-1">
+                        <label for="input">Costo de Matrícula:</label>                
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <div class="ui-inputgroup">
+                            <span class="ui-inputgroup-addon"><i class="pi pi-dollar"></i></span>
+                            <input  formControlName="costoMatricula" name="costoMatricula" id="costoMatricula"  type="number" [(ngModel)]="this.editarMatricula.matrValor"  pInputText>
+                        </div> 
+                    </div>
+                    <div class="ui-g-12 ui-md-1">
+                        <label for="input">Estado:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-1">
+                        <p-inputSwitch (onChange)="handleChange2($event)" ></p-inputSwitch>
+                    </div>
+                    <div class="ui-g-12 ui-md-2 text-center" *ngIf="checked2==false">
+                        <p-message severity="error" text="PENDIENTE"></p-message>
+                    </div>
+                    <div class="ui-g-12 ui-md-2 text-center" *ngIf="checked2==true">
+                        <p-message severity="success" text="ACTIVA"></p-message>
+                    </div>
+                </div>
+                <div class="ui-g-12">
+                    <div class="ui-g-12 ui-md-2">
+                        <label for="input">Identificación:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <input disabled pInputText type="text" formControlName="alumnoCedula"
+                            name="alumnoCedula" id="alumnoCedula">
+                    </div>
+                    <div class="ui-g-12 ui-md-1">
+                        <label for="input">Nivel:</label>                
+                    </div>
+                    <div class="ui-g-12 ui-md-5">
+                        <p-dropdown  disabled="false" formControlName="matr_fk_nivel" name="matr_fk_nivel" id="matr_fk_nivel"  [options]="Niveles" [(ngModel)]="this.editarMatricula.matrFkNivel" optionLabel="niveNombre" placeholder="Seleccione el nivel"></p-dropdown>
+                        
+                    </div>
+                    
+                    
+                </div>
+                <div class="ui-g-12">
+                    <div class="ui-g-12 ui-md-1">
+                        <label for="input">Lugar de Estudio:</label>                
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <input disabled pInputText type="text" formControlName="matr_lugar" name="matr_lugar" id="matr_lugar" [(ngModel)]="this.editarMatricula.matrLugar">  
+                    </div> 
+                    <div class="ui-g-12 ui-md-1">
+                        <label for="input">Inicio de Periodo:</label>                
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <p-dropdown disabled="false"  formControlName="matr_fk_periodo" name="matr_fk_periodo" id="matr_fk_periodo"  [options]="Periodos" [(ngModel)]="this.editarMatricula.matrFkPeriodo" optionLabel="periInicio" placeholder="Seleccione el periodo"></p-dropdown>
+                        
+                    </div>
+                    <div class="ui-g-12 ui-md-1">
+                        <label for="input">Fin de Periodo:</label>                
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <p-dropdown disabled="false" formControlName="matr_fk_periodofin" name="matr_fk_periodofin" id="matr_fk_periodofin"  [options]="Periodos" [(ngModel)]="this.editarMatricula.matrFkPeriodo" optionLabel="periFin" placeholder="Seleccione el periodo"></p-dropdown>
+                    </div>
+                    <div class="ui-g-12 ui-md-1">
+                        <label for="input">Tipo de Inscripción:</label>                
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <p-dropdown  disabled="false" formControlName="matr_fk_tipoinscrpcion" name="matr_fk_tipoinscrpcion" id="matr_fk_tipoinscrpcion"  [options]="TipoInscripciones" [(ngModel)]="this.editarMatricula.matrFkTipoinscrpcion" optionLabel="tipiNombre"  placeholder="Seleccione Tipo Inscripción"></p-dropdown>
+                        
+                    </div>
+                    
+
+                </div>
+                <div class="ui-g-12">
+                    <div class="ui-g-12 ui-md-3"></div>
+                    <div class="ui-g-12 ui-md-3">
+                        <label for="input">Aprobación del Nivel:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-1">
+                        <p-inputSwitch (onChange)="handleChange1($event)" ></p-inputSwitch>
+                    </div>
+                    <div class="ui-g-12 ui-md-2 text-center" *ngIf="checked1==false">
+                        <p-message severity="error" text="REPROBADO"></p-message>
+                    </div>
+                    <div class="ui-g-12 ui-md-2 text-center" *ngIf="checked1==true">
+                        <p-message severity="success" text="APROBADO"></p-message>
+                    </div>
+                    <div class="ui-g-12 ui-md-2"></div>
+                </div>
+               
+                <div class="ui-g-12 text-center">
+                    <p-button icon="pi pi-save" stileClass="ui-button-info" label="Actualizar" (click)='ActualizarDatos()'></p-button>
+                </div>
+                <br><br>
+            </div>
+        </div>
+    </form>
+    <p-footer>
+        <p-button icon="pi pi-times" (click)="dis=false" label="Cancelar" styleClass="ui-button-secondary">
+        </p-button>
+    </p-footer>
+    </p-dialog>
+</div>
+
+<p-dialog header="Vista previa del Reporte" [(visible)]="dis2" [modal]="true" [style]="{width: '60vw', height: '90vw'}"
+    [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+    
+    <kendo-pdf-export #pdf  paperSize="A4" margin="5mm" style="font-family: 'DejaVu Sans', 'Arial', sans-serif;font-size: 12px;">
+        <div class="container">
+            <div class="p-grid" style="font-weight: bold;" >
+                <div class="p-col text-left">
+                    <h6> PARROQUIA SAN JOAQUIN </h6>
+                    <h6>Matrículas</h6>
+                    <p>Listado por Periodo<br>
+                        Fecha de Inicio:  {{dateInicio.getFullYear()}}/{{dateInicio.getMonth()+1}}/{{dateInicio.getDate()+1}} <br>
+                        Fecha de Fin:  {{dateFin.getFullYear()}}/{{dateFin.getMonth()+1}}/{{dateFin.getDate()+1}} </p>
+                </div>
+                
+                <div class="p-col text-right">
+                    <img src="../../../assets/layout/images/sanjoaquin.jpg" width="110px" height="120px">
+                </div>
+            </div>
+            <br>
+            <p-table #dt2 
+            [value]="ListaMatriculaxPeriodo" 
+            dataKey="matrId"
+            styleClass="p-datatable-customers p-datatable-gridlines"
+            currentPageReportTemplate="Lista de Matrículas por periodo"
+            [responsive]="true">
+                <ng-template pTemplate="header">
+                    <tr style="font-size: 9px">
+                        <th style="width: 50px;">ID</th>
+                        <th style="width: 70px;">Estado Matrícula</th>
+                        <th style="width: 130px;">Alumno</th>
+                        <th style="width: 80px;">Tipo Inscripción</th>
+                        <th style="width: 50px;">Nivel</th>
+                        <th style="width: 70px;">Aprobación del Nivel</th>
+                        <th style="width: 50px;">Lugar</th>
+                        <th style="width: 50px;">Costo</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData >
+                    <tr class="alt"  style="font-size: 7px;">
+                        <td style="width: 50px;">{{rowData.matrId}}</td>
+                        <td style="width: 70px;" class="text-center" *ngIf="rowData.matrEstado == false">
+                            <p>Activa</p>
+                        </td>
+                        <td style="width: 70px;" class="text-center" *ngIf="rowData.matrEstado == true">
+                            <p>Pendiente</p>
+                        </td>
+                        <td style="width: 130px;">{{rowData.matrFkAlumno.alumFkPersona.persNombre}} {{rowData.matrFkAlumno.alumFkPersona.persApellido}}</td>
+                        <td style="width: 80px;">{{rowData.matrFkTipoinscrpcion.tipiNombre}}</td>
+                        <td style="width: 100px;">{{rowData.matrFkNivel.niveNombre}}</td>
+                        <td style="width: 70px;" *ngIf="rowData.matrEstadonivelapro == false">
+                            <p>Reprobado</p>
+                        </td>
+                        <td style="width: 70px;" *ngIf="rowData.matrEstadonivelapro == true">
+                            <p>Aprobado</p>
+                        </td>
+                        <td style="width: 50px;">{{rowData.matrLugar}}</td>
+                        <td style="width: 50px;">{{rowData.matrValor}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </kendo-pdf-export>
+    <p-footer>
+        <div class="p-grid">
+            <div class="p-col text-left">
+                <p-button label="Descargar" (onClick)="pdf.saveAs('Reporte_MatriculadosPeriodo.pdf')" icon = "pi pi-cloud-download" styleClass="ui-button-info"></p-button>
+            </div>
+            <div class="p-col text-right">
+                <p-button icon="pi pi-times" (click)="dis2=false" label="Cerrar" styleClass="ui-button-secondary"></p-button>
+            </div>
+        </div>
+    </p-footer>
+</p-dialog>

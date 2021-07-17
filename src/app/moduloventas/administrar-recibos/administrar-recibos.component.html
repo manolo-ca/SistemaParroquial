@@ -1,0 +1,136 @@
+<div class="card card-w-title">
+  <h1>Administrar Recibos</h1>
+  
+  <p-table #dt [value]="recibos" [paginator]="true" [columns]="cols" [rows]="10" [showCurrentPageReport]="true"
+      [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-customers p-datatable-gridlines"
+      [paginator]="true" currentPageReportTemplate="Lista de Recibos Agregados. "
+      [globalFilterFields]="['rcbnumDocumento','rcbCliente','rcbFechaemision','rcbConcepto','rcbValor']">
+
+      <ng-template pTemplate="caption">
+        <div class="p-grid">
+            <div class="p-col" style="text-align: left;">
+              <p>Lista de Recibos</p>
+            </div>
+          <div class="p-col" style="text-align: right">
+              <i class="pi pi-search" style="margin:4px 4px 0 0"></i>
+              <input type="text" pInputText size="50" placeholder="Buscar Recibo"(input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+            </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th style="width: 100px;">Nro. Doc</th>
+          <th>Cliente</th>
+          <th style="width: 100px;">Fecha Emision</th>
+          <th>Concepto</th>
+          <th style="width: 100px;">Total</th>
+          <th style="width: 100px;">Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-recibos>
+        <tr>
+          <td style="width: 100px;">{{recibos.rcbnumDocumento}}</td>
+          <td>{{recibos.rcbCliente}}</td>
+          <td style="width: 100px;">{{recibos.rcbFechaemision}}</td>
+          <td>{{recibos.rcbConcepto}}</td>
+          <td style="width: 100px;">${{recibos.rcbValor}}</td>
+          <td  style="width: 100px; padding: 5px;text-align: center;">
+            <p-button icon="pi pi-file" (click)="getRecibo(recibos)" styleClass="ui-button-success"></p-button>
+            <p-button icon="pi pi-trash"(click)="eliminarRecibo(recibos)" styleClass="ui-button-danger"></p-button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7">No existen registros de Recibos</td>
+        </tr>
+      </ng-template>
+  </p-table>
+</div>
+<p-dialog header="Vista Previa Del Recibo" [(visible)]="displayMaximizable" [modal]="true"
+  [style]="{width: '50vw'}" [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+  
+  <p-scrollPanel [style]="{width: '100%', height: '500px'}">
+    <kendo-pdf-export #pdf paperSize="A4" margin="5mm" style="font-family: 'DejaVu Sans', 'Arial', sans-serif;font-size: 13px;">
+      
+      <div class="ui-g ui-fluid ">
+        <div class="ui-g-12 ui-lg-6">
+          <div  class="ui-g-12 ui-md-12">
+            <h6>PARROQUIA SAN JOAQUIN DE BARABON</h6>
+              <p>Telefono:074177350</p>
+              <p>R.U.C:0190475980001</p>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-lg-6 text-right">
+          <img src="assets/layout/images/sanjoaquin.jpg" alt="" width="60" height="75"/>
+        </div>
+        <div class="ui-g-12 ui-lg-12">
+          <div class="card" style="background-color: whitesmoke;">
+            <form #reciboform="ngForm">
+              <div class="card">
+                <div  class="ui-g-12 ui-md-12">
+                  <div class="ui-g-12 ui-md-8"></div>
+                  <div class="ui-g-12 ui-md-2" style="font-weight: bold; font-size: larger;">
+                    <label for="input">RECIBO </label>
+                  </div>
+                  <div class="ui-g-12 ui-md-2">
+                    <div class="ui-inputgroup">
+                      <span class="ui-inputgroup-addon"><i class="pi pi-file"></i></span>
+                      <label for="input" pInputText>{{recibo.rcbnumDocumento}}</label>
+                    </div> 
+                  </div>
+                </div>
+                <div class="ui-g-12 ui-md-12"> 
+                  <div  class="ui-g-12 ui-md-8">
+                    <div  class="ui-g-12 ui-md-3">
+                      <div class="ui-inputgroup">
+                        <span class="ui-inputgroup-addon"><i class="pi pi-dollar"></i></span>
+                        <label for="input" pInputText>{{recibo.rcbValor}}</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ui-g-12 ui-md-4"> 
+                    <div class="ui-inputgroup">
+                      <span class="ui-inputgroup-addon"><i class="pi pi-dollar"></i></span>
+                      <label for="input" pInputText>{{recibo.rcbFechaemision}}</label>
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
+              <div class="card" style="font-weight: bold;">
+                <div  class="ui-g-12 ui-md-12">
+                  <label for="input">RECIBI de: {{recibo.rcbCliente}}</label>
+                </div>
+                <div class="ui-g-12 ui-md-12"> 
+                  <label for="input">La CANTIDAD en DOLARES: {{recibo.rcbdescripcionCantidad}}</label>
+                </div>
+                <div class="ui-g-12 ui-md-12"> 
+                  <div class="ui-g-12 ui-md-8">
+                    <label for="inputEmail4">Por CONCEPTO de: {{recibo.rcbConcepto}}</label>
+                  </div>
+                  <div  class="ui-g-12 ui-md-4 text-center" style="background-color: whitesmoke;">
+                    <label for="input">FIRMA Y SELLO: </label>
+                    <br><br><br><br>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </kendo-pdf-export>
+  </p-scrollPanel>
+  <p-footer>
+    <div class="p-grid">
+      <div class="p-col text-left">
+        <p-button label="Descargar" (onClick)="pdf.saveAs('ReciboReimpreso.pdf')" icon="pi pi-cloud-download"
+          styleClass="ui-button-info"></p-button>
+      </div>
+      <div class="p-col text-right">
+        <p-button icon="pi pi-times" (click)="displayMaximizable=false" label="Cerrar" styleClass="ui-button-secondary">
+        </p-button>
+      </div>
+    </div>
+  </p-footer>
+</p-dialog>

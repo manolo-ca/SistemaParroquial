@@ -1,0 +1,104 @@
+<div class="card card-w-title">
+    <h1>Gestión de Eventos</h1>
+    <div class="p-grid" style="margin: 5px; background-color: whitesmoke;">
+        <div class="p-col">
+            <p-button icon="pi pi-plus" (click)="showDialog()" label="Agregar" styleClass="ui-button-success">
+            </p-button>
+        </div>
+    </div>
+
+    <p-table #dt1 [value]="servicio" dataKey="caleId"
+    [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-customers p-datatable-gridlines"
+    [paginator]="true" currentPageReportTemplate="Lista eventos"
+    [globalFilterFields]="['caleId','caleFecha','caleEvento']">
+    <ng-template pTemplate="caption">
+        <div class="p-d-flex">
+            <h5>Eventos</h5>
+            <span class="p-input-icon-left p-ml-auto">
+                <i class="pi pi-search"></i>
+                <input pInputText type="date" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Buscar" />
+            </span>
+        </div>
+    </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 80px;">ID</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Evento</th>
+                <th>Lugar</th>
+                <th>Responsable</th>
+                <th style="width: 100px;">Acciones</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-servici>
+            <tr>
+                <td style="width: 80px;">{{servici.caleId}}</td>
+                <td>{{servici.caleFecha}}</td>
+                <td>{{servici.caleHora}}</td>
+                <td>{{servici.caleEvento}}</td>
+                <td>{{servici.caleLugar}}</td>
+                <td>{{servici.caleResponsable}}</td>
+                <td style="width: 100px;">
+                    <p-button icon="pi pi-pencil" styleClass="ui-button-warning" (click)="cargarServicio(servici)"></p-button>
+                    <p-button icon="pi pi-trash" styleClass="ui-button-danger" (click)='delete(servici)'></p-button>
+                </td>
+            </tr>
+
+        </ng-template>
+    </p-table>
+    <p-dialog header="Evento" [(visible)]="dis" [modal]="true" [style]="{width: '30vw'}"
+    [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+    <form [formGroup]="addForm2">
+        <div class="ui-g ui-fluid">
+            <div class="ui-g form-group ">
+                <div class="ui-g-12">
+                    <div class="ui-g-12 ui-md-4">
+                        <label for="input">Fecha</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-8">
+                        <p-calendar formControlName="tipe_serviciop" name="tipe_serviciop" id="tipe_serviciop" [(ngModel)]="dateEvento"  [showIcon]="true" placeholder="Año/Mes/Día" dateFormat="yy/mm/dd"></p-calendar>
+                        
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <label for="input">Hora</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-8">
+                        <input pInputText type="time" class="input name"  formControlName="tipe_hora" name="tipe_serviciop" id="tipe_hora" [(ngModel)]="servicio2.caleHora">
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <label for="input">Evento</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-8">
+                        <input pInputText type="text"   formControlName="tipe_evento"
+                            name="tipe_evento" id="tipe_evento" [(ngModel)]="servicio2.caleEvento">
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <label for="input">Lugar</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-8">
+                        <input pInputText type="text"  formControlName="tipe_lugar"
+                            name="tipe_evento" id="tipe_lugar" [(ngModel)]="servicio2.caleLugar">
+                    </div>
+                    <div class="ui-g-12 ui-md-4">
+                        <label for="input">Responsable</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-8">
+                        <input pInputText type="text"   formControlName="tipe_responsable"
+                            name="tipe_evento" id="tipe_responsable" [(ngModel)]="servicio2.caleResponsable">
+                    </div>
+                </div>
+                <div class="ui-g-12 text-center">
+                    <p-button icon="pi pi-save"  class="btn btn-primary" label="Guardar" (click)='create()' *ngIf="submitted1==false"></p-button>
+                    <p-button icon="pi pi-save" *ngIf="submitted1==true" class="btn btn-primary"  label="Modificar"  (click)='update()'></p-button>
+                </div>
+                <br><br>
+            </div>
+        </div>
+    </form>
+    <p-footer>
+        <p-button icon="pi pi-times" role="button"  type="reset" (click)='refrescar()' label="Cancelar" styleClass="ui-button-secondary">
+        </p-button>
+    </p-footer>
+</p-dialog>
+</div>

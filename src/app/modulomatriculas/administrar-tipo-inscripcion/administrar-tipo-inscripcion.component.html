@@ -1,0 +1,73 @@
+<div class="card card-w-title">
+    <h1>Administrar Tipos de Inscripción</h1>
+    <div class="p-grid" style="margin: 5px; background-color: whitesmoke;">
+        <div class="p-col">
+            <p-button icon="pi pi-plus" (click)="anadirTipoInscripcion()" label="Agregar"
+            styleClass="ui-button-success"></p-button>
+        </div>
+        <div class="p-col text-right">
+        </div>
+    </div>
+    <p-table [value]="ttipoinscripcion"
+    dataKey="tipiId"
+    [rows]="10" 
+    [showCurrentPageReport]="true" 
+    [rowsPerPageOptions]="[10,25,50]" 
+    [loading]="loading" 
+    styleClass="p-datatable-customers p-datatable-gridlines"
+    [paginator]="true" 
+    currentPageReportTemplate="lista de personas con documentos"
+    [globalFilterFields]="['tipiId','tipiNombre']">
+
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex">
+                <p>Tipos de Inscripciones Registradas</p>   
+                <span class="p-input-icon-left p-ml-auto">
+                    <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+                <input type="text" pInputText size="50" placeholder="Ingresa el parámetro a buscar" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 110px;">Código</th>
+                <th>Nombre de Inscripción</th>
+                <th style="width: 100px;">Acciones</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-tipoinscripcion>
+            <tr>
+                <td style="width: 110px;">{{tipoinscripcion.tipiId}}</td>
+                <td>{{tipoinscripcion.tipiNombre}}</td>
+                <td style="width: 100px;" class="text-center"> 
+                    <p-button icon="pi pi-trash"   (click)="delete(tipoinscripcion)" styleClass="ui-button-danger"></p-button>
+                </td> 
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+<p-dialog header="Ingresar nuevo tipo de matrícula" [(visible)]="dis" [modal]="true" [style]="{width: '30vw'}"
+[maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+<form [formGroup]="addForm1">
+    <div class="ui-g ui-fluid">
+        <div class="ui-g form-group ">
+            <div class="ui-g-12 ui-md-4">
+                <label for="input">Nombre:</label>
+            </div>
+            <div class="ui-g-12 ui-md-8">
+                <input pInputText type="text" formControlName="tipe_nombre" name="tipe_nombre" id="tipe_nombre">
+                <div *ngIf="tipe_nombre.invalid && (tipe_nombre.dirty || tipe_nombre.touched)">
+                    <p-message severity="error" text="Campo requerido"></p-message>
+                </div>
+            </div>
+            <div class="ui-g-12 text-center">
+                <p-button icon="pi pi-save"  (click)="create()"  stileClass="ui-button-info" label="Guardar"></p-button>
+            </div>
+        </div>
+    </div>
+</form>
+<p-footer>
+    <p-button  icon="pi pi-times" (click)="dis=false" label="Cancelar"
+    styleClass="ui-button-secondary"></p-button>
+</p-footer>
+</p-dialog>

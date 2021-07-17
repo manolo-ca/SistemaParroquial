@@ -1,0 +1,437 @@
+
+<div class="card card-w-title">
+    <h1>Creación de Documentos</h1>
+    <div class="ui-g ui-fluid">
+        <form>
+            <div class="ui-g form-group">
+                <div class="ui-g-12 ui-md-3"></div>
+                <div class="ui-g-12 ui-md-2 text-right"><img src="/assets/layout/images/documentos.png" alt="" width="80" height="80"></div>
+                <div class="ui-g-12 ui-md-4">
+                    <label for="input">Tipo de Documento:</label>
+                    <p-dropdown  placeholder="Seleccionar Tipo"  (onChange)="TipoDocumentoSeleccion($event)" [showClear]="true" [options]="tipodocumento" [(ngModel)]="documentospersonas2.docuFkTipodocumento" name="tiposdoc" optionLabel="tipdNombre"></p-dropdown>
+                </div>
+                
+                <div class="ui-g-12 ui-md-4"></div>
+                
+                <div class="card" *ngIf="banderaTipoDocumento === true">
+                    <div class="ui-g ui-fluid">
+                        <div class="ui-g-12 ui-md-2">
+                            <label for="input">Nombre:</label>
+                        </div>
+                        <div class="ui-g-12 ui-md-4">
+                            <div class="ui-inputgroup">
+                                <span class="ui-inputgroup-addon"><i class="pi pi-user"></i></span>
+                                <input type="text" name="persona" pInputText placeholder="Nombre"
+                                    [(ngModel)]="personasejemplo2.persNombre" disabled #persNombre="ngModel">
+                            </div>
+                            <div class="alert alert-danger"
+                                *ngIf="persNombre.invalid && (persNombre.dirty || persNombre.touched)">
+                                <div *ngIf="persNombre.errors.required">
+                                    Campo requerido
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui-g-12 ui-md-2">
+                            <label for="input">Cedula:</label>
+                        </div>
+                        <div class="ui-g-12 ui-md-4">
+                            <div class="ui-inputgroup">
+                                <span class="ui-inputgroup-addon"><i class="pi pi-id-card"></i></span>
+                                <input disabled type="text" pInputText name="cedula" placeholder="ID"
+                                    [(ngModel)]="personasejemplo2.persCedula" #persCedula="ngModel">
+                            </div>
+                            <div class="alert alert-danger"
+                                *ngIf="persCedula.invalid && (persCedula.dirty || persCedula.touched)">
+                                <div *ngIf="persCedula.errors.required">
+                                    Campo requerido
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui-g-12" *ngIf="this.banderaCMatrimonio==true || this.banderaCBautizo==true || this.banderaCSolteria==true" >
+                            <div class="ui-g-12 ui-md-2">
+                                <label for="input">Libro:</label>
+                            </div>
+                            <div class="ui-g-12 ui-md-10">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class="pi pi-align-justify"></i></span>
+                
+                                    <input type="text" pInputText name="libro" placeholder="Libro"
+                                        [(ngModel)]="documentospersonas2.docuLibronombre" required #docuLibronombre="ngModel">
+                                </div>
+                                <div class="alert alert-danger"
+                                    *ngIf="docuLibronombre.invalid && (docuLibronombre.dirty || docuLibronombre.touched)">
+                                    <div *ngIf="docuLibronombre.errors.required">
+                                        Campo requerido
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ui-g-12 ui-md-2">
+                                <label for="input">Referencias:</label>
+                            </div>
+                            <div class="ui-g-12 ui-md-10">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class="pi pi-ellipsis-v"></i></span>
+                                    <input type="text" pInputText name="referencias" placeholder="Referencias"
+                                        [(ngModel)]="documentospersonas2.docuReferencia" required #docuReferencia="ngModel">
+                                </div>
+                                <div class="alert alert-danger"
+                                    *ngIf="docuReferencia.invalid && (docuReferencia.dirty || docuReferencia.touched)">
+                                    <div *ngIf="docuReferencia.errors.required">
+                                        Campo requerido
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="ui-g-12" *ngIf="this.banderaCBautizo==true">
+                            <div class="ui-g-12 ui-md-2">
+                                <label for="input">Lugar de Nacimiento:</label>
+                            </div>
+                            <div class="ui-g-12 ui-md-10">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class="pi pi-ellipsis-v"></i></span>
+                                    <input type="text" pInputText name="lugarnacimiento" placeholder="lugar"
+                                        [(ngModel)]="documentospersonas2.docuLugarNacimiento" required #docuLugarNacimiento="ngModel">
+                                </div>
+                                <div class="alert alert-danger"
+                                    *ngIf="docuLugarNacimiento.invalid && (docuLugarNacimiento.dirty || docuLugarNacimiento.touched)">
+                                    <div *ngIf="docuLugarNacimiento.errors.required">
+                                        Campo requerido
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui-g-12" *ngIf="this.banderaCMatrimonio==true || this.banderaCBautizo==true">
+                           
+                            <div class="ui-g-12 ui-md-2" *ngIf="this.banderaCMatrimonio==true">
+                                <label for="input">Lugar de Matrimonio:</label>
+                            </div>
+                            <div class="ui-g-12 ui-md-2" *ngIf="this.banderaCBautizo==true">
+                                <label for="input">Lugar de Bautizo:</label>
+                            </div>
+                            <div class="ui-g-12 ui-md-4">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class="pi pi-ellipsis-v"></i></span>
+                                    <input type="text" pInputText name="lugarmatrimonio" placeholder="lugar"
+                                        [(ngModel)]="documentospersonas2.docuLugarMatrimonio" required #docuLugarMatrimonio="ngModel">
+                                </div>
+                                
+                            </div>
+                
+                            <div class="ui-g-12 ui-md-2" *ngIf="this.banderaCMatrimonio==true">
+                                <label for="input">Fecha de Matrimonio:</label>
+                            </div>
+                            <div class="ui-g-12 ui-md-2" *ngIf="this.banderaCBautizo==true">
+                                <label for="input">Fecha de Bautizo:</label>
+                            </div>
+                            <div class="ui-g-12 ui-md-4">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class="pi pi-ellipsis-v"></i></span>
+                                    <input type="date" pInputText name="fechamatrimonio" 
+                                        [(ngModel)]="documentospersonas2.docu_fecha_matrimonio" required #docu_fecha_matrimonio="ngModel">
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+                        <div class="ui-g-12" *ngIf="this.banderaCMatrimonio==true">
+                            <div class="ui-g-12 ui-md-2">
+                                <label for="input">Contrayentes :</label>
+                            </div>
+                          
+                            <div class="ui-g-12 ui-md-5">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class="pi pi-ellipsis-v"></i></span>
+                                    <input type="text" pInputText name="contrayente_m" placeholder="Nombre Esposo"
+                                    [(ngModel)]="documentospersonas2.docuContrayenteEsposo" required #docuContrayenteEsposo="ngModel">
+                                   
+                                </div>
+                                
+                            </div>
+                            <div class="ui-g-12 ui-md-5">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class="pi pi-ellipsis-v"></i></span>
+                                    <input type="text" pInputText name="contrayente_F" placeholder="Nombre Esposa"
+                                    [(ngModel)]="documentospersonas2.docuContrayenteEsposa" required #docuContrayenteEsposa="ngModel">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui-g-12" *ngIf="this.banderaCBautizo==true" >
+                           
+                            <div class="ui-g-12 ui-md-2">
+                                <label for="input">Padres :</label>
+                            </div>
+                            <div class="ui-g-12 ui-md-5">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class="pi pi-ellipsis-v"></i></span>
+                                    <input type="text" pInputText name="contrayente_m" placeholder="Nombre del Padre"
+                                    [(ngModel)]="documentospersonas2.docuContrayenteEsposo" required #docuContrayenteEsposo="ngModel">
+                                   
+                                </div>
+                                
+                            </div>
+                            <div class="ui-g-12 ui-md-5">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class="pi pi-ellipsis-v"></i></span>
+                                    <input type="text" pInputText name="contrayente_F" placeholder="Nombre de la Madre"
+                                    [(ngModel)]="documentospersonas2.docuContrayenteEsposa" required #docuContrayenteEsposa="ngModel">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui-g-12" *ngIf="this.banderaCMatrimonio==true || this.banderaCSolteria==true">
+                            <div class="ui-g-12 ui-md-2">
+                                <label for="input">Testigos 1:</label>
+                            </div>
+                            <div class="ui-g-12 ui-md-5">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class="pi pi-ellipsis-v"></i></span>
+                                    <input type="text" pInputText name="testigo" placeholder="Nombres y Apellidos"
+                                    [(ngModel)]="documentospersonas2.docuTestigoUno" required #docuTestigoUno="ngModel"
+                               
+                                    >
+                                </div>
+                                
+                            </div>
+                
+                            <div class="ui-g-12 ui-md-5">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class="pi pi-ellipsis-v"></i></span>
+                                    <input type="text" pInputText name="testigounocedula" placeholder="Cedula"
+                                    [(ngModel)]="documentospersonas2.docuCeduTestigouno" required #docuTestigoDos="ngModel">
+                               
+                                    
+                                </div>
+                               
+                            </div>
+                            <div class="ui-g-12 ui-md-2">
+                                <label for="input">Testigos 2:</label>
+                            </div>
+                            <div class="ui-g-12 ui-md-5">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class="pi pi-ellipsis-v"></i></span>
+                                    <input type="text" pInputText name="testigodos" placeholder="Nombres y Apellidos"
+                                    [(ngModel)]="documentospersonas2.docuTestigoDos" required #docuTestigoUno="ngModel"
+                               
+                                    >
+                                </div>
+                                
+                            </div>
+                            <div class="ui-g-12 ui-md-5">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class="pi pi-ellipsis-v"></i></span>
+                                    <input type="text" pInputText name="testigodoscedula" placeholder="Cedula"
+                                    [(ngModel)]="documentospersonas2.docuCeduTestigodos" required #docuTestigoDos="ngModel">
+                               
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui-g-12" *ngIf="this.banderaCMatrimonio==true || this.banderaCBautizo==true" >
+                            <div class="ui-g-12 ui-md-2">
+                                <label for="input">Padrinos:</label>
+                            </div>
+                            <div class="ui-g-12 ui-md-5">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class="pi pi-ellipsis-v"></i></span>
+                                    <input type="text" pInputText name="padrino" placeholder="Padrino"
+                                    [(ngModel)]="documentospersonas2.docuPadrino" required #docuPadrino="ngModel">
+                                </div>
+                                <div class="alert alert-danger"
+                                    *ngIf="docuPadrino.invalid && (docuPadrino.dirty || docuPadrino.touched)">
+                                    <div *ngIf="docuPadrino.errors.required">
+                                        Campo requerido
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ui-g-12 ui-md-5">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class="pi pi-ellipsis-v"></i></span>
+                                    <input type="text" pInputText name="madrina" placeholder="Madrina"
+                                    [(ngModel)]="documentospersonas2.docuMadrina" required #docuMadrina="ngModel"
+                               
+                                    >
+                                </div>
+                                <div class="alert alert-danger"
+                                    *ngIf="docuMadrina.invalid && (docuMadrina.dirty || docuMadrina.touched)">
+                                    <div *ngIf="docuMadrina.errors.required">
+                                        Campo requerido
+                                    </div>
+                                </div>
+                            </div>
+                
+                            <div class="ui-g-12 ui-md-1">
+                                <label for="input">Tomo:</label>
+                            </div>
+                            <div class="ui-g-12 ui-md-2">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class="pi pi-ellipsis-v"></i></span>
+                                    <input type="text" pInputText name="tomo" placeholder="Tomo" style="width:50px"
+                                    [(ngModel)]="documentospersonas2.docuTomo" required #docuTomo="ngModel">
+                                </div>
+                                <div class="alert alert-danger"
+                                    *ngIf="docuTomo.invalid && (docuTomo.dirty || docuTomo.touched)">
+                                    <div *ngIf="docuTomo.errors.required">
+                                        Campo requerido
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ui-g-12 ui-md-1">
+                                <label for="input">Folio:</label>
+                            </div>
+                            <div class="ui-g-12 ui-md-2">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class="pi pi-ellipsis-v"></i></span>
+                                    <input type="text" pInputText name="folio" placeholder="Folio" style="width:50px"
+                                    [(ngModel)]="documentospersonas2.docuFolio" required #docuFolio="ngModel"
+                                    >
+                                </div>
+                                
+                            </div>
+                
+                            <div class="ui-g-12 ui-md-1">
+                                <label for="input">Pagina:</label>
+                            </div>
+                            <div class="ui-g-12 ui-md-2">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class="pi pi-ellipsis-v"></i></span>
+                                    <input type="text" pInputText name="pagina" placeholder="Pagina" style="width:50px"
+                                    [(ngModel)]="documentospersonas2.docuPagina" required #docuPagina="ngModel"
+                                    >
+                                </div>
+                                <div class="alert alert-danger"
+                                    *ngIf="docuPagina.invalid && (docuPagina.dirty || docuPagina.touched)">
+                                    <div *ngIf="docuPagina.errors.required">
+                                        Campo requerido
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ui-g-12 ui-md-1">
+                                <label for="input">Acta:</label>
+                            </div>
+                            <div class="ui-g-12 ui-md-2">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class="pi pi-ellipsis-v"></i></span>
+                                    <input type="text" pInputText name="acta" placeholder="Acta" style="width:50px"
+                                    [(ngModel)]="documentospersonas2.docuActa" required #docuActa="ngModel"
+                                    >
+                                </div>
+                                
+                            </div>
+                
+                            <div class="ui-g-12 ui-md-2">
+                                <label for="input">Sacerdote oficiante :</label>
+                            </div>
+                            <div class="ui-g-12 ui-md-10">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon"><i class="pi pi-ellipsis-v"></i></span>
+                                    <input type="text" pInputText name="sacerdote" placeholder="Sacerdote"
+                                    [(ngModel)]="documentospersonas2.docuSacerdote" required #docuSacerdote="ngModel"
+                                    >
+                                </div>
+                                <div class="alert alert-danger"
+                                    *ngIf="docuSacerdote.invalid && (docuSacerdote.dirty || docuSacerdote.touched)">
+                                    <div *ngIf="docuSacerdote.errors.required">
+                                        Campo requerido
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui-g-12 text-center">
+                                 <p-button icon="pi pi-plus" stileClass="ui-button-info" label="Agregar" (click)='create()'
+                            *ngIf="!documentospersonas2.docuId else elseBlock"></p-button>
+                            <ng-template #elseBlock>
+                                <button class="btn btn-primary" role="button" (click)='update()'>Editar</button>
+                                <button class="btn btn-danger" role="button" (click)='cancelar()'>Cancelar</button>
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>  
+</div>    
+
+
+<div class="card">
+    <h5>Documentos Registrados</h5>
+    <p-table #dt1 [value]="documentospersonas" dataKey="docuId" [rows]="10" [showCurrentPageReport]="true"
+        [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-customers p-datatable-gridlines"
+        [paginator]="true" currentPageReportTemplate="lista de personas con documentos"
+        [globalFilterFields]="['docuId','docuLibronombre','docuReferencia','docuFkPersona']">
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex">
+                <span class="p-input-icon-left p-ml-auto">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')"
+                        placeholder="Search keyword" />
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th>
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                        Id
+                    </div>
+                </th>
+                <th>
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                        Libro
+
+                    </div>
+                </th>
+                <th>
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                        Referencias
+
+                    </div>
+                </th>
+                <th>
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                        Persona
+                    </div>
+                </th>
+                <th>
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                        Tipo Documento
+
+                    </div>
+                </th>
+                <th>
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                        Eliminar
+                    </div>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-documentosp>
+            <tr>
+                <td>
+                    {{documentosp.docuId}}
+                </td>
+                <td>
+                    {{documentosp.docuLibronombre}}
+                </td>
+                <td>
+                    {{documentosp.docuReferencia}}
+                </td>
+                <td>
+                    {{documentosp.docuFkPersona.persNombre}}
+                </td>
+                <td>
+                    {{documentosp.docuFkTipodocumento.tipdNombre}}
+                </td>
+                <td style="width: 90px; padding: 5px;text-align: center;">
+                    <p-button icon="pi pi-pencil" styleClass="ui-button-warning"
+                        (click)="cargarDocumento(documentosp)"></p-button>
+                    <p-button icon="pi pi-trash" styleClass="ui-button-danger" (click)='delete(documentosp)'></p-button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="7">No registros</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

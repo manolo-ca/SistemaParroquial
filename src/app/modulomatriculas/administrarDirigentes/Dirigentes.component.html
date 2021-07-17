@@ -1,0 +1,82 @@
+<div class="card card-w-title">
+    <h1>Bienvenidos a la administracion de Dirigentes</h1>
+    <hr>
+    <div class="p-grid" style="margin: 5px; background-color: whitesmoke;">
+        <div class="p-col">
+            <p-button icon="pi pi-plus" (click)="showDialog()" label="Agregar" styleClass="ui-button-success">
+            </p-button>
+        </div>
+    </div>
+
+    <p-table #dt1 [value]="servicio" dataKey="servNombre"
+    [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" styleClass="p-datatable-customers p-datatable-gridlines"
+    [paginator]="true" currentPageReportTemplate="Lista de Aulas"
+    [globalFilterFields]="['aulaId','aulaCurso']">
+    <ng-template pTemplate="caption">
+        <div class="p-d-flex">
+            <p>Dirigentes Registrados</p>
+            <span class="p-input-icon-left p-ml-auto">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Buscar" />
+            </span>
+        </div>
+    </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 80px;">ID</th>
+                <th>Cédula</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+                <th>Dirección</th>
+                <th style="width: 100px;">Acciones</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-servici >
+            <tr>
+                <td>{{servici.dirigenteId}}</td>
+                <td>{{servici.diriFkPersona.persCedula}}</td>
+                <td>{{servici.diriFkPersona.persNombre}}</td>
+                <td>{{servici.diriFkPersona.persApellido}}</td>
+                <td>{{servici.diriFkPersona.persEmail}}</td>
+                <td>{{servici.diriFkPersona.persTelefono}}</td>
+                <td>{{servici.diriFkPersona.persDireccion}}</td>
+                <td style="width: 100px;">
+                    <p-button icon="pi pi-pencil" styleClass="ui-button-warning" (click)="cargarServicio(servici)"></p-button>
+                    <p-button icon="pi pi-trash" styleClass="ui-button-danger" (click)='delete(servici)'></p-button>
+                </td>
+            </tr>
+
+        </ng-template>
+    </p-table>
+    <p-dialog header="Ingresar nueva Aula" [(visible)]="dis" [modal]="true" [style]="{width: '30vw'}"
+    [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+    <form [formGroup]="addForm2">
+        <div class="ui-g ui-fluid">
+            <div class="ui-g form-group ">
+                <div class="ui-g-12 ui-md-4">
+                    <label for="input">Aula</label>
+                </div>
+                <div class="ui-g-12 ui-md-8">
+                    <input pInputText class="input name" type="text" formControlName="tipe_serviciop"
+                        name="tipe_serviciop" id="tipe_serviciop" [(ngModel)]="servicio2.aulaCurso">
+                </div>
+               
+                <div class="ui-g-12">
+                    <p-button icon="pi pi-save" stileClass="ui-button-info" label="Guardar" (click)='create()'
+                        *ngIf="!servicio2.servId else elseBlock"></p-button>
+                    <ng-template #elseBlock>
+                        <button class="btn btn-primary" role="button" (click)='update()'>Editar</button>
+                    </ng-template>
+                </div>
+                <br><br>
+            </div>
+        </div>
+    </form>
+    <p-footer>
+        <p-button icon="pi pi-times" (click)="dis=false" label="Cancelar" styleClass="ui-button-secondary">
+        </p-button>
+    </p-footer>
+</p-dialog>
+</div>

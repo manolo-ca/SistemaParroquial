@@ -1,0 +1,90 @@
+<div class="card card-w-title">
+    <h1>Gestión de Períodos de Catequesís</h1>
+    <hr>
+    <div class="p-grid" style="margin: 5px; background-color: whitesmoke;">
+        <div class="p-col">
+            <p-button icon="pi pi-plus" (click)="showDialog()" label="Agregar" styleClass="ui-button-success">
+            </p-button>
+        </div>
+    </div>
+
+    <p-table #dt1 [value]="servicio" 
+    dataKey="periId"
+    [rows]="10" 
+    [showCurrentPageReport]="true" 
+    [rowsPerPageOptions]="[10,25,50]" 
+    [loading]="loading" 
+    styleClass="p-datatable-customers p-datatable-gridlines"
+    [paginator]="true" 
+    currentPageReportTemplate="Lista de Periodos"
+    [globalFilterFields]="['periId','periInicio','periFin']">
+    <ng-template pTemplate="caption">
+        <div class="p-d-flex">
+            <p>Períodos Registrados</p>
+            <span class="p-input-icon-left p-ml-auto">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Buscar" />
+            </span>
+        </div>
+    </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 80px;">ID</th>
+                <th>Incio del Período</th>
+                <th>Fin del Período</th>
+                <th style="width: 100px;">Acciones</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-servici>
+            <tr>
+                <td style="width: 80px;">{{servici.periId}}</td>
+                <td>{{servici.periInicio}}</td>
+                <td>{{servici.periFin}}</td>
+                <td style="width: 100px;">
+                    <p-button icon="pi pi-pencil" styleClass="ui-button-warning" (click)="cargarServicio(servici)"></p-button>
+                    <p-button icon="pi pi-trash" styleClass="ui-button-danger"(click)='delete(servici)'></p-button>
+                </td>
+            </tr>
+
+        </ng-template>
+    </p-table>
+    <p-dialog header="Gestión de Periodo" [(visible)]="dis" [modal]="true" [style]="{width: '30vw'}"
+    [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+    <form [formGroup]="addForm2">
+        <div class="ui-g ui-fluid">
+            <div class="ui-g form-group ">
+                <div class="ui-g-12 ui-md-4">
+                    <label for="input">Período de Inicio</label>
+                </div>
+                <div class="ui-g-12 ui-md-8">
+                    <p-calendar  formControlName="periodo_inicio" name="periodo_inicio" id="periodo_inicio" [(ngModel)]="date"  [showIcon]="true"></p-calendar>
+                    <div *ngIf="periodo_inicio.invalid && (periodo_inicio.dirty || periodo_inicio.touched)">
+                        <p-message severity="error" text="Campo requerido"></p-message>
+                    </div>
+                </div>
+                <div class="ui-g-12 ui-md-4">
+                    <label for="input">Período de Finalización</label>
+                </div>
+                <div class="ui-g-12 ui-md-8">
+                    <p-calendar formControlName="periodo_fin"name="periodo_fin" id="periodo_fin" [(ngModel)]="date2"  [showIcon]="true"></p-calendar>
+                    <div *ngIf="periodo_fin.invalid && (periodo_fin.dirty || periodo_fin.touched)">
+                        <p-message severity="error" text="Campo requerido"></p-message>
+                    </div>
+                </div>
+               
+                <div class="ui-g-12 text-center" *ngIf="this.boton==false">
+                    <p-button icon="pi pi-save" stileClass="ui-button-info" label="Guardar" (click)='create()'></p-button>
+                </div>
+                <div class="ui-g-12 text-center" *ngIf="this.boton==true">
+                    <button class="btn btn-primary" role="button" (click)='update()'>Actualizar</button>
+                </div>
+                <br>
+            </div>
+        </div>
+    </form>
+    <p-footer>
+        <p-button icon="pi pi-times" (click)="dis=false" label="Cancelar" styleClass="ui-button-secondary">
+        </p-button>
+    </p-footer>
+</p-dialog>
+</div>

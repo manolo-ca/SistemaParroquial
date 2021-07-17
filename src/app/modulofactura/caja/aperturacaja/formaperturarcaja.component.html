@@ -1,0 +1,65 @@
+<div class="ui-g ui-fluid ">
+  <div class="ui-g-12 ui-md-2">
+  </div>
+  <div class="ui-g-12 ui-lg-8">
+    <!-- Left Side -->
+    <div class="card card-w-title" style="width: 650px;">
+      <h1>Apertura de Caja</h1>
+      <div class="ui-g form-group">
+        <div class="ui-g-12 ui-md-3">
+          <label for="input">Seleccione caja: </label>
+        </div>
+        <div class="ui-g-12 ui-md-9">
+          <p-dropdown [options]="opcionesdrop" [(ngModel)]="selectedCaja" (onChange)="OnChange($event)" placeholder="Seleccionar Caja" optionLabel="name" [showClear]="false"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g form-group">
+        <div class="ui-g-12 ui-md-6">
+          <div class="ui-g-12 ui-md-4">
+            <label for="input">Fecha Apertura: </label>
+          </div>
+          <div class="ui-g-12 ui-md-8">
+            <div class="ui-inputgroup">
+              <span class="ui-inputgroup-addon"><i class=" pi pi-calendar-plus"></i></span>
+              <input [(ngModel)]="fechaapertura" id="openingdate" type="date" pInputText disabled>
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-md-6">
+          <div class="ui-g-12 ui-md-4">
+            <label for="input">Monto de Apertura: </label>
+          </div>
+          <div class="ui-g-12 ui-md-8">
+            <div class="ui-inputgroup">
+              <span class="ui-inputgroup-addon"><i class=" pi pi-dollar"></i></span>
+              <input [(ngModel)]="montoapertura" type="number" id="ruccliente" placeholder="0.00" pInputText>
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-md-6">
+          <div class="ui-g-12 ui-md-4">
+            <label for="input">Hora de Apertura: </label>
+          </div>
+          <div class="ui-g-12 ui-md-8">
+            <div class="ui-inputgroup">
+              <span class="ui-inputgroup-addon"><i class=" pi pi-globe"></i></span>
+              <input [(ngModel)]="horaapertura" type="time" id="ruccliente" placeholder="00:00:00" pInputText disabled>
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-md-12">
+          <label for="inputEmail4">Observacion</label>
+          <textarea [(ngModel)]="observacion" class="form-control border-secondary" id="observacion"
+            placeholder="Ingrese una observacion" pInputTextare></textarea>
+        </div>
+        <div class="ui-g-12 ui-md-12 text-center">
+          <p-button [disabled]="estadocaja" (click)="updateCaja()" label="Abrir Caja" icon="pi pi-save"
+            styleClass="ui-button-info"></p-button>
+        </div>
+      </div>
+      <p-messages></p-messages>
+    </div>
+  </div>
+  <div class="ui-g-12 ui-md-2">
+  </div>
+</div>

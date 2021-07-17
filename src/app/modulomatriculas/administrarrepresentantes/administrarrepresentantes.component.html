@@ -1,0 +1,116 @@
+<div class="card card-w-title">
+    <h1>Gestión de Representantes</h1>
+
+    <p-table #dt1 
+    [value]="servicio" 
+    dataKey="padrId"
+    [rows]="10" 
+    [showCurrentPageReport]="true" 
+    [rowsPerPageOptions]="[10,25,50]" 
+    [loading]="loading" 
+    styleClass="p-datatable-customers p-datatable-gridlines"
+    [paginator]="true" 
+    currentPageReportTemplate="Lista de Representantes"
+    [globalFilterFields]="['padrId','padrFkPersona.persCedula','padrFkPersona.persNombre','padrFkPersona.persApellido','padrFkPersona.persEmail','padrFkPersona.persDireccion','padrFkAlumno.alumFkPersona.persNombre','padrFkAlumno.alumFkPersona.persApellido']">
+    <ng-template pTemplate="caption">
+        <div class="p-d-flex">
+            <p>Listado de Representantes</p>
+            <span class="p-input-icon-left p-ml-auto">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Buscar" />
+            </span>
+        </div>
+    </ng-template>
+        <ng-template pTemplate="header">
+            <tr class="text-center"  style="font-size: smaller;">
+                <th style="width: 50px;">ID</th>
+                <th style="width: 110px;">Cédula</th>
+                <th>Nombre representante</th>
+                <th>Alumno</th>
+                <th style="width: 100px;">Parentesco</th>
+                <th style="width: 100px;">Representa</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+                <th>Dirección</th>
+                <th style="width: 70px;">Editar</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-servici>
+            <tr class="text-center"  style="font-size: smaller;">
+                <td style="width: 50px;">{{servici.padrFkPersona.persid}}</td>
+                <td style="width: 110px;">{{servici.padrFkPersona.persCedula}}</td>
+                <td>{{servici.padrFkPersona.persNombre}} {{servici.padrFkPersona.persApellido}}</td>
+                <td>{{servici.padrFkAlumno.alumFkPersona.persNombre}} {{servici.padrFkAlumno.alumFkPersona.persApellido}}</td>
+                <td style="width: 100px;">{{servici.padrParentesco}}</td>
+                <td style="width: 100px;" *ngIf="servici.padrRepresentante == false">
+                    <p-message severity="error" text="NO"></p-message>
+                </td>
+                <td style="width: 100px;" *ngIf="servici.padrRepresentante == true">
+                    <p-message severity="success" text="SI"></p-message>
+                </td>
+                <td>{{servici.padrFkPersona.persEmail}}</td>
+                <td>{{servici.padrFkPersona.persTelefono}}</td>
+                <td>{{servici.padrFkPersona.persDireccion}}</td>
+                <td style="width: 70px;">
+                    <p-button icon="pi pi-pencil" styleClass="ui-button-warning" (click)="cargarServicio(servici)"></p-button>
+                </td>
+            </tr>
+
+        </ng-template>
+    </p-table>
+    <p-dialog header="Gestión de Representante" [(visible)]="dis" [modal]="true" [style]="{width: '50vw'}"
+    [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+    <form [formGroup]="addForm2">
+        <div class="ui-g ui-fluid">
+            <div class="ui-g form-group ">
+                <div class="ui-g-12 ui-md-2">
+                    <label for="input">Cédula:</label>
+                </div>
+                <div class="ui-g-12 ui-md-8">
+                    <input disabled pInputText type="text" formControlName="alumnoCedula" name="alumnoCedula" id="alumnoCedula" >
+                </div>
+                <div class="ui-g-12 ui-md-2">
+                </div>
+                <div class="ui-g-12 ui-md-2">
+                    <label for="input">Nombres:</label>
+                </div>
+                <div class="ui-g-12 ui-md-4">
+                    <input pInputText type="text" formControlName="alumnoNombre" name="alumnoNombre" id="alumnoNombre">
+                </div>
+                <div class="ui-g-12 ui-md-2">
+                    <label for="input">Apellidos:</label>
+                </div>
+                <div class="ui-g-12 ui-md-4">
+                    <input pInputText type="text" formControlName="alumnoApellido" name="alumnoApellido" id="alumnoApellido">
+                </div>
+                <div class="ui-g-12 ui-md-2">
+                    <label for="input">Email:</label>
+                </div>
+                <div class="ui-g-12 ui-md-4">
+                    <input pInputText  type="text" formControlName="alumnoEmail" name="alumnoEmail" id="alumnoEmail">
+                </div>
+                <div class="ui-g-12 ui-md-2">
+                    <label for="input">Teléfono:</label>
+                </div>
+                <div class="ui-g-12 ui-md-4">
+                    <input pInputText type="text" formControlName="alumnoTelefono" name="alumnoTelefono" id="alumnoTelefono" >
+                </div>
+                <div class="ui-g-12 ui-md-2">
+                    <label for="input">Dirección:</label>
+                </div>
+                <div class="ui-g-12 ui-md-8">
+                    <input pInputText type="text" formControlName="alumnoDireccion" name="alumnoDireccion" id="alumnoDireccion" >
+                </div>
+                <div class="ui-g-12 text-center">
+                    <p-button icon="pi pi-save" stileClass="ui-button-info" label="Actualizar" (click)='update()'></p-button>
+                </div>
+                <br>
+            </div>
+        </div>
+    </form>
+    <p-footer>
+        <p-button icon="pi pi-times" (click)="dis=false" label="Cancelar" styleClass="ui-button-secondary">
+        </p-button>
+    </p-footer>
+</p-dialog>
+</div>

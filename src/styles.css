@@ -1,0 +1,6 @@
+html, body { height: 100%; }
+
+.buttonclase{
+    background-color: grey;
+    border-color: gray;
+}
